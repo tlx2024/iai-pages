@@ -1,0 +1,63 @@
+---
+import { getCollection, render } from 'astro:content';
+import Base from '../layouts/Base.astro';
+import SectionHeading from '../components/SectionHeading.astro';
+import { href } from '../lib/url';
+
+const notes = (await getCollection('releaseNotes')).sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
+const rendered = await Promise.all(notes.map(async (n) => ({ entry: n, Content: (await render(n)).Content })));
+const fmt = (d: Date) => d.toISOString().slice(0, 10);
+---
+
+<Base title="更新日志" description="IAI 每个公开版本的对外发行说明。">
+  <section class="container-site pt-14">
+    <SectionHeading
+      as="h1"
+      eyebrow="Changelog"
+      title="更新日志"
+      lead="每个公开版本的发行说明，由人工撰写：只写用户能感知到的变化，以及升级时需要注意的事项。"
+    />
+  </section>
+
+  <section class="container-site mt-12">
+  <div class="max-w-4xl">
+    {
+      rendered.length === 0 ? (
+        <div class="card p-8 text-center">
+          <p class="font-medium">还没有公开版本</p>
+          <p class="mt-2 text-sm text-muted">
+            首个公开版本发布后，这里会列出它的发行说明。版本文件见
+            <a class="link" href={href('/download/')}>下载页</a>。
+          </p>
+        </div>
+      ) : (
+        <ol class="space-y-10">
+          {rendered.map(({ entry, Content }) => (
+            <li id={`v${entry.data.version}`} class="scroll-mt-24 grid gap-4 md:grid-cols-[160px_minmax(0,1fr)]">
+              <div>
+                <p class="text-lg font-semibold">v{entry.data.version}</p>
+                <p class="text-sm text-muted">{fmt(entry.data.date)}</p>
+                {entry.data.channel === 'rc' && <p class="mt-1 text-xs text-warn-fg">预发布</p>}
+              </div>
+              <article class="card prose-notes p-6">
+                {entry.data.title && <h2 class="text-xl font-semibold">{entry.data.title}</h2>}
+                <Content />
+              </article>
+            </li>
+          ))}
+        </ol>
+      )
+    }
+  </div>
+  </section>
+</Base>
+
+<style is:global>
+  .prose-notes h2 { font-size: 1.125rem; font-weight: 600; margin-top: 1.25rem; }
+  .prose-notes h2:first-child { margin-top: 0; }
+  .prose-notes h3 { font-weight: 600; margin-top: 1rem; }
+  .prose-notes p, .prose-notes li { color: var(--ink-soft); line-height: 1.8; }
+  .prose-notes ul { list-style: disc; padding-left: 1.25rem; margin-top: 0.5rem; }
+  .prose-notes a { color: var(--primary); }
+  .prose-notes code { font-size: 0.875em; background: var(--panel-2); padding: 0.1em 0.35em; border-radius: 4px; }
+</style>

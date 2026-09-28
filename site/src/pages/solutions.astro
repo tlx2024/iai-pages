@@ -1,0 +1,171 @@
+---
+import Base from '../layouts/Base.astro';
+import Icon from '../components/Icon.astro';
+import SectionHeading from '../components/SectionHeading.astro';
+import StatusBadge from '../components/StatusBadge.astro';
+import CtaBand from '../components/CtaBand.astro';
+import type { Status } from '../data/features';
+import { featureHref } from '../data/features';
+import { href } from '../lib/url';
+
+type Item = { text: string; status: Status };
+type Solution = {
+  icon: 'factory' | 'pill' | 'flask';
+  title: string;
+  en: string;
+  stage: Status;
+  stageNote: string;
+  who: string;
+  problems: string[];
+  items: Item[];
+  edition: string;
+  links: { label: string; href: string }[];
+};
+
+const solutions: Solution[] = [
+  {
+    icon: 'factory',
+    title: '通用制造',
+    en: 'Discrete & process manufacturing',
+    stage: 'shipped',
+    stageNote: '核心能力已交付',
+    who: '班组长、设备维修、工艺员、车间主任、调度',
+    problems: [
+      '报警来了要开好几个系统查数据、翻规程',
+      '老师傅的经验留在脑子里，交接班靠口述',
+      '异常复盘各执一词，证据散落在不同系统',
+    ],
+    items: [
+      { text: '报警应答：定位设备、调出处置 SOP，回答附引用', status: 'shipped' },
+      { text: '换产与首检指引、SPC 分析、班次报告', status: 'shipped' },
+      { text: '夜间报警由智能体先排查，早班确认结论', status: 'shipped' },
+      { text: '根因分析：多源证据对齐到一条时间轴，正反证据并列', status: 'shipped' },
+      { text: '报告生成后回流知识库，成为下次排查的依据', status: 'shipped' },
+    ],
+    edition: '试用版可用通用制造的演示数据完整体验；接入真实系统需要服务器版。',
+    links: [
+      { label: '智能助手与执行账本', href: featureHref('assistant') },
+      { label: '本体与根因分析', href: featureHref('ontology') },
+    ],
+  },
+  {
+    icon: 'pill',
+    title: '医药 GMP',
+    en: 'Pharmaceutical GMP',
+    stage: 'validating',
+    stageNote: '部分能力工程验证中',
+    who: '质量保证（QA）、验证、生产与设备管理',
+    problems: [
+      '文件修订多、法规要求细，人工比对耗时',
+      '关键动作需要双人复核并完整留痕',
+      '偏差调查需要把设备、批次、操作记录串起来',
+    ],
+    items: [
+      { text: '审批四眼：写操作一人发起、另一人批准，全程留痕', status: 'shipped' },
+      { text: '审计与留存：登录、调参、问答、审批动作都有记录', status: 'shipped' },
+      { text: '文档合规审查：文件与 GMP 法规、SOP 对比，复审差异与证据', status: 'validating' },
+      { text: '法规与文献本体', status: 'validating' },
+      { text: '医药场景智能体', status: 'planned' },
+    ],
+    edition: '医药能力以行业扩展包形式提供，只在服务器版中可用。',
+    links: [
+      { label: '权限、审批与审计', href: featureHref('governance') },
+      { label: '安全与数据', href: '/security/' },
+    ],
+  },
+  {
+    icon: 'flask',
+    title: '研发配方',
+    en: 'Formulation R&D',
+    stage: 'validating',
+    stageNote: '工程验证中',
+    who: '配方研发、实验室、工艺开发',
+    problems: [
+      '配方是核心机密，不能原样交给外部模型',
+      '实验记录、文献、法规分散，难以关联到具体配方',
+      '批次性问题的原因难以在配方、工艺、物料之间定位',
+    ],
+    items: [
+      { text: '配方敏感字段在送往模型前自动掩码', status: 'shipped' },
+      { text: '配方核心参数掩码门禁', status: 'validating' },
+      { text: '业务领域树：配方、法规、文献、组织系统', status: 'validating' },
+      { text: '配方 RCA 闭环与 Wiki 失效回退', status: 'validating' },
+      { text: '研发场景智能体', status: 'planned' },
+    ],
+    edition: '研发能力以行业扩展包形式提供，只在服务器版中可用。',
+    links: [
+      { label: '本体与根因分析', href: featureHref('ontology') },
+      { label: '权限、审批与审计', href: featureHref('governance') },
+    ],
+  },
+];
+---
+
+<Base title="行业场景" description="IAI 在通用制造、医药 GMP 与研发配方三个场景中的用法与所处阶段。">
+  <section class="container-site pt-14">
+    <SectionHeading
+      as="h1"
+      eyebrow="Solutions"
+      title="行业场景"
+      lead="IAI 的平台能力是通用的；不同行业的差别在于接入哪些系统、沉淀哪些知识、哪些动作需要把关。每个场景都标注了所处阶段。"
+    />
+  </section>
+
+  <div class="container-site mt-12 space-y-6">
+    {
+      solutions.map((s) => (
+        <section class="card grid gap-8 p-6 sm:p-8 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)]" aria-label={s.title}>
+          <div>
+            <div class="flex items-center gap-3">
+              <span class="grid size-11 place-items-center rounded-lg bg-primary-soft text-primary">
+                <Icon name={s.icon} size={22} />
+              </span>
+              <div>
+                <h2 class="text-2xl font-bold tracking-tight">{s.title}</h2>
+                <p class="font-latin text-sm text-faint">{s.en}</p>
+              </div>
+            </div>
+            <div class="mt-5 flex items-center gap-2 text-sm text-muted">
+              <StatusBadge status={s.stage} />
+              {s.stageNote}
+            </div>
+            <p class="mt-5 text-sm text-muted">面向：{s.who}</p>
+            <h3 class="mt-6 text-sm font-semibold">现场常见的难题</h3>
+            <ul class="mt-2 space-y-1.5">
+              {s.problems.map((p) => (
+                <li class="flex gap-2 text-[15px] leading-7 text-ink-soft">
+                  <span class="mt-3 size-1 shrink-0 rounded-full bg-faint" aria-hidden="true" />
+                  {p}
+                </li>
+              ))}
+            </ul>
+          </div>
+          <div>
+            <h3 class="text-sm font-semibold">IAI 提供的能力</h3>
+            <ul class="mt-3 divide-y divide-line-soft rounded-lg border border-line">
+              {s.items.map((it) => (
+                <li class="flex items-start justify-between gap-4 px-4 py-3">
+                  <span class="text-[15px] leading-7 text-ink-soft">{it.text}</span>
+                  <StatusBadge status={it.status} class="mt-1" />
+                </li>
+              ))}
+            </ul>
+            <p class="mt-4 flex items-start gap-2 text-sm leading-6 text-muted">
+              <Icon name="info" size={14} class="mt-1 shrink-0" />
+              {s.edition}
+            </p>
+            <div class="mt-4 flex flex-wrap gap-x-5 gap-y-2">
+              {s.links.map((l) => (
+                <a href={href(l.href)} class="link inline-flex items-center gap-1 text-sm">
+                  {l.label} <Icon name="arrowRight" size={14} />
+                </a>
+              ))}
+            </div>
+          </div>
+        </section>
+      ))
+    }
+  </div>
+
+  <CtaBand title="你的产线上最费时间的是哪件事？" lead="从一个具体场景开始：先用试用版看看链路是否对路，再决定接入哪些系统。" />
+</Base>

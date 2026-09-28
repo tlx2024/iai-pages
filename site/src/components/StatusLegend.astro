@@ -1,0 +1,19 @@
+---
+import StatusBadge from './StatusBadge.astro';
+import { STATUS_HINT } from '../data/features';
+
+const items = ['shipped', 'validating', 'planned'] as const;
+---
+
+<dl class="flex flex-wrap gap-x-6 gap-y-2 text-sm text-muted">
+  {
+    items.map((s) => (
+      <div class="flex items-center gap-2">
+        <dt>
+          <StatusBadge status={s} />
+        </dt>
+        <dd>{STATUS_HINT[s]}</dd>
+      </div>
+    ))
+  }
+</dl>

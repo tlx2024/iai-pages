@@ -1,0 +1,28 @@
+{
+  "name": "iai-pages-site",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build && node scripts/subset-fonts.mjs && node scripts/check-sensitive.mjs",
+    "preview": "astro preview",
+    "check": "astro check",
+    "check:sensitive": "node scripts/check-sensitive.mjs"
+  },
+  "engines": {
+    "node": ">=22"
+  },
+  "dependencies": {
+    "@astrojs/starlight": "^0.42.4",
+    "@astrojs/starlight-tailwind": "^5.0.0",
+    "@tailwindcss/vite": "^4.3.3",
+    "astro": "^7.3.5",
+    "sharp": "^0.35.5",
+    "tailwindcss": "^4.3.3"
+  },
+  "devDependencies": {
+    "@astrojs/check": "^0.9.10",
+    "subset-font": "^2.9.0",
+    "typescript": "^6.0.3"
+  }
+}

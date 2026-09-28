@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://tlx2024.github.io/iai-pages/sitemap-index.xml

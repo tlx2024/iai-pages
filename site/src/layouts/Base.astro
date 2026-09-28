@@ -1,0 +1,66 @@
+---
+import '../styles/site.css';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import { href } from '../lib/url';
+import { BRAND } from '../data/site';
+
+interface Props {
+  title?: string;
+  description?: string;
+  /** 页面没有标题时用品牌全称 */
+  bare?: boolean;
+}
+
+const { title, description = `${BRAND.full}：面向制造现场的 AI 智能中枢。${BRAND.tagline}` } = Astro.props;
+const pageTitle = title ? `${title} · ${BRAND.full}` : `${BRAND.full} · ${BRAND.en}`;
+const canonical = new URL(Astro.url.pathname, Astro.site);
+const ogImage = new URL(href('/og.jpg'), Astro.site);
+---
+
+<!doctype html>
+<html lang="zh-CN" data-theme="light">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{pageTitle}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    <link rel="icon" type="image/png" href={href('/favicon.png')} />
+    <link rel="stylesheet" href={href('/fonts/fonts.css')} />
+    <link rel="sitemap" href={href('/sitemap-index.xml')} />
+    <meta property="og:type" content="website" />
+    <meta property="og:locale" content="zh_CN" />
+    <meta property="og:site_name" content={BRAND.full} />
+    <meta property="og:title" content={pageTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={ogImage} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="theme-color" content="#f5f6f8" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0f172a" media="(prefers-color-scheme: dark)" />
+    {/* 与 Starlight 共用主题偏好：localStorage 'starlight-theme' = 'light' | 'dark' | ''（跟随系统） */}
+    <script is:inline>
+      (() => {
+        let stored = '';
+        try {
+          stored = localStorage.getItem('starlight-theme') || '';
+        } catch {}
+        const dark = stored === 'dark' || (stored !== 'light' && matchMedia('(prefers-color-scheme: dark)').matches);
+        document.documentElement.dataset.theme = dark ? 'dark' : 'light';
+      })();
+    </script>
+  </head>
+  <body class="min-h-screen bg-bg font-sans text-ink antialiased">
+    <a
+      href="#main"
+      class="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-50 focus:rounded-lg focus:bg-panel focus:px-4 focus:py-2"
+      >跳到正文</a
+    >
+    <Header />
+    <main id="main">
+      <slot />
+    </main>
+    <Footer />
+  </body>
+</html>

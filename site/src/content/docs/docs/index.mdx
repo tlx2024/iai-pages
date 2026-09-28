@@ -1,0 +1,22 @@
+---
+title: 文档
+description: 平方和工厂智能中枢（IAI）的试用版指南、私有部署指南、模型准备与常见问题。
+---
+
+import { CardGrid, LinkCard } from '@astrojs/starlight/components';
+
+平方和工厂智能中枢（IAI）是面向制造现场的 AI 智能中枢：向下接入 MES、SCADA、ERP、LIMS 等系统，向上给每个岗位一个统一入口，覆盖对话、工作台和智能体中心三种用法。
+
+这里的文档分两条路径：想先体验的，从**试用版**开始；准备在企业内网正式使用的，看**私有部署**。
+
+<CardGrid>
+  <LinkCard title="快速开始" description="装好试用版，走一遍“提问 → 看引用 → 审批 → 查账本”。" href="/iai-pages/docs/quickstart/" />
+  <LinkCard title="试用版指南" description="系统要求、安装与校验、账号、模型档位、数据位置、有效期。" href="/iai-pages/docs/trial/" />
+  <LinkCard title="私有部署指南" description="服务器版的组成、硬件建议、交付物与安装步骤。" href="/iai-pages/docs/deployment/" />
+  <LinkCard title="模型准备" description="本机 Ollama、vLLM 与云端模型的准备方法。" href="/iai-pages/docs/models/" />
+  <LinkCard title="常见问题" description="费用、联网、数据、有效期、安全提示等常见疑问。" href="/iai-pages/docs/faq/" />
+</CardGrid>
+
+:::note[文档状态]
+桌面试用版和服务器部署套件都还没有公开发布。本文档按发布计划编写，具体以随版本附带的说明为准。发布后，[下载页](/iai-pages/download/)和[更新日志](/iai-pages/changelog/)会同步更新。
+:::

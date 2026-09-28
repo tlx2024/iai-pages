@@ -1,0 +1,90 @@
+---
+import { PROMO_VIDEO, SHOTS, fmtTime } from '../data/shots';
+import { href } from '../lib/url';
+import Icon from './Icon.astro';
+
+interface Props {
+  /** 是否显示分镜章节列表 */
+  chapters?: boolean;
+  id?: string;
+}
+const { chapters = true, id = 'video' } = Astro.props;
+// 片尾镜头只是 Logo 收束，不列入章节
+const list = SHOTS.filter((s) => s.id !== 'end');
+---
+
+<div id={id} class:list={['scroll-mt-24 grid gap-4', chapters && 'lg:grid-cols-[minmax(0,1fr)_300px]']} data-promo>
+  <figure class="overflow-hidden rounded-2xl border border-line bg-panel shadow-[var(--shadow-float)]">
+    <video
+      class="block aspect-video w-full bg-[#f5f6f8]"
+      controls
+      playsinline
+      preload="none"
+      poster={href(PROMO_VIDEO.poster)}
+      aria-label={PROMO_VIDEO.title}
+      data-promo-video
+    >
+      <source src={href(PROMO_VIDEO.src)} type="video/mp4" />
+      你的浏览器不支持内嵌视频，可以<a href={href(PROMO_VIDEO.src)}>直接下载观看</a>（MP4，约 16 MB）。
+    </video>
+    <figcaption class="flex flex-wrap items-center justify-between gap-2 border-t border-line px-4 py-2.5 text-xs text-muted">
+      <span>{PROMO_VIDEO.title} · 画面由产品真实组件与演示数据渲染，带原创配乐</span>
+      <a class="link" href={href(PROMO_VIDEO.src)} download>下载 MP4（16 MB）</a>
+    </figcaption>
+  </figure>
+
+  {
+    chapters && (
+      <nav aria-label="视频章节" class="card flex flex-col p-2">
+        <p class="px-3 pb-1.5 pt-2 text-xs font-medium text-muted">章节 · 点击跳转</p>
+        <ol class="grid gap-0.5 sm:grid-cols-2 lg:grid-cols-1">
+          {list.map((s) => (
+            <li>
+              <button
+                type="button"
+                class="group flex w-full items-center gap-3 rounded-lg px-3 py-2 text-left text-sm text-ink-soft transition-colors hover:bg-panel-2 data-[active]:bg-primary-soft data-[active]:text-primary"
+                data-seek={s.start}
+              >
+                <span class="font-latin w-9 shrink-0 text-xs tabular-nums text-faint group-data-[active]:text-primary">
+                  {fmtTime(s.start)}
+                </span>
+                <span class="truncate">{s.headline}</span>
+                <Icon name="play" size={12} class="ml-auto hidden shrink-0 group-data-[active]:block" />
+              </button>
+            </li>
+          ))}
+        </ol>
+      </nav>
+    )
+  }
+</div>
+
+<script>
+  document.querySelectorAll<HTMLElement>('[data-promo]').forEach((root) => {
+    const video = root.querySelector<HTMLVideoElement>('[data-promo-video]');
+    const buttons = [...root.querySelectorAll<HTMLButtonElement>('[data-seek]')];
+    if (!video || !buttons.length) return;
+    const starts = buttons.map((b) => Number(b.dataset.seek));
+
+    buttons.forEach((b, i) =>
+      b.addEventListener('click', () => {
+        video.currentTime = starts[i];
+        void video.play().catch(() => {});
+      }),
+    );
+
+    let active = -1;
+    const sync = () => {
+      let idx = -1;
+      starts.forEach((t, i) => {
+        if (video.currentTime >= t) idx = i;
+      });
+      if (video.currentTime === 0 && video.paused) idx = -1;
+      if (idx === active) return;
+      active = idx;
+      buttons.forEach((b, i) => b.toggleAttribute('data-active', i === idx));
+    };
+    video.addEventListener('timeupdate', sync);
+    video.addEventListener('seeked', sync);
+  });
+</script>

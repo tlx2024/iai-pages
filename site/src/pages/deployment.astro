@@ -1,0 +1,172 @@
+---
+import Base from '../layouts/Base.astro';
+import Icon from '../components/Icon.astro';
+import SectionHeading from '../components/SectionHeading.astro';
+import StatusBadge from '../components/StatusBadge.astro';
+import CtaBand from '../components/CtaBand.astro';
+import { href } from '../lib/url';
+
+// 试用版与服务器版的区别（口径：桌面试用版方案 §2）
+const compare = [
+  { k: '用途', trial: '任何人下载后自助评估；售前现场离线演示', server: '企业正式私有部署' },
+  { k: '获取', trial: '官网公开下载', server: '部署套件公开；镜像包按客户交付' },
+  { k: '运行环境', trial: 'Windows 本机，后端 + SQLite，只监听 127.0.0.1', server: 'Linux 服务器：PostgreSQL、Redis / Celery、MinIO、本机模型' },
+  { k: '用户', trial: '1 个主账号 + 2 个预置岗位账号，不能新增', server: '多用户、多组织、团队与资源树授权' },
+  { k: '数据', trial: '演示数据 + 你导入的文档，不设容量上限', server: '企业自己的真实数据' },
+  { k: '外部系统', trial: '只有内置模拟平台', server: '真实 MES / SCADA / ERP / MCP 与消息通道' },
+  { k: '自动化', trial: '手动试算', server: '事件驱动、定时与无人值守运行' },
+  { k: '行业扩展', trial: '不含', server: '医药、研发等扩展包' },
+  { k: '有效期', trial: '构建后 120 天，到期只读、可导出', server: '按授权' },
+];
+
+const stack = [
+  { name: 'Web 工作台', desc: '浏览器访问，对内网开放一个端口；/api 由它转发到中枢服务' },
+  { name: '中枢服务', desc: '对话与执行账本、技能、知识库、本体、智能体、审批、审计' },
+  { name: 'PostgreSQL 16 + pgvector', desc: '业务数据、知识切片与向量索引' },
+  { name: 'Redis · Celery', desc: '异步任务、定时计划与事件处理' },
+  { name: 'MinIO', desc: '文件与附件存储' },
+  { name: '模型服务', desc: '本机 vLLM / Ollama，或企业已有的 OpenAI 兼容服务' },
+];
+
+const deliverables = [
+  {
+    icon: 'download',
+    title: '部署套件',
+    tag: '公开',
+    desc: 'docker-compose 编排文件、安装脚本、.env 示例和部署文档。先看清部署方式和硬件要求，再做决定。',
+  },
+  {
+    icon: 'lock',
+    title: '镜像包',
+    tag: '按客户交付',
+    desc: '中枢服务、Web 工作台和数据库镜像。包含产品代码，通过离线介质或按客户签发的限时链接交付，附校验和。',
+  },
+  {
+    icon: 'server',
+    title: '模型',
+    tag: '不分发',
+    desc: '模型权重体积大且受第三方许可约束，不随产品分发；提供导入说明，无外网工厂可离线拷入。',
+  },
+] as const;
+---
+
+<Base title="部署形态" description="IAI 的三种交付形态：桌面试用版、私有化服务器版和企业客户端，以及服务器版的组成与交付方式。">
+  <section class="container-site pt-14">
+    <SectionHeading
+      as="h1"
+      eyebrow="Deployment"
+      title="部署形态"
+      lead="IAI 有三种交付形态：先用试用版在自己的电脑上评估；正式使用时部署服务器版，数据留在企业内网；岗位电脑用企业客户端连接服务器。"
+    />
+  </section>
+
+  {/* 对照表 */}
+  <section class="container-site mt-12" aria-labelledby="compare">
+    <h2 id="compare" class="text-2xl font-bold tracking-tight">试用版与服务器版</h2>
+    <div class="mt-6 overflow-x-auto rounded-xl border border-line bg-panel">
+      <table class="w-full min-w-[640px] text-left text-[15px]">
+        <thead class="border-b border-line bg-panel-2 text-sm">
+          <tr>
+            <th scope="col" class="w-32 px-5 py-3 font-medium text-muted"></th>
+            <th scope="col" class="px-5 py-3 font-semibold">
+              <span class="inline-flex items-center gap-2">
+                <Icon name="monitor" size={16} class="text-primary" />试用版 <StatusBadge status="coming" />
+              </span>
+            </th>
+            <th scope="col" class="px-5 py-3 font-semibold">
+              <span class="inline-flex items-center gap-2"><Icon name="server" size={16} class="text-primary" />服务器版</span>
+            </th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-line-soft">
+          {
+            compare.map((r) => (
+              <tr class="align-top">
+                <th scope="row" class="px-5 py-3 text-sm font-medium text-muted">{r.k}</th>
+                <td class="px-5 py-3 leading-7 text-ink-soft">{r.trial}</td>
+                <td class="px-5 py-3 leading-7 text-ink-soft">{r.server}</td>
+              </tr>
+            ))
+          }
+        </tbody>
+      </table>
+    </div>
+    <p class="mt-3 text-sm text-muted">
+      企业客户端只包含界面，连接企业的 IAI 服务器使用，随服务器版一起交付，不单独公开下载。
+    </p>
+  </section>
+
+  {/* 服务器版组成 */}
+  <section class="container-site mt-16 grid gap-10 lg:grid-cols-2" aria-labelledby="stack">
+    <div>
+      <h2 id="stack" class="text-2xl font-bold tracking-tight">服务器版的组成</h2>
+      <p class="mt-3 leading-8 text-ink-soft">
+        全部组件以容器方式运行在企业内网的一台或多台 Linux 服务器上。除 Web 工作台外，数据库、缓存和对象存储都只在容器内网通信，不在宿主机暴露端口。
+      </p>
+      <ul class="mt-6 divide-y divide-line-soft rounded-xl border border-line bg-panel">
+        {
+          stack.map((s) => (
+            <li class="px-5 py-3.5">
+              <p class="font-medium">{s.name}</p>
+              <p class="mt-0.5 text-sm leading-6 text-muted">{s.desc}</p>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+    <div>
+      <h2 class="text-2xl font-bold tracking-tight">硬件参考</h2>
+      <p class="mt-3 leading-8 text-ink-soft">实际需求随模型大小、并发量和知识库规模变化，以下为起步参考。</p>
+      <dl class="mt-6 grid gap-px overflow-hidden rounded-xl border border-line bg-line">
+        <div class="bg-panel px-5 py-3.5">
+          <dt class="text-sm text-muted">GPU（使用本机模型时）</dt>
+          <dd class="mt-0.5 leading-7">24 GB 显存单卡（RTX 4090 级）可运行 30B 级 MoE 模型的 4 bit 量化版本</dd>
+        </div>
+        <div class="bg-panel px-5 py-3.5">
+          <dt class="text-sm text-muted">内存 / 磁盘</dt>
+          <dd class="mt-0.5 leading-7">32 GB 以上内存；200 GB 以上可用磁盘（模型镜像与权重约占 20–30 GB）</dd>
+        </div>
+        <div class="bg-panel px-5 py-3.5">
+          <dt class="text-sm text-muted">系统与软件</dt>
+          <dd class="mt-0.5 leading-7">Ubuntu 22.04 / 24.04，Docker 与 Compose；GPU 另需 NVIDIA 驱动与 Container Toolkit</dd>
+        </div>
+        <div class="bg-panel px-5 py-3.5">
+          <dt class="text-sm text-muted">不用本机模型时</dt>
+          <dd class="mt-0.5 leading-7">服务器不需要 GPU，接入企业已有的模型服务即可</dd>
+        </div>
+      </dl>
+    </div>
+  </section>
+
+  {/* 交付物 */}
+  <section class="container-site mt-16" aria-labelledby="deliver">
+    <h2 id="deliver" class="text-2xl font-bold tracking-tight">服务器版怎么交付</h2>
+    <p class="mt-3 max-w-3xl leading-8 text-ink-soft">
+      原则是：不含产品代码的可以公开，含代码的按客户受控交付。每个版本都附带 SHA256 校验和，拿到文件后可以自行核对。
+    </p>
+    <div class="mt-8 grid gap-4 md:grid-cols-3">
+      {
+        deliverables.map((d) => (
+          <article class="card p-6">
+            <div class="flex items-center justify-between">
+              <span class="grid size-10 place-items-center rounded-lg bg-primary-soft text-primary">
+                <Icon name={d.icon} size={20} />
+              </span>
+              <span class="rounded-full border border-line px-2 py-0.5 text-xs text-muted">{d.tag}</span>
+            </div>
+            <h3 class="mt-5 text-lg font-semibold">{d.title}</h3>
+            <p class="mt-2 text-[15px] leading-7 text-ink-soft">{d.desc}</p>
+          </article>
+        ))
+      }
+    </div>
+    <div class="mt-8 flex flex-wrap gap-3">
+      <a href={href('/docs/deployment/')} class="btn btn-primary">
+        私有部署指南 <Icon name="arrowRight" size={16} />
+      </a>
+      <a href={href('/download/')} class="btn btn-secondary">下载页</a>
+    </div>
+  </section>
+
+  <CtaBand />
+</Base>

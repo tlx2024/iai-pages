@@ -1,0 +1,148 @@
+---
+import Base from '../layouts/Base.astro';
+import Icon from '../components/Icon.astro';
+import SectionHeading from '../components/SectionHeading.astro';
+import StatusBadge from '../components/StatusBadge.astro';
+import CtaBand from '../components/CtaBand.astro';
+import type { Status } from '../data/features';
+import { href } from '../lib/url';
+
+type Point = { text: string; status: Status };
+type Block = {
+  icon: 'server' | 'shield' | 'check' | 'ledger' | 'lock' | 'download';
+  title: string;
+  en: string;
+  lead: string;
+  points: Point[];
+};
+
+const blocks: Block[] = [
+  {
+    icon: 'server',
+    title: '数据留在厂内',
+    en: 'Data stays on premises',
+    lead: '服务器版部署在企业内网，模型也可以完全运行在本机。',
+    points: [
+      { text: '私有化部署，数据库、文件与账本都在企业自己的服务器上', status: 'shipped' },
+      { text: '支持本机 vLLM / Ollama 模型，外网断开也能运行', status: 'shipped' },
+      { text: '接入云端模型时，由知识出口门禁控制哪些内容可以外发', status: 'shipped' },
+      { text: '按数据敏感级别自动选择可用模型', status: 'planned' },
+    ],
+  },
+  {
+    icon: 'shield',
+    title: '身份与授权',
+    en: 'Identity & access',
+    lead: '谁能看、谁能调、谁能改，分层设防。',
+    points: [
+      { text: 'RBAC 角色权限与 ABAC 属性条件双重校验', status: 'shipped' },
+      { text: '权限挂在资源树上，按工厂、车间、产线划分作用域', status: 'shipped' },
+      { text: '核心对象（如保密配方、关键模具）可单独授权', status: 'shipped' },
+      { text: '技能按领域标签治理，工具网关按角色拦截越权调用', status: 'shipped' },
+    ],
+  },
+  {
+    icon: 'check',
+    title: '人在回路',
+    en: 'Human in the loop',
+    lead: 'AI 可以查、可以算，但动现场的那一步由人决定。',
+    points: [
+      { text: '只读查询直接执行，写操作先生成审批卡', status: 'shipped' },
+      { text: '审批卡列出发起人、动作、参数与风险等级', status: 'shipped' },
+      { text: '批准后任务从暂停处继续；驳回即终止', status: 'shipped' },
+      { text: '智能体运行受步数、Token 用量和超时预算约束', status: 'validating' },
+    ],
+  },
+  {
+    icon: 'ledger',
+    title: '全程留痕',
+    en: 'Full audit trail',
+    lead: '事后能说清楚：谁在什么时候、依据什么、做了什么。',
+    points: [
+      { text: '执行账本记录每一步技能调用、参数与返回', status: 'shipped' },
+      { text: '审计日志覆盖登录、调参、问答、检索出网与审批', status: 'shipped' },
+      { text: '知识条目保存不可变版本，回答可追溯到原文', status: 'shipped' },
+      { text: '审计记录按策略留存', status: 'shipped' },
+    ],
+  },
+  {
+    icon: 'lock',
+    title: '配方与敏感字段',
+    en: 'Sensitive fields',
+    lead: '核心配方不以明文交给模型。',
+    points: [
+      { text: '数据送往模型前，工具网关自动掩码配方中的敏感字段', status: 'shipped' },
+      { text: '配方核心参数掩码门禁', status: 'validating' },
+    ],
+  },
+  {
+    icon: 'download',
+    title: '安装包与发布',
+    en: 'Release integrity',
+    lead: '公开制品经过人工把关，并附校验和。',
+    points: [
+      { text: '每个版本附 SHA256 校验和，下载后可自行核对', status: 'coming' },
+      { text: '公开发布前人工检查草稿：内容门禁、制品清单、发行说明', status: 'coming' },
+      { text: '试用版数据只存在本机，只监听 127.0.0.1', status: 'coming' },
+      { text: 'Windows 安装包代码签名', status: 'planned' },
+    ],
+  },
+];
+---
+
+<Base title="安全与数据" description="IAI 如何对待工厂数据：私有化部署与本机模型、RBAC 与 ABAC、写操作审批、执行账本与审计、配方脱敏。">
+  <section class="container-site pt-14">
+    <SectionHeading
+      as="h1"
+      eyebrow="Security & data"
+      title="安全与数据"
+      lead="在工厂里，AI 能不能用，先看三件事：数据会不会出去，权限会不会越界，出了问题能不能说清楚。下面逐项说明 IAI 的做法，以及每一项的当前状态。"
+    />
+  </section>
+
+  <div class="container-site mt-12 grid gap-4 md:grid-cols-2">
+    {
+      blocks.map((b) => (
+        <section class="card flex flex-col p-6" aria-label={b.title}>
+          <div class="flex items-center gap-3">
+            <span class="grid size-10 place-items-center rounded-lg bg-primary-soft text-primary">
+              <Icon name={b.icon} size={20} />
+            </span>
+            <div>
+              <h2 class="text-lg font-semibold">{b.title}</h2>
+              <p class="font-latin text-xs text-faint">{b.en}</p>
+            </div>
+          </div>
+          <p class="mt-4 text-[15px] leading-7 text-ink-soft">{b.lead}</p>
+          <ul class="mt-4 divide-y divide-line-soft border-t border-line-soft">
+            {b.points.map((p) => (
+              <li class="flex items-start justify-between gap-4 py-2.5">
+                <span class="text-sm leading-6 text-ink-soft">{p.text}</span>
+                <StatusBadge status={p.status} class="mt-0.5" />
+              </li>
+            ))}
+          </ul>
+        </section>
+      ))
+    }
+  </div>
+
+  <section class="container-site mt-12">
+    <div class="card flex flex-col gap-4 p-6 sm:flex-row sm:items-center sm:justify-between">
+      <div>
+        <h2 class="font-semibold">核对安装包</h2>
+        <p class="mt-1 text-sm leading-6 text-muted">
+          安装包暂未做代码签名。下载后请先用 PowerShell 计算 SHA256，与下载页公布的值对照，一致再安装。
+        </p>
+      </div>
+      <code class="shrink-0 overflow-x-auto rounded-lg border border-line bg-panel-2 px-3 py-2 text-xs"
+        >Get-FileHash .\安装包.exe -Algorithm SHA256</code
+      >
+    </div>
+    <p class="mt-4 text-sm text-muted">
+      发现安全问题？请通过<a class="link" href={href('/contact/')}>联系我们</a>页面告诉我们，我们会尽快回复。
+    </p>
+  </section>
+
+  <CtaBand />
+</Base>

@@ -1,0 +1,325 @@
+---
+import Base from '../layouts/Base.astro';
+import Icon from '../components/Icon.astro';
+import SectionHeading from '../components/SectionHeading.astro';
+import StatusBadge from '../components/StatusBadge.astro';
+import { getReleases, getLatest, fmtSize, type ReleaseAsset } from '../lib/releases';
+import { CONTACT_EMAIL, PUBLIC_REPO } from '../data/site';
+import { href } from '../lib/url';
+
+const releases = await getReleases();
+const latest = await getLatest();
+
+const trialAssets = latest?.assets.filter((a) => a.kind === 'desktop-trial') ?? [];
+const kit = latest?.assets.find((a) => a.kind === 'server-kit');
+const images = latest?.assets.find((a) => a.kind === 'server-images');
+const others = latest?.assets.filter((a) => !['desktop-trial', 'server-kit', 'server-images'].includes(a.kind)) ?? [];
+
+const trialLabel = (a: ReleaseAsset) =>
+  a.file.endsWith('.msi') ? 'MSI 安装包（便于批量部署）' : a.file.endsWith('.exe') ? '安装程序（推荐）' : a.file;
+const trialReq = trialAssets.find((a) => a.requirements)?.requirements ?? 'Windows 10 / 11 x64';
+const trialDays = trialAssets.find((a) => a.expires_days)?.expires_days ?? 120;
+const contactHref = CONTACT_EMAIL ? `mailto:${CONTACT_EMAIL}` : href('/contact/');
+const releasesUrl = `https://github.com/${PUBLIC_REPO}/releases`;
+---
+
+<Base title="下载" description="下载 IAI 桌面试用版与服务器部署套件，核对 SHA256 校验和，了解镜像包的获取方式。">
+  <section class="container-site pt-14">
+    <SectionHeading
+      as="h1"
+      eyebrow="Download"
+      title="下载"
+      lead="公开下载的只有不含服务端代码的制品：桌面试用版与服务器部署套件。服务器镜像包按客户交付。每个文件都附 SHA256 校验和。"
+    />
+  </section>
+
+  {/* ---------- 试用版 ---------- */}
+  <section class="container-site mt-10" aria-labelledby="trial">
+    <div class="card overflow-hidden">
+      <div class="grid gap-8 p-6 sm:p-8 lg:grid-cols-[minmax(0,1fr)_320px]">
+        <div>
+          <div class="flex flex-wrap items-center gap-3">
+            <h2 id="trial" class="text-2xl font-bold tracking-tight">IAI 桌面试用版</h2>
+            {
+              latest ? (
+                <span class="rounded-full bg-primary-soft px-2.5 py-0.5 text-sm font-medium text-primary">
+                  v{latest.version}
+                  {latest.channel !== 'stable' && ' · 预发布'}
+                </span>
+              ) : (
+                <StatusBadge status="coming" />
+              )
+            }
+          </div>
+          <p class="mt-3 max-w-2xl leading-8 text-ink-soft">
+            在自己的 Windows 电脑上体验 IAI 的核心链路：对话与技能、带引用的知识库、智能体试运行、审批与执行账本、根因分析。自带演示数据，也可以导入你自己的文档，数据只存在本机。
+          </p>
+
+          {
+            latest && trialAssets.length > 0 ? (
+              <ul class="mt-6 space-y-3">
+                {trialAssets.map((a) => (
+                  <li class="rounded-lg border border-line p-4">
+                    <div class="flex flex-wrap items-center justify-between gap-3">
+                      <div>
+                        <p class="font-medium">{trialLabel(a)}</p>
+                        <p class="mt-0.5 text-xs text-muted">
+                          {a.file} · {fmtSize(a.size)} · 发布于 {latest.date}
+                        </p>
+                      </div>
+                      {a.url && (
+                        <a href={a.url} class="btn btn-primary">
+                          <Icon name="download" size={18} />
+                          下载
+                        </a>
+                      )}
+                    </div>
+                    {a.sha256 && (
+                      <div class="mt-3 flex items-center gap-2">
+                        <span class="shrink-0 text-xs text-muted">SHA256</span>
+                        <code class="min-w-0 flex-1 truncate rounded bg-panel-2 px-2 py-1 font-mono text-xs" title={a.sha256}>
+                          {a.sha256}
+                        </code>
+                        <button type="button" class="shrink-0 text-xs text-primary hover:underline" data-copy={a.sha256}>
+                          复制
+                        </button>
+                      </div>
+                    )}
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <div class="mt-6 rounded-lg border border-dashed border-line-strong bg-panel-2/50 p-5">
+                <p class="flex items-center gap-2 font-medium">
+                  <Icon name="clock" size={18} class="text-primary" />
+                  试用版正在准备
+                </p>
+                <p class="mt-2 text-sm leading-6 text-muted">
+                  首个公开版本发布后，本页会自动列出安装包、大小和校验和。在此之前，可以先看
+                  <a class="link" href={`${href('/')}#video`}>60 秒产品介绍</a>
+                  ，或阅读<a class="link" href={href('/docs/trial/')}>试用版指南</a>。
+                </p>
+              </div>
+            )
+          }
+        </div>
+
+        <aside class="rounded-lg bg-panel-2 p-5 text-sm">
+          <h3 class="font-semibold">使用须知</h3>
+          <dl class="mt-3 space-y-3">
+            <div>
+              <dt class="text-muted">系统要求</dt>
+              <dd class="mt-0.5 text-ink-soft">{trialReq}</dd>
+            </div>
+            <div>
+              <dt class="text-muted">有效期</dt>
+              <dd class="mt-0.5 text-ink-soft">构建后 {trialDays} 天；到期后只读，仍可导出数据</dd>
+            </div>
+            <div>
+              <dt class="text-muted">模型</dt>
+              <dd class="mt-0.5 text-ink-soft">
+                本机 Ollama、自带云端 Key 或暂不接模型，见<a class="link" href={href('/docs/models/')}>模型准备</a>
+              </dd>
+            </div>
+            <div>
+              <dt class="text-muted">安全提示</dt>
+              <dd class="mt-0.5 text-ink-soft">安装包暂未签名，Windows 可能提示未知发布者；请先核对校验和</dd>
+            </div>
+            <div>
+              <dt class="text-muted">条款</dt>
+              <dd class="mt-0.5 text-ink-soft">供评估使用，以安装时展示的许可协议为准</dd>
+            </div>
+          </dl>
+        </aside>
+      </div>
+    </div>
+  </section>
+
+  {/* ---------- 服务器版 ---------- */}
+  <section class="container-site mt-6 grid gap-4 md:grid-cols-2" aria-label="服务器版制品">
+    <article class="card flex flex-col p-6">
+      <div class="flex items-center justify-between">
+        <span class="grid size-10 place-items-center rounded-lg bg-primary-soft text-primary">
+          <Icon name="download" size={20} />
+        </span>
+        <span class="rounded-full border border-line px-2 py-0.5 text-xs text-muted">公开</span>
+      </div>
+      <h2 class="mt-5 text-lg font-semibold">服务器部署套件</h2>
+      <p class="mt-2 flex-1 text-[15px] leading-7 text-ink-soft">
+        docker-compose 编排文件、安装脚本、.env 示例和部署文档。先看清部署方式和硬件要求；需要配合镜像包才能运行。
+      </p>
+      {
+        kit ? (
+          <div class="mt-5 space-y-3">
+            <p class="text-xs text-muted">
+              {kit.file} · {fmtSize(kit.size)} · v{latest!.version}
+            </p>
+            {kit.sha256 && (
+              <div class="flex items-center gap-2">
+                <span class="shrink-0 text-xs text-muted">SHA256</span>
+                <code class="min-w-0 flex-1 truncate rounded bg-panel-2 px-2 py-1 font-mono text-xs" title={kit.sha256}>
+                  {kit.sha256}
+                </code>
+                <button type="button" class="shrink-0 text-xs text-primary hover:underline" data-copy={kit.sha256}>
+                  复制
+                </button>
+              </div>
+            )}
+            {kit.url && (
+              <a href={kit.url} class="btn btn-secondary">
+                <Icon name="download" size={16} />
+                下载部署套件
+              </a>
+            )}
+          </div>
+        ) : (
+          <p class="mt-5 text-sm text-muted">随首个正式版本发布。部署方式可以先看<a class="link" href={href('/docs/deployment/')}>私有部署指南</a>。</p>
+        )
+      }
+    </article>
+
+    <article class="card flex flex-col p-6">
+      <div class="flex items-center justify-between">
+        <span class="grid size-10 place-items-center rounded-lg bg-panel-2 text-ink-soft">
+          <Icon name="lock" size={20} />
+        </span>
+        <span class="rounded-full border border-line px-2 py-0.5 text-xs text-muted">按客户交付</span>
+      </div>
+      <h2 class="mt-5 text-lg font-semibold">服务器镜像包</h2>
+      <p class="mt-2 flex-1 text-[15px] leading-7 text-ink-soft">
+        中枢服务、Web 工作台和数据库镜像。包含产品代码，不公开下载：通过离线介质，或按客户签发的限时下载链接交付。
+      </p>
+      {
+        images && (
+          <div class="mt-5 space-y-2">
+            <p class="text-xs text-muted">
+              {images.file} · v{latest!.version}
+            </p>
+            {images.sha256 && (
+              <div class="flex items-center gap-2">
+                <span class="shrink-0 text-xs text-muted">SHA256</span>
+                <code class="min-w-0 flex-1 truncate rounded bg-panel-2 px-2 py-1 font-mono text-xs" title={images.sha256}>
+                  {images.sha256}
+                </code>
+                <button type="button" class="shrink-0 text-xs text-primary hover:underline" data-copy={images.sha256}>
+                  复制
+                </button>
+              </div>
+            )}
+            {images.obtain && <p class="text-sm text-ink-soft">{images.obtain}</p>}
+          </div>
+        )
+      }
+      <a href={contactHref} class="btn btn-secondary mt-5 self-start">
+        <Icon name="mail" size={16} />
+        联系获取
+      </a>
+    </article>
+  </section>
+
+  {
+    others.length > 0 && (
+      <section class="container-site mt-6" aria-label="其他文件">
+        <div class="card p-6">
+          <h2 class="font-semibold">其他文件</h2>
+          <ul class="mt-3 space-y-2 text-sm">
+            {others.map((a) => (
+              <li class="flex flex-wrap items-center gap-x-3 gap-y-1">
+                {a.url ? (
+                  <a class="link" href={a.url}>
+                    {a.file}
+                  </a>
+                ) : (
+                  <span>{a.file}</span>
+                )}
+                <span class="text-xs text-muted">{fmtSize(a.size)}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </section>
+    )
+  }
+
+  {/* ---------- 校验 ---------- */}
+  <section class="container-site mt-12" aria-labelledby="verify">
+    <h2 id="verify" class="text-2xl font-bold tracking-tight">核对校验和</h2>
+    <p class="mt-3 max-w-3xl leading-8 text-ink-soft">
+      下载完成后，在文件所在目录打开 PowerShell，计算 SHA256 并与本页公布的值对照。两者一致，说明文件完整、未被篡改。每个版本的 Release 里还附有完整的 <code class="rounded bg-panel-2 px-1.5 py-0.5 text-sm">SHA256SUMS</code>。
+    </p>
+    <pre
+      class="mt-4 overflow-x-auto rounded-xl border border-line bg-panel p-4 font-mono text-sm leading-6"><code>Get-FileHash .\IAI-Trial_&lt;版本&gt;_x64-setup.exe -Algorithm SHA256</code></pre>
+    <p class="mt-3 text-sm text-muted">Linux 上核对部署套件或镜像包：<code class="rounded bg-panel-2 px-1.5 py-0.5">sha256sum -c SHA256SUMS</code></p>
+  </section>
+
+  {/* ---------- 历史版本 ---------- */}
+  <section class="container-site mt-12" aria-labelledby="history">
+    <h2 id="history" class="text-2xl font-bold tracking-tight">所有版本</h2>
+    {
+      releases.length > 0 ? (
+        <div class="mt-6 overflow-x-auto rounded-xl border border-line bg-panel">
+          <table class="w-full min-w-[560px] text-left text-sm">
+            <thead class="border-b border-line bg-panel-2 text-xs text-muted">
+              <tr>
+                <th scope="col" class="px-4 py-3 font-medium">版本</th>
+                <th scope="col" class="px-4 py-3 font-medium">日期</th>
+                <th scope="col" class="px-4 py-3 font-medium">公开文件</th>
+                <th scope="col" class="px-4 py-3 font-medium">说明</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-line-soft">
+              {releases.map((r) => (
+                <tr class="align-top">
+                  <td class="whitespace-nowrap px-4 py-3 font-medium">
+                    v{r.version}
+                    {r.channel !== 'stable' && <span class="ml-2 text-xs font-normal text-muted">预发布</span>}
+                  </td>
+                  <td class="whitespace-nowrap px-4 py-3 text-ink-soft">{r.date}</td>
+                  <td class="px-4 py-3">
+                    <ul class="space-y-1">
+                      {r.assets
+                        .filter((a) => a.url)
+                        .map((a) => (
+                          <li>
+                            <a class="link" href={a.url}>
+                              {a.file}
+                            </a>
+                            <span class="ml-2 text-xs text-muted">{fmtSize(a.size)}</span>
+                          </li>
+                        ))}
+                    </ul>
+                  </td>
+                  <td class="whitespace-nowrap px-4 py-3">
+                    <a class="link" href={`${href('/changelog/')}#v${r.version}`}>
+                      发行说明
+                    </a>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      ) : (
+        <p class="mt-3 text-[15px] text-muted">
+          还没有公开版本。发布后，这里会列出每个版本的文件与发行说明，也可以在
+          <a class="link" href={releasesUrl}>GitHub Releases</a> 查看。
+        </p>
+      )
+    }
+  </section>
+</Base>
+
+<script>
+  document.querySelectorAll<HTMLButtonElement>('[data-copy]').forEach((btn) =>
+    btn.addEventListener('click', async () => {
+      try {
+        await navigator.clipboard.writeText(btn.dataset.copy ?? '');
+        const old = btn.textContent;
+        btn.textContent = '已复制';
+        setTimeout(() => (btn.textContent = old), 1500);
+      } catch {
+        btn.textContent = '复制失败';
+      }
+    }),
+  );
+</script>

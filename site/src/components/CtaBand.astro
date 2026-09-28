@@ -1,0 +1,41 @@
+---
+import Icon from './Icon.astro';
+import { href } from '../lib/url';
+import { CONTACT_EMAIL } from '../data/site';
+
+interface Props {
+  title?: string;
+  lead?: string;
+}
+const {
+  title = '先装一个试用版，看看它在你的场景里能做什么',
+  lead = '试用版在本机运行，自带演示数据，也可以导入你自己的文档。需要接入真实系统时，再谈私有部署。',
+} = Astro.props;
+---
+
+<section class="container-site pt-16">
+  <div class="relative overflow-hidden rounded-2xl bg-[#14213d] px-6 py-12 text-white sm:px-12">
+    <div
+      class="pointer-events-none absolute -right-24 -top-24 size-80 rounded-full bg-[#2f6bff] opacity-40 blur-3xl"
+      aria-hidden="true"
+    >
+    </div>
+    <div class="relative max-w-2xl">
+      <h2 class="text-2xl font-bold leading-snug sm:text-3xl">{title}</h2>
+      <p class="mt-3 leading-7 text-white/75">{lead}</p>
+      <div class="mt-7 flex flex-wrap gap-3">
+        <a href={href('/download/')} class="btn bg-white text-[#14213d] hover:bg-white/90">
+          <Icon name="download" size={18} />
+          下载试用版
+        </a>
+        <a
+          href={CONTACT_EMAIL ? `mailto:${CONTACT_EMAIL}` : href('/contact/')}
+          class="btn border border-white/30 text-white hover:border-white/60"
+        >
+          <Icon name="mail" size={18} />
+          咨询私有部署
+        </a>
+      </div>
+    </div>
+  </div>
+</section>

@@ -1,0 +1,37 @@
+---
+import Base from '../layouts/Base.astro';
+import SectionHeading from '../components/SectionHeading.astro';
+import { href } from '../lib/url';
+---
+
+<Base title="字体与素材许可" description="IAI 官网使用的字体与素材及其许可。">
+  <section class="container-site max-w-4xl pt-14">
+    <SectionHeading as="h1" eyebrow="Licenses" title="字体与素材许可" />
+    <div class="prose-site mt-8 space-y-8">
+      <section>
+        <h2 class="text-lg font-semibold">字体</h2>
+        <ul class="mt-3 space-y-3 text-[15px] leading-7 text-ink-soft">
+          <li>
+            <strong class="text-ink">Noto Sans SC</strong>：© 2014–2021 Adobe，SIL Open Font License 1.1。本站使用按站内用字裁剪的子集（修改版本）。
+            <a class="link" href={href('/fonts/NotoSansSC-OFL.txt')}>许可全文</a>
+          </li>
+          <li>
+            <strong class="text-ink">Inter Tight</strong>：© 2022 The Inter Project Authors，SIL Open Font License 1.1。
+            <a class="link" href={href('/fonts/InterTight-OFL.txt')}>许可全文</a>
+          </li>
+        </ul>
+        <p class="mt-3 text-sm text-muted">所有字体均由本站自行托管，不从第三方字体服务加载。</p>
+      </section>
+      <section>
+        <h2 class="text-lg font-semibold">宣传片与画面</h2>
+        <p class="mt-3">
+          首页的 60 秒宣传片及各功能页的画面，由产品真实界面组件配合演示数据渲染，不含真实客户数据。配乐由程序原创生成，音效为原创程序化音效。
+        </p>
+      </section>
+      <section>
+        <h2 class="text-lg font-semibold">站点构建</h2>
+        <p class="mt-3">本站使用 Astro、Starlight 与 Tailwind CSS 构建（均为 MIT 许可），以静态页面托管在 GitHub Pages。</p>
+      </section>
+    </div>
+  </section>
+</Base>

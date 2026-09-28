@@ -1,0 +1,24 @@
+---
+import { STATUS_LABEL, STATUS_HINT, type Status } from '../data/features';
+
+interface Props {
+  status: Status;
+  class?: string;
+}
+const { status, class: cls } = Astro.props;
+const tone = {
+  shipped: 'bg-ok-soft text-ok-fg',
+  validating: 'bg-warn-soft text-warn-fg',
+  planned: 'bg-neutral-soft text-muted',
+  coming: 'bg-primary-soft text-primary',
+}[status];
+const dot = { shipped: 'bg-ok', validating: 'bg-warn', planned: 'bg-faint', coming: 'bg-primary' }[status];
+---
+
+<span
+  class:list={['inline-flex shrink-0 items-center gap-1.5 whitespace-nowrap rounded-full px-2 py-0.5 text-xs font-medium', tone, cls]}
+  title={STATUS_HINT[status]}
+>
+  <span class:list={['size-1.5 rounded-full', dot]} aria-hidden="true"></span>
+  {STATUS_LABEL[status]}
+</span>

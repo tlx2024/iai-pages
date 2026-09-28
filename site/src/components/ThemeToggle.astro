@@ -1,0 +1,27 @@
+---
+import Icon from './Icon.astro';
+---
+
+<button
+  type="button"
+  class="grid size-9 place-items-center rounded-lg border border-line text-ink-soft transition-colors hover:text-primary"
+  aria-label="切换深色 / 浅色主题"
+  title="切换深色 / 浅色主题"
+  data-theme-toggle
+>
+  <Icon name="moon" size={17} class="dark:hidden" />
+  <Icon name="sun" size={17} class="hidden dark:block" />
+</button>
+
+<script>
+  // 写入与 Starlight 相同的键，文档页会沿用这里的选择
+  document.querySelectorAll<HTMLButtonElement>('[data-theme-toggle]').forEach((btn) =>
+    btn.addEventListener('click', () => {
+      const next = document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark';
+      document.documentElement.dataset.theme = next;
+      try {
+        localStorage.setItem('starlight-theme', next);
+      } catch {}
+    }),
+  );
+</script>

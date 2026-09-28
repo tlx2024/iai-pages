@@ -1,0 +1,17 @@
+---
+import { EDITION_LABEL, type Edition } from '../data/features';
+
+interface Props {
+  edition: Edition;
+}
+const { edition } = Astro.props;
+const tone = {
+  trial: 'border-line text-ink-soft',
+  'trial-limited': 'border-line text-ink-soft',
+  server: 'border-primary/40 text-primary',
+}[edition];
+---
+
+<span class:list={['inline-flex shrink-0 items-center rounded-full border px-2 py-0.5 text-xs', tone]}>
+  {EDITION_LABEL[edition]}
+</span>

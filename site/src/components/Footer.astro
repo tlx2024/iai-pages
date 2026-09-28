@@ -1,0 +1,53 @@
+---
+import { Image } from 'astro:assets';
+import logo from '../assets/logo.png';
+import { BRAND, FOOTER_GROUPS, CONTACT_EMAIL } from '../data/site';
+import { href } from '../lib/url';
+
+const year = new Date().getFullYear();
+---
+
+<footer class="mt-24 border-t border-line bg-panel">
+  <div class="container-site grid gap-10 py-12 md:grid-cols-[1.4fr_repeat(4,1fr)]">
+    <div class="max-w-xs">
+      <a href={href('/')} class="flex items-center gap-2.5">
+        <Image src={logo} alt="" width={28} height={28} class="size-7" />
+        <span class="font-semibold">{BRAND.full}</span>
+      </a>
+      <p class="mt-3 text-sm leading-6 text-muted">{BRAND.tagline}</p>
+      <p class="mt-3 text-sm text-muted">
+        {
+          CONTACT_EMAIL ? (
+            <a class="link" href={`mailto:${CONTACT_EMAIL}`}>
+              {CONTACT_EMAIL}
+            </a>
+          ) : (
+            '联系方式即将公布'
+          )
+        }
+      </p>
+    </div>
+    {
+      FOOTER_GROUPS.map((g) => (
+        <div>
+          <h2 class="text-sm font-semibold text-ink">{g.title}</h2>
+          <ul class="mt-3 space-y-2">
+            {g.items.map((item) => (
+              <li>
+                <a href={href(item.href)} class="text-sm text-muted transition-colors hover:text-primary">
+                  {item.label}
+                </a>
+              </li>
+            ))}
+          </ul>
+        </div>
+      ))
+    }
+  </div>
+  <div class="border-t border-line-soft">
+    <div class="container-site flex flex-col gap-2 py-5 text-xs text-faint sm:flex-row sm:items-center sm:justify-between">
+      <span>© {year} {BRAND.name}。功能状态以各页标注为准，规划中的能力不代表交付承诺。</span>
+      <span>本站为静态页面，不使用 Cookie，不做访问统计。</span>
+    </div>
+  </div>
+</footer>

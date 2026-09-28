@@ -1,0 +1,65 @@
+[
+  {
+    "version": "0.3.0",
+    "date": "2026-10-15",
+    "channel": "stable",
+    "notes": "release-notes/v0.3.0.md",
+    "assets": [
+      {
+        "id": "trial-nsis",
+        "kind": "desktop-trial",
+        "file": "IAI-Trial_0.3.0_x64-setup.exe",
+        "size": 47300000,
+        "sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+        "visibility": "public",
+        "expires_days": 120,
+        "requirements": "Windows 10/11 x64；本机模型建议 8 GB 显存",
+        "url": "https://github.com/tlx2024/iai-pages/releases/download/v0.3.0/IAI-Trial_0.3.0_x64-setup.exe"
+      },
+      {
+        "id": "trial-msi",
+        "kind": "desktop-trial",
+        "file": "IAI-Trial_0.3.0_x64_zh-CN.msi",
+        "size": 55800000,
+        "sha256": "1111111111111111111111111111111111111111111111111111111111111111",
+        "visibility": "public",
+        "expires_days": 120,
+        "url": "https://github.com/tlx2024/iai-pages/releases/download/v0.3.0/IAI-Trial_0.3.0_x64_zh-CN.msi"
+      },
+      {
+        "id": "server-kit",
+        "kind": "server-kit",
+        "file": "iai-deploy-kit-0.3.0.zip",
+        "size": 184000,
+        "sha256": "2222222222222222222222222222222222222222222222222222222222222222",
+        "visibility": "public",
+        "url": "https://github.com/tlx2024/iai-pages/releases/download/v0.3.0/iai-deploy-kit-0.3.0.zip"
+      },
+      {
+        "id": "server-images",
+        "kind": "server-images",
+        "file": "iai-server-images-0.3.0.tar.zst",
+        "sha256": "3333333333333333333333333333333333333333333333333333333333333333",
+        "visibility": "restricted",
+        "url": "https://example.com/should-be-dropped",
+        "obtain": "联系我们获取（按客户签发）"
+      }
+    ]
+  },
+  {
+    "version": "0.3.0-rc.1",
+    "date": "2026-10-01",
+    "channel": "rc",
+    "assets": [
+      {
+        "id": "trial-nsis",
+        "kind": "desktop-trial",
+        "file": "IAI-Trial_0.3.0-rc.1_x64-setup.exe",
+        "size": 47100000,
+        "sha256": "4444444444444444444444444444444444444444444444444444444444444444",
+        "visibility": "public",
+        "url": "https://github.com/tlx2024/iai-pages/releases/download/v0.3.0-rc.1/IAI-Trial_0.3.0-rc.1_x64-setup.exe"
+      }
+    ]
+  }
+]

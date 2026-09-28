@@ -1,0 +1,97 @@
+---
+import { Image } from 'astro:assets';
+import logo from '../assets/logo.png';
+import Icon from './Icon.astro';
+import ThemeToggle from './ThemeToggle.astro';
+import { NAV, BRAND } from '../data/site';
+import { href, isActive } from '../lib/url';
+
+const path = Astro.url.pathname;
+---
+
+<header class="sticky top-0 z-40 border-b border-line bg-bg/85 backdrop-blur supports-[backdrop-filter]:bg-bg/75">
+  <div class="container-site flex h-16 items-center gap-6">
+    <a href={href('/')} class="flex shrink-0 items-center gap-2.5" aria-label={`${BRAND.full} 首页`}>
+      <Image src={logo} alt="" width={28} height={28} class="size-7" loading="eager" />
+      <span class="text-[15px] font-semibold tracking-tight">
+        <span class="hidden sm:inline">{BRAND.name}</span>
+        <span class="font-latin sm:ml-1.5 sm:font-medium sm:text-muted">{BRAND.short}</span>
+      </span>
+    </a>
+
+    <nav class="hidden flex-1 items-center gap-1 lg:flex" aria-label="主导航">
+      {
+        NAV.map((item) => (
+          <a
+            href={href(item.href)}
+            class:list={[
+              'rounded-lg px-3 py-2 text-[15px] transition-colors hover:text-primary',
+              isActive(path, item.href) ? 'text-primary font-medium' : 'text-ink-soft',
+            ]}
+            aria-current={isActive(path, item.href) ? 'page' : undefined}
+          >
+            {item.label}
+          </a>
+        ))
+      }
+    </nav>
+
+    <div class="ml-auto flex items-center gap-2 lg:ml-0">
+      <ThemeToggle />
+      <a href={href('/download/')} class="btn btn-primary hidden h-9 px-3.5 text-sm sm:inline-flex">
+        <Icon name="download" size={16} />
+        下载试用
+      </a>
+      <button
+        type="button"
+        class="grid size-9 place-items-center rounded-lg border border-line text-ink-soft hover:text-primary lg:hidden"
+        aria-controls="mobile-nav"
+        aria-expanded="false"
+        aria-label="打开导航"
+        data-nav-toggle
+      >
+        <Icon name="menu" size={18} class="nav-open" />
+        <Icon name="close" size={18} class="nav-close hidden" />
+      </button>
+    </div>
+  </div>
+
+  <nav id="mobile-nav" class="hidden border-t border-line bg-bg lg:hidden" aria-label="主导航（窄屏）">
+    <ul class="container-site grid gap-1 py-3">
+      {
+        NAV.map((item) => (
+          <li>
+            <a
+              href={href(item.href)}
+              class:list={[
+                'block rounded-lg px-3 py-2.5 text-[15px]',
+                isActive(path, item.href) ? 'bg-primary-soft text-primary' : 'text-ink-soft',
+              ]}
+            >
+              {item.label}
+            </a>
+          </li>
+        ))
+      }
+      <li class="pt-2">
+        <a href={href('/download/')} class="btn btn-primary w-full justify-center">
+          <Icon name="download" size={16} />
+          下载试用版
+        </a>
+      </li>
+    </ul>
+  </nav>
+</header>
+
+<script>
+  const btn = document.querySelector<HTMLButtonElement>('[data-nav-toggle]');
+  const menu = document.getElementById('mobile-nav');
+  btn?.addEventListener('click', () => {
+    const open = btn.getAttribute('aria-expanded') !== 'true';
+    btn.setAttribute('aria-expanded', String(open));
+    btn.setAttribute('aria-label', open ? '关闭导航' : '打开导航');
+    menu?.classList.toggle('hidden', !open);
+    btn.querySelector('.nav-open')?.classList.toggle('hidden', open);
+    btn.querySelector('.nav-close')?.classList.toggle('hidden', !open);
+  });
+</script>

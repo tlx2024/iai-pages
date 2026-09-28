@@ -1,0 +1,194 @@
+@import "tailwindcss";
+
+/* 主题与 Starlight 共用：<html data-theme="light|dark">，偏好存在 localStorage 的 starlight-theme 里，
+   这样在官网页和文档页之间切换时主题保持一致。 */
+@custom-variant dark (&:where([data-theme=dark], [data-theme=dark] *));
+
+/* 设计 token 与产品前端 apps/web/app/globals.css 保持一致：
+   中性灰底、1px 分隔线；控件圆角 5、浮层 8；状态色只表达状态。 */
+:root {
+  --bg: #f5f6f8;
+  --panel: #ffffff;
+  --panel-2: #f2f4f7;
+  --ink: #161b26;
+  --ink-soft: #344054;
+  --muted: #667085;
+  --faint: #98a2b3;
+  --line: #e4e7ec;
+  --line-soft: #eef0f3;
+  --line-strong: #d0d5dd;
+  --primary: #2f6bff;
+  --primary-strong: #1f4fd6;
+  --primary-soft: #e8efff;
+  --ok: #12b76a;
+  --ok-fg: #067647;
+  --ok-soft: #ecfdf3;
+  --warn: #f79009;
+  --warn-fg: #b54708;
+  --warn-soft: #fffaeb;
+  --neutral-soft: #f2f4f7;
+  --shadow-float: 0 6px 24px rgba(16, 24, 40, 0.08);
+  --hero-glow: radial-gradient(60% 60% at 50% 0%, rgba(47, 107, 255, 0.10) 0%, rgba(47, 107, 255, 0) 70%);
+  color-scheme: light;
+}
+
+:root[data-theme="dark"] {
+  --bg: #0f172a;
+  --panel: #1e293b;
+  --panel-2: #16213a;
+  --ink: #e2e8f0;
+  --ink-soft: #cbd5e1;
+  --muted: #94a3b8;
+  --faint: #64748b;
+  --line: #2c3a52;
+  --line-soft: rgba(44, 58, 82, 0.7);
+  --line-strong: #3b4b66;
+  --primary: #3b82f6;
+  --primary-strong: #60a5fa;
+  --primary-soft: #1d3057;
+  --ok: #12b76a;
+  --ok-fg: #6ee7b7;
+  --ok-soft: rgba(18, 183, 106, 0.12);
+  --warn: #f79009;
+  --warn-fg: #fcd34d;
+  --warn-soft: rgba(245, 158, 11, 0.12);
+  --neutral-soft: rgba(148, 163, 184, 0.12);
+  --shadow-float: 0 6px 24px rgba(0, 0, 0, 0.3);
+  --hero-glow: radial-gradient(60% 60% at 50% 0%, rgba(59, 130, 246, 0.16) 0%, rgba(59, 130, 246, 0) 70%);
+  color-scheme: dark;
+}
+
+@theme inline {
+  --color-bg: var(--bg);
+  --color-panel: var(--panel);
+  --color-panel-2: var(--panel-2);
+  --color-ink: var(--ink);
+  --color-ink-soft: var(--ink-soft);
+  --color-muted: var(--muted);
+  --color-faint: var(--faint);
+  --color-line: var(--line);
+  --color-line-soft: var(--line-soft);
+  --color-line-strong: var(--line-strong);
+  --color-primary: var(--primary);
+  --color-primary-strong: var(--primary-strong);
+  --color-primary-soft: var(--primary-soft);
+  --color-ok: var(--ok);
+  --color-ok-fg: var(--ok-fg);
+  --color-ok-soft: var(--ok-soft);
+  --color-warn: var(--warn);
+  --color-warn-fg: var(--warn-fg);
+  --color-warn-soft: var(--warn-soft);
+  --color-neutral-soft: var(--neutral-soft);
+}
+
+@theme {
+  --font-sans: "IAI Noto Sans SC", "PingFang SC", "Microsoft YaHei", "Noto Sans SC", ui-sans-serif, system-ui, sans-serif;
+  --font-latin: "Inter Tight", "IAI Noto Sans SC", ui-sans-serif, system-ui, sans-serif;
+  --radius-md: 4px;
+  --radius-lg: 5px;
+  --radius-xl: 8px;
+  --radius-2xl: 12px;
+}
+
+@layer base {
+  html {
+    background: var(--bg);
+    color: var(--ink);
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+    scroll-behavior: smooth;
+  }
+  body {
+    font-variant-numeric: tabular-nums;
+  }
+  ::selection {
+    background: var(--primary-soft);
+  }
+  :focus-visible {
+    outline: 2px solid var(--primary);
+    outline-offset: 2px;
+    border-radius: 4px;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+  }
+}
+
+@layer components {
+  .container-site {
+    width: 100%;
+    max-width: 1200px;
+    margin-inline: auto;
+    padding-inline: 16px;
+  }
+  @media (min-width: 768px) {
+    .container-site {
+      padding-inline: 32px;
+    }
+  }
+  /* 英文小标题：沿用宣传片的做法，英文辅助、中文为主 */
+  .eyebrow {
+    font-family: var(--font-latin);
+    font-size: 0.9375rem;
+    font-weight: 500;
+    letter-spacing: 0.01em;
+    color: var(--primary);
+  }
+  .card {
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-xl);
+  }
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    height: 2.75rem;
+    padding-inline: 1.125rem;
+    border-radius: var(--radius-lg);
+    font-size: 0.9375rem;
+    font-weight: 500;
+    white-space: nowrap;
+    transition: background-color 0.15s, border-color 0.15s, color 0.15s;
+  }
+  .btn-primary {
+    background: var(--primary);
+    color: #fff;
+  }
+  .btn-primary:hover {
+    background: var(--primary-strong);
+  }
+  :root[data-theme="dark"] .btn-primary:hover {
+    background: #2563eb;
+  }
+  .btn-secondary {
+    background: var(--panel);
+    color: var(--ink);
+    border: 1px solid var(--line-strong);
+  }
+  .btn-secondary:hover {
+    border-color: var(--primary);
+    color: var(--primary);
+  }
+  .link {
+    color: var(--primary);
+    text-underline-offset: 3px;
+  }
+  .link:hover {
+    text-decoration: underline;
+  }
+  /* 长文区：功能页、部署页、安全页的正文排版 */
+  .prose-site p {
+    color: var(--ink-soft);
+    line-height: 1.8;
+  }
+  .prose-site code {
+    font-size: 0.875em;
+    padding: 0.1em 0.35em;
+    border-radius: 4px;
+    background: var(--panel-2);
+    border: 1px solid var(--line-soft);
+  }
+}
