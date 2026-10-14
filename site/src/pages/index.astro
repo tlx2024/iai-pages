@@ -1,6 +1,7 @@
 ---
 import { Image } from 'astro:assets';
 import Base from '../layouts/Base.astro';
+import { accountHref } from '../lib/endpoints';
 import Icon from '../components/Icon.astro';
 import PromoVideo from '../components/PromoVideo.astro';
 import SectionHeading from '../components/SectionHeading.astro';
@@ -11,9 +12,7 @@ import { FEATURES, FEATURE_ICON, STATUS_LABEL, featureHref, statusCounts } from 
 import { shotById } from '../data/shots';
 import { BRAND } from '../data/site';
 import { href } from '../lib/url';
-import { getLatest } from '../lib/releases';
 
-const latest = await getLatest();
 const night = shotById('night');
 
 const modes = [
@@ -102,18 +101,18 @@ const nightSteps = [
 const editions = [
   {
     icon: 'monitor',
-    title: '试用版',
-    en: 'Desktop Trial',
-    status: 'coming',
-    points: ['Windows 桌面安装包，公开下载', '本机后端 + SQLite，自带演示数据', '可导入自己的文档，数据只存本机', '有效期 120 天，到期后可导出数据'],
-    link: { label: '下载与说明', href: '/download/' },
+    title: '个人版',
+    en: 'Personal Edition',
+    status: 'planned',
+    points: ['客户端免费下载，签名包即将通过官方域名提供', '知识库、本体、检索与编排留在本机', '官方 AI 使用账号与积分，发送内容需确认', '价格以正式发布为准；云端权益不锁定本机资料'],
+    link: { label: '了解个人版', href: '/personal/' },
   },
   {
     icon: 'server',
     title: '服务器版',
     en: 'Private Deployment',
     status: 'shipped',
-    points: ['部署在企业内网，多用户、多组织', '接入真实 MES / SCADA / ERP 与消息通道', '可完全使用本机模型，数据不出厂', '部署套件公开，镜像包按客户交付'],
+    points: ['部署在企业内网，多用户、多组织', '接入真实 MES / SCADA / ERP 与消息通道', '可完全使用本机模型，数据不出厂', '部署套件与镜像包按私有化项目交付'],
     link: { label: '部署形态', href: '/deployment/' },
   },
   {
@@ -137,18 +136,7 @@ const editions = [
           href={href('/download/')}
           class="inline-flex items-center gap-2 rounded-full border border-line bg-panel px-3 py-1 text-xs text-ink-soft transition-colors hover:border-primary hover:text-primary"
         >
-          {
-            latest ? (
-              <>
-                <StatusBadge status="shipped" />v{latest.version} 试用版已发布
-              </>
-            ) : (
-              <>
-                <StatusBadge status="coming" />
-                桌面试用版正在准备，发布后在此下载
-              </>
-            )
-          }
+          <StatusBadge status="planned" />个人版规划与开发中，即将通过官方域名提供
           <Icon name="arrowRight" size={14} />
         </a>
         <p class="eyebrow mt-6">{BRAND.en}</p>
@@ -162,9 +150,10 @@ const editions = [
         <div class="mt-8 flex flex-wrap items-center justify-center gap-3">
           <a href={href('/download/')} class="btn btn-primary">
             <Icon name="download" size={18} />
-            下载试用版
+            下载个人版
           </a>
-          <a href={href('/deployment/')} class="btn btn-secondary">了解私有部署</a>
+          <a href={accountHref('register')} class="btn btn-secondary">注册 IAI 会员</a>
+          <a href={accountHref('account')} class="btn btn-secondary">进入账号中心</a>
           <a href="#video" class="btn text-ink-soft hover:text-primary">
             <Icon name="play" size={14} />
             观看 60 秒介绍
@@ -175,6 +164,13 @@ const editions = [
       <div class="mx-auto mt-14 max-w-6xl">
         <PromoVideo />
       </div>
+    </div>
+  </section>
+
+  <section class="container-site py-12" aria-labelledby="personal-entry-title">
+    <div class="card grid gap-8 p-6 sm:p-8 lg:grid-cols-[1fr_auto] lg:items-center">
+      <div><p class="eyebrow">IAI Personal Edition</p><h2 id="personal-entry-title" class="mt-3 text-2xl font-semibold">从你的本机知识库开始</h2><p class="mt-3 max-w-2xl text-sm leading-7 text-ink-soft">下载个人版整理资料，注册账号连接官方 AI，在账号中心查看会员、积分与设备。签名安装包和真实注册仍待开放。</p></div>
+      <div class="flex flex-wrap gap-3"><a class="btn btn-primary" href={href('/download/')}>下载个人版</a><a class="btn btn-secondary" href={href('/price/')}>了解会员方案</a></div>
     </div>
   </section>
 
@@ -281,7 +277,7 @@ const editions = [
       >
         <div>
           <h3 class="font-semibold">能力与版本对照</h3>
-          <p class="mt-3 text-[15px] leading-7 text-ink-soft">全部能力逐项列出状态，以及试用版、服务器版是否可用。</p>
+          <p class="mt-3 text-[15px] leading-7 text-ink-soft">全部能力逐项列出状态，以及个人版、服务器版是否可用。</p>
         </div>
         <span class="mt-4 inline-flex items-center gap-1 text-sm text-primary">
           查看对照表 <Icon name="arrowRight" size={14} class="transition-transform group-hover:translate-x-0.5" />
@@ -348,7 +344,7 @@ const editions = [
         </ol>
         <p class="mt-6 flex items-start gap-2 text-xs leading-5 text-muted">
           <Icon name="info" size={14} class="mt-0.5 shrink-0" />
-          事件驱动与定时运行属于服务器版能力；试用版可以打开同一个案例，查看账本与证据。
+          事件驱动与定时运行属于企业版能力；个人版首期使用范围以正式发行说明为准。
         </p>
       </div>
       <figure>
@@ -370,7 +366,7 @@ const editions = [
       <SectionHeading
         eyebrow="Deployment"
         title="三种交付形态"
-        lead="先用试用版在自己的电脑上体验，再按需部署服务器版；岗位电脑用企业客户端连接服务器。"
+        lead="个人版聚焦本机知识库与按需官方 AI（规划中）；企业版面向系统接入与团队治理，通过私有化项目交付。"
       />
       <div class="mt-10 grid gap-4 lg:grid-cols-3">
         {

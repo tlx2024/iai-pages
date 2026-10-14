@@ -2,19 +2,25 @@
 import { defineConfig } from 'astro/config';
 import starlight from '@astrojs/starlight';
 import tailwindcss from '@tailwindcss/vite';
+import { satteri } from '@astrojs/markdown-satteri';
+import { siteTarget } from './site-target.mjs';
+import remarkSiteLinks from './scripts/remark-site-links.mjs';
 
-// 站点挂在 https://tlx2024.github.io/iai-pages/ 子路径下：内部链接一律经 src/lib/url.ts 的 href() 拼接 base。
-const SITE = 'https://tlx2024.github.io';
-const BASE = '/iai-pages';
+const target = siteTarget(process.env);
+const SITE = target.site;
+const BASE = target.base;
 
 export default defineConfig({
   site: SITE,
-  base: BASE,
+  base: BASE || '/',
+  outDir: target.outDir,
+  cacheDir: './.cache/astro',
+  markdown: { processor: satteri({ mdastPlugins: [remarkSiteLinks({ base: BASE })] }) },
   trailingSlash: 'always',
   integrations: [
     starlight({
-      title: 'IAI 文档',
-      description: '平方和工厂智能中枢（IAI）的试用版指南、私有部署指南与常见问题。',
+      title: 'IAI智能工厂中枢',
+      description: 'IAI智能工厂中枢的个人版指南、私有部署指南与常见问题。',
       logo: { src: './src/assets/logo.png', alt: 'IAI' },
       favicon: '/favicon.png',
       defaultLocale: 'root',
@@ -53,5 +59,5 @@ export default defineConfig({
       ],
     }),
   ],
-  vite: { plugins: [tailwindcss()] },
+  vite: { cacheDir: './.vite', resolve: { preserveSymlinks: true }, plugins: [tailwindcss()] },
 });

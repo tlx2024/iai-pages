@@ -37,12 +37,15 @@ jobs:
 
       - run: npm ci
 
+      - run: npm test
+
       - run: npm run check
 
       # astro build → 字体子集 → 去敏与链接检查；下载页在构建时读取本仓库 Releases 的 release.json。
       # CI=true 时读取 Release 失败会让构建失败，避免发布后官网误显示“即将发布”。
-      - run: npm run build
+      - run: npm run build:pages
         env:
+          SITE_MODE: pages
           CI: 'true'
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
@@ -50,7 +53,7 @@ jobs:
 
       - uses: actions/upload-pages-artifact@fc324d3547104276b827a68afc52ff2a11cc49c9 # v5.0.0
         with:
-          path: site/dist
+          path: site/dist/pages
 
   deploy:
     needs: build

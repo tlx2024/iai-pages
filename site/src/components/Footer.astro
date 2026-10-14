@@ -2,6 +2,7 @@
 import { Image } from 'astro:assets';
 import logo from '../assets/logo.png';
 import { BRAND, FOOTER_GROUPS, CONTACT_EMAIL } from '../data/site';
+import { ENDPOINTS } from '../lib/endpoints';
 import { href } from '../lib/url';
 
 const year = new Date().getFullYear();
@@ -47,7 +48,10 @@ const year = new Date().getFullYear();
   <div class="border-t border-line-soft">
     <div class="container-site flex flex-col gap-2 py-5 text-xs text-faint sm:flex-row sm:items-center sm:justify-between">
       <span>© {year} {BRAND.name}。功能状态以各页标注为准，规划中的能力不代表交付承诺。</span>
-      <span>本站为静态页面，不使用 Cookie，不做访问统计。</span>
+      <span>本站为静态内容，不使用登录 Cookie，不做访问统计。</span>
+      <span>{ENDPOINTS.mode === 'pages' ? '文档与内容预览；内测不开放自助注册。' : '内测不开放自助注册。'}</span>
+      {ENDPOINTS.mode === 'pages' && ENDPOINTS.official && !ENDPOINTS.preview && <a class="link" href={ENDPOINTS.official}>正式服务以境内官网为准</a>}
+      {ENDPOINTS.preview && <span>构建评审预览，示例域名未上线。</span>}
     </div>
   </div>
 </footer>

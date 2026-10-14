@@ -1,0 +1,160 @@
+---
+import Base from '../../layouts/Base.astro';
+import SectionHeading from '../../components/SectionHeading.astro';
+import CtaBand from '../../components/CtaBand.astro';
+import egressContract from '../../data/personal-egress.json';
+import { href } from '../../lib/url';
+
+const { principles, egressItems, cloudStoragePolicy } = egressContract;
+---
+
+<Base
+  title="出网清单与数据去向 · IAI 个人版"
+  description="资料留在本机，出网按功能清单列出。说明每个功能发什么、发到哪、存多久。不拿用户数据炼模型，断网照常工作。"
+>
+  <section class="container-site pt-14">
+    <SectionHeading
+      as="h1"
+      eyebrow="Privacy & Egress"
+      title="隐私与出网清单"
+      lead="资料留在本机，出网按功能清单透明说明。桌面客户端设置页、官网隐私页与云端审计网关严格共享同一份单一事实来源契约（Single Source of Truth）。"
+    />
+
+    {/* 核心原则 */}
+    <div class="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+      {
+        principles.map((pr, i) => (
+          <div class="card p-6">
+            <span class="font-mono text-xs font-bold text-primary">PRINCIPLE 0{i + 1}</span>
+            <p class="mt-2 text-sm leading-relaxed text-ink">{pr}</p>
+          </div>
+        ))
+      }
+    </div>
+
+    {/* 出网功能明细表 */}
+    <div class="mt-16">
+      <h2 class="text-2xl font-bold text-ink">出网明细清单</h2>
+      <p class="mt-2 text-sm text-ink-soft">
+        每个功能的出网数据、接收端与生命周期均受代码门禁硬性约束，不私藏暗门，绝不全量上传。
+      </p>
+
+      <div class="card mt-6 overflow-x-auto p-0">
+        <table class="w-full min-w-[760px] text-left text-sm">
+          <thead class="border-b border-line bg-panel-2 text-xs font-semibold text-ink-soft">
+            <tr>
+              <th class="p-4 pl-6">功能与场景</th>
+              <th class="p-4">出网发送内容</th>
+              <th class="p-4">目的地</th>
+              <th class="p-4">云端留存策略</th>
+              <th class="p-4">计费状态</th>
+              <th class="p-4 pr-6">断网/离线状态</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-line/70">
+            {
+              egressItems.map((item) => (
+                <tr class="transition-colors hover:bg-panel-2/50">
+                  <td class="p-4 pl-6 font-semibold text-ink whitespace-nowrap">{item.fn}</td>
+                  <td class="p-4 text-xs leading-relaxed text-ink-soft max-w-xs">{item.what}</td>
+                  <td class="p-4 text-xs text-ink-soft">{item.where}</td>
+                  <td class="p-4 text-xs leading-relaxed text-ink-soft max-w-xs">{item.retention}</td>
+                  <td class="p-4 text-xs font-medium text-ink whitespace-nowrap">{item.cost}</td>
+                  <td class="p-4 pr-6 text-xs text-ink-soft whitespace-nowrap">{item.offline}</td>
+                </tr>
+              ))
+            }
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    {/* 云端保存 vs 云端不保存 */}
+    <div class="mt-16 grid gap-8 md:grid-cols-2">
+      <div class="card border-line/90 p-8">
+        <div class="flex items-center gap-2">
+          <span class="flex size-6 items-center justify-center rounded-full bg-primary/10 text-xs font-bold text-primary">✓</span>
+          <h3 class="text-xl font-bold text-ink">云端保存的信息</h3>
+        </div>
+        <p class="mt-2 text-xs text-ink-soft">仅用于账号管理、计费对账与多端设备会话安全：</p>
+        <ul class="mt-6 space-y-3 text-xs leading-relaxed text-ink-soft">
+          {
+            cloudStoragePolicy.storedOnCloud.map((sc) => (
+              <li class="flex items-start gap-2">
+                <span class="text-primary font-bold">·</span>
+                <span>{sc}</span>
+              </li>
+            ))
+          }
+        </ul>
+      </div>
+
+      <div class="card border-line/90 p-8">
+        <div class="flex items-center gap-2">
+          <span class="flex size-6 items-center justify-center rounded-full bg-red-500/10 text-xs font-bold text-red-600">✕</span>
+          <h3 class="text-xl font-bold text-ink">云端绝不保存的信息</h3>
+        </div>
+        <p class="mt-2 text-xs text-ink-soft">你的核心知识资产永远留在你的电脑上：</p>
+        <ul class="mt-6 space-y-3 text-xs leading-relaxed text-ink-soft">
+          {
+            cloudStoragePolicy.neverStoredOnCloud.map((nsc) => (
+              <li class="flex items-start gap-2">
+                <span class="text-red-500 font-bold">·</span>
+                <span>{nsc}</span>
+              </li>
+            ))
+          }
+        </ul>
+      </div>
+    </div>
+
+    {/* 离线可用保证 */}
+    <div class="card mt-16 p-8 sm:p-10">
+      <h2 class="text-2xl font-bold text-ink">断网与离线可用矩阵</h2>
+      <p class="mt-2 text-sm text-ink-soft">
+        初次使用客户端需联网到官网注册或登录一次以绑定设备与工作区。绑定后，即使网络不可达、账号登录过期或积分为零，本地体验依然完整。
+      </p>
+
+      <div class="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        <div class="rounded-xl bg-panel-2 p-5">
+          <span class="text-xs font-semibold text-emerald-600">全部照常</span>
+          <h4 class="mt-2 font-semibold text-ink">本地资料与知识库</h4>
+          <p class="mt-2 text-xs leading-relaxed text-ink-soft">
+            导入文件、解析文字层、阅读原件、关键词检索与本地轻量语义检索完全离线可用。
+          </p>
+        </div>
+        <div class="rounded-xl bg-panel-2 p-5">
+          <span class="text-xs font-semibold text-emerald-600">全部照常</span>
+          <h4 class="mt-2 font-semibold text-ink">本体与 Wiki 对象页</h4>
+          <p class="mt-2 text-xs leading-relaxed text-ink-soft">
+            直接导入范式包、编辑类型与关系、保存版本、公理校验、回归测试与 Wiki 对象页生成全部在本地运行。
+          </p>
+        </div>
+        <div class="rounded-xl bg-panel-2 p-5">
+          <span class="text-xs font-semibold text-amber-600">优雅暂停</span>
+          <h4 class="mt-2 font-semibold text-ink">官方 AI 远端推理</h4>
+          <p class="mt-2 text-xs leading-relaxed text-ink-soft">
+            智能助手云端问答、AI 引导起草、Wiki 专题深度整理与云端 OCR 暂停，不发起请求、不扣积分；配置本地模型后问答可切至本地。
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <div class="mt-12 flex flex-wrap justify-center gap-4">
+      <a href={href('/price/')} class="btn btn-primary h-11 px-6">
+        查看价格与积分使用规则
+      </a>
+      <a href={href('/personal/how-it-works/')} class="btn btn-secondary h-11 px-6">
+        查看工作方式
+      </a>
+      <a href={href('/download/')} class="btn btn-secondary h-11 px-6">
+        下载客户端
+      </a>
+    </div>
+  </section>
+
+  <CtaBand
+    title="透明是安全的前提"
+    lead="每行出网都有契约，每条数据都有归宿。欢迎查看我们公开的出网清单契约。"
+  />
+</Base>

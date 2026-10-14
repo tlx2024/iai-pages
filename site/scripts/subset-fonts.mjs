@@ -5,9 +5,11 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import subsetFont from 'subset-font';
 import { walk } from './lib.mjs';
+import { siteTarget } from '../site-target.mjs';
+const target = siteTarget(process.env);
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
-const dist = path.join(root, 'dist');
+const dist = path.resolve(root, target.outDir);
 const SOURCE = path.join(root, 'fonts', 'NotoSansSC-VF.woff2');
 const OUT = 'fonts/NotoSansSC-subset.woff2';
 

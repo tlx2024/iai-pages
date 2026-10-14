@@ -1,0 +1,10 @@
+---
+import Base from '../layouts/Base.astro';
+import SectionHeading from '../components/SectionHeading.astro';
+import { href } from '../lib/url';
+---
+<Base title="个人账号中心" description="IAI 个人账号管理积分、会员与设备，真实注册将在邀请内测时开放。">
+  <section class="container-site pt-14"><SectionHeading as="h1" eyebrow="IAI ACCOUNT" title="一个账号，连接官方 AI" lead="查看积分、会员权益与设备。资料与知识库留在本机。" />
+    <div class="card mt-10 max-w-3xl p-8"><h2 class="text-xl font-semibold">注册与账号中心即将开放</h2><p class="mt-4 leading-8 text-ink-soft">当前不开放自助注册与购买。真实账号服务将在邀请内测时提供，正式入口上线后可从这里进入。</p><div class="mt-6 flex flex-wrap gap-3"><a class="btn btn-primary" href={href('/download/')}>个人版下载</a><a class="btn btn-secondary" href={href('/price/')}>了解会员方案</a></div></div>
+  </section>
+</Base>

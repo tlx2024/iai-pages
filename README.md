@@ -1,76 +1,26 @@
 # iai-pages
 
-平方和工厂智能中枢（IAI）官网与公开制品仓库。
+IAI 的静态内容工程与可选文档预览。生产介绍、账号、API 与国内下载使用自有云的独立入口；GitHub Pages 不处理登录、支付或模型请求。
 
-- 官网：<https://tlx2024.github.io/iai-pages/>
-- 公开制品：本仓库的 [Releases](https://github.com/tlx2024/iai-pages/releases)，包括桌面试用版、服务器部署套件、`SHA256SUMS` 和 `release.json`
+## 构建
 
-产品源码在私有仓库，不在这里。本仓库只放不含产品代码的内容：官网源码、对外发行说明和公开制品。
+Node 22，进入 `site/` 后执行 `npm ci`、`npm test`、`npm run check`。
 
-## 目录
+- `npm run build:pages`：GitHub Pages 子路径 `/iai-pages/`，产物 `dist/pages/`。
+- `WWW_ORIGIN=https://www.your-domain.cn npm run build:www`：生产根路径 `/`，产物 `dist/www/`。
+- 未完成域名冻结时，可用 `SITE_PREVIEW=true WWW_ORIGIN=https://www.iai.example npm run build:www` 做评审预览；不得把示例域名作为上线配置。
+- PowerShell：先设置 `$env:WWW_ORIGIN='https://www.your-domain.cn'`，再执行命令。www 预览需同时设置 `$env:SITE_MODE='www'`。
 
-```text
-site/                    Astro + Starlight + Tailwind CSS 4 官网工程
-  src/pages/             营销页：首页、功能、场景、部署、安全、下载、更新日志、联系
-  src/content/docs/docs/ 文档（Starlight）：快速开始、试用版指南、私有部署指南、模型准备、FAQ
-  src/data/              站点常量、功能清单（带状态）、宣传片分镜
-  src/lib/releases.ts    构建时读取 Releases 里的 release.json，生成下载页
-  scripts/               构建后脚本：字体子集、去敏与链接检查
-  fonts/                 Noto Sans SC 源字体（OFL），构建时按用字裁剪
-  public/media/          60 秒宣传片与封面
-release-notes/           对外发行说明 vX.Y.Z.md（人工撰写）
-.github/workflows/       pages.yml：构建并发布到 GitHub Pages
-```
+`ACCOUNT_ORIGIN`、`DOWNLOAD_ORIGIN`、`OFFICIAL_WWW_ORIGIN` 仅接受 HTTPS 源地址。尚未开放时留空；预览站不指向半成品登录服务。当前下载页展示发布状态，不读取旧试用包附件生成下载链接。
 
-## 本地开发
+所有站内链接使用部署无关的根路径：Astro/MDX 调用 `href()`；Markdown 链接由构建插件补当前 base。字体子集、去敏、链接与文案门禁跟随相同构建目标，覆盖两套产物。
 
-需要 Node 22。
+2026-10-10 发布门禁增加产物内容检查，覆盖 HTML、JS、CSS、JSON、XML、TXT、SVG：静态营销站不能包含 account/cloud 业务 API 路径、刷新凭据或客户端秘密契约；生产构建拒绝占位域名与本机预览地址。`npm test` 包含对应反例验证。
 
-```bash
-cd site
-npm ci
-npm run dev        # http://localhost:4321/iai-pages/
-npm run build      # astro build → 字体子集 → 去敏与链接检查
-npm run preview    # 预览构建结果
-```
+## 交付与状态
 
-用示例数据预览下载页（不访问 GitHub）：
+`pages.yml` 仅发布内容预览；`www-build.yml` 手动构建自有云静态制品供后续部署，不自动上传服务器。正式域名上线后可保留文档镜像或生成静态跳转页；Pages 静态托管不能配置 HTTP 301。
 
-```bash
-RELEASES_FILE=scripts/fixtures/sample-releases.json npm run build
-```
+个人版客户端免费，官方 AI 使用账号与积分，价格以正式发布为准。个人版能力在公开发布前标记规划中；邀请内测不开放自助注册。企业制品通过私有化项目交付。
 
-PowerShell 下先执行 `$env:RELEASES_FILE='scripts/fixtures/sample-releases.json'`，再运行 `npm run build`。
-
-本地构建时如果访问不到 GitHub API，下载页按“尚无版本”渲染，只打印告警；CI 里（`CI=true`）读取失败会直接让构建失败。
-
-## 发布流程
-
-1. 私有仓库打 `v*` tag，发布流水线构建制品，并在本仓库创建**草稿** Release：试用版、部署套件、`SHA256SUMS`、`release.json`。
-2. 在 `release-notes/` 提交对外发行说明 `vX.Y.Z.md`（格式见该目录的 README）。
-3. 人工检查草稿：安装包能装、部署套件里只有清单内的文件、说明里没有内部信息。
-4. 点击**发布**。`release: published` 会触发 `pages.yml`，官网重建，下载页和更新日志随之更新。
-
-`release.json` 的结构见产品仓库的发布流水线方案 §5。`visibility: "restricted"` 的条目在官网上只显示版本、校验和与获取方式，不显示下载地址。
-
-## 内容原则
-
-- **状态如实**：功能按“已交付 / 工程验证中 / 规划中 / 即将发布”标注，口径与产品 README 的能力清单一致（`site/src/data/features.ts`）。试用版没有的能力标注“仅服务器版”。
-- **去敏**：不出现内网地址、默认账号口令、客户名称、本机路径或私有仓库名。`scripts/check-sensitive.mjs` 在每次构建后扫描 `dist/` 和 `release-notes/`，命中就让构建失败。
-- **站内链接**：站点挂在 `/iai-pages/` 子路径下。`.astro` 里用 `href()` 拼接，Markdown 里直接写 `/iai-pages/...`，构建后检查会拦截漏掉 base 的链接。
-- **不追踪**：不使用 Cookie，不接入访问统计，不从第三方加载字体或脚本。
-
-## 常改的地方
-
-| 要改什么 | 位置 |
-|---|---|
-| 联系邮箱（留空时显示“即将公布”） | `site/src/data/site.ts` 的 `CONTACT_EMAIL` |
-| 功能清单与状态 | `site/src/data/features.ts` |
-| 宣传片与分镜章节 | `site/public/media/`、`site/src/data/shots.ts` |
-| 导航与页脚 | `site/src/data/site.ts` |
-
-## 许可
-
-- 字体：Noto Sans SC、Inter Tight，均为 SIL OFL 1.1，许可全文随站点发布在 `/fonts/`。
-- 宣传片：由产品真实界面组件配合演示数据渲染，配乐与音效为程序原创生成。
-- 官网内容与公开制品的使用条款以各自附带的许可文本为准。
+静态页面无登录 Cookie、刷新 token、浏览器 API 客户端或上游密钥。主题偏好仅在本机存储，字体随构建产物发布。

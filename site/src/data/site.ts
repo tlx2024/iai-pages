@@ -1,9 +1,9 @@
 // 站点级常量与导航。对外口径：功能状态与 README「能力概览」一致，不把规划中的写成已有。
 
 export const BRAND = {
-  name: '平方和工厂智能中枢',
+  name: 'IAI智能工厂中枢',
   short: 'IAI',
-  full: '平方和工厂智能中枢（IAI）',
+  full: 'IAI智能工厂中枢',
   en: 'Industrial AI Harness',
   tagline: '把查系统、翻报表、找老师傅，变成一次对话。',
 };
@@ -17,15 +17,27 @@ export const PUBLIC_REPO = 'tlx2024/iai-pages';
 export type NavItem = { label: string; href: string };
 
 export const NAV: NavItem[] = [
+  { label: '个人版', href: '/personal/' },
+  { label: '价格', href: '/price/' },
   { label: '功能', href: '/features/' },
   { label: '场景', href: '/solutions/' },
   { label: '部署', href: '/deployment/' },
   { label: '安全', href: '/security/' },
   { label: '文档', href: '/docs/' },
   { label: '更新日志', href: '/changelog/' },
+  { label: '下载个人版', href: '/download/' },
 ];
 
 export const FOOTER_GROUPS: { title: string; items: NavItem[] }[] = [
+  {
+    title: '个人版',
+    items: [
+      { label: '个人版总览', href: '/personal/' },
+      { label: '工作方式', href: '/personal/how-it-works/' },
+      { label: '出网清单', href: '/personal/privacy/' },
+      { label: '价格与规则', href: '/price/' },
+    ],
+  },
   {
     title: '产品',
     items: [
@@ -38,7 +50,7 @@ export const FOOTER_GROUPS: { title: string; items: NavItem[] }[] = [
   {
     title: '获取',
     items: [
-      { label: '下载试用版', href: '/download/' },
+      { label: '查看下载进度', href: '/download/' },
       { label: '私有部署', href: '/docs/deployment/' },
       { label: '更新日志', href: '/changelog/' },
     ],
@@ -47,13 +59,14 @@ export const FOOTER_GROUPS: { title: string; items: NavItem[] }[] = [
     title: '文档',
     items: [
       { label: '快速开始', href: '/docs/quickstart/' },
-      { label: '试用版指南', href: '/docs/trial/' },
+      { label: '个人版指南', href: '/docs/trial/' },
       { label: '常见问题', href: '/docs/faq/' },
     ],
   },
   {
     title: '关于',
     items: [
+      { label: '条款与隐私', href: '/terms/' },
       { label: '联系我们', href: '/contact/' },
       { label: '字体与素材许可', href: '/licenses/' },
     ],

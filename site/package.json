@@ -4,15 +4,19 @@
   "type": "module",
   "scripts": {
     "dev": "astro dev",
-    "build": "astro build && node scripts/subset-fonts.mjs && node scripts/check-sensitive.mjs",
+    "build": "node scripts/build-site.mjs pages",
     "preview": "astro preview",
     "check": "astro check",
-    "check:sensitive": "node scripts/check-sensitive.mjs"
+    "check:sensitive": "node scripts/check-sensitive.mjs",
+    "build:pages": "node scripts/build-site.mjs pages",
+    "build:www": "node scripts/build-site.mjs www",
+    "test": "node --test scripts/test-site-target.mjs"
   },
   "engines": {
     "node": ">=22"
   },
   "dependencies": {
+    "@astrojs/markdown-satteri": "0.4.2",
     "@astrojs/starlight": "^0.42.4",
     "@astrojs/starlight-tailwind": "^5.0.0",
     "@tailwindcss/vite": "^4.3.3",
@@ -21,6 +25,7 @@
     "tailwindcss": "^4.3.3"
   },
   "devDependencies": {
+    "satteri": "0.10.5",
     "@astrojs/check": "^0.9.10",
     "subset-font": "^2.9.0",
     "typescript": "^6.0.3"

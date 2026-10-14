@@ -6,17 +6,16 @@ import StatusBadge from '../components/StatusBadge.astro';
 import CtaBand from '../components/CtaBand.astro';
 import { href } from '../lib/url';
 
-// 试用版与服务器版的区别（口径：桌面试用版方案 §2）
+// 个人版与服务器版的区别（口径：个人版方案 §2）
 const compare = [
-  { k: '用途', trial: '任何人下载后自助评估；售前现场离线演示', server: '企业正式私有部署' },
-  { k: '获取', trial: '官网公开下载', server: '部署套件公开；镜像包按客户交付' },
-  { k: '运行环境', trial: 'Windows 本机，后端 + SQLite，只监听 127.0.0.1', server: 'Linux 服务器：PostgreSQL、Redis / Celery、MinIO、本机模型' },
-  { k: '用户', trial: '1 个主账号 + 2 个预置岗位账号，不能新增', server: '多用户、多组织、团队与资源树授权' },
-  { k: '数据', trial: '演示数据 + 你导入的文档，不设容量上限', server: '企业自己的真实数据' },
-  { k: '外部系统', trial: '只有内置模拟平台', server: '真实 MES / SCADA / ERP / MCP 与消息通道' },
-  { k: '自动化', trial: '手动试算', server: '事件驱动、定时与无人值守运行' },
-  { k: '行业扩展', trial: '不含', server: '医药、研发等扩展包' },
-  { k: '有效期', trial: '构建后 120 天，到期只读、可导出', server: '按授权' },
+  { k: '用途', personal: '本机知识库与按需官方 AI（规划中）', server: '企业正式私有部署' },
+  { k: '获取', personal: '客户端免费，签名包即将通过官方域名提供', server: '私有化交付，企业镜像包受控' },
+  { k: '运行环境', personal: '本机资料与检索；官方 AI 通过独立云网关', server: 'Linux 服务器：PostgreSQL、Redis / Celery、MinIO、模型' },
+  { k: '用户', personal: '个人账号、多设备共享积分；内测不开放自助注册', server: '多用户、多组织与资源树授权' },
+  { k: '数据', personal: '知识库、本体、检索与 Wiki 编排留在本机', server: '企业自己的业务与知识数据' },
+  { k: '官方 AI', personal: '账号与积分，确认必要上下文和预算后调用', server: '企业配置自己的模型服务' },
+  { k: '外部系统', personal: '首期不承担工厂系统接入与值守', server: 'MES / SCADA / ERP / MCP 与消息通道' },
+  { k: '费用', personal: '价格以正式发布为准；云端到期不锁定本机资料', server: '按实际合同与授权' },
 ];
 
 const stack = [
@@ -32,7 +31,7 @@ const deliverables = [
   {
     icon: 'download',
     title: '部署套件',
-    tag: '公开',
+    tag: '私有化交付',
     desc: 'docker-compose 编排文件、安装脚本、.env 示例和部署文档。先看清部署方式和硬件要求，再做决定。',
   },
   {
@@ -50,19 +49,19 @@ const deliverables = [
 ] as const;
 ---
 
-<Base title="部署形态" description="IAI 的三种交付形态：桌面试用版、私有化服务器版和企业客户端，以及服务器版的组成与交付方式。">
+<Base title="部署形态" description="IAI 的三种交付形态：个人版、私有化服务器版和企业客户端，以及服务器版的组成与交付方式。">
   <section class="container-site pt-14">
     <SectionHeading
       as="h1"
       eyebrow="Deployment"
       title="部署形态"
-      lead="IAI 有三种交付形态：先用试用版在自己的电脑上评估；正式使用时部署服务器版，数据留在企业内网；岗位电脑用企业客户端连接服务器。"
+      lead="IAI 有三种交付形态：个人版聚焦本机资料与官方 AI（规划中）；企业服务器版在内网运行，岗位电脑用企业客户端连接服务器。"
     />
   </section>
 
   {/* 对照表 */}
   <section class="container-site mt-12" aria-labelledby="compare">
-    <h2 id="compare" class="text-2xl font-bold tracking-tight">试用版与服务器版</h2>
+    <h2 id="compare" class="text-2xl font-bold tracking-tight">个人版与服务器版</h2>
     <div class="mt-6 overflow-x-auto rounded-xl border border-line bg-panel">
       <table class="w-full min-w-[640px] text-left text-[15px]">
         <thead class="border-b border-line bg-panel-2 text-sm">
@@ -70,7 +69,7 @@ const deliverables = [
             <th scope="col" class="w-32 px-5 py-3 font-medium text-muted"></th>
             <th scope="col" class="px-5 py-3 font-semibold">
               <span class="inline-flex items-center gap-2">
-                <Icon name="monitor" size={16} class="text-primary" />试用版 <StatusBadge status="coming" />
+                <Icon name="monitor" size={16} class="text-primary" />个人版 <StatusBadge status="planned" />
               </span>
             </th>
             <th scope="col" class="px-5 py-3 font-semibold">
@@ -83,7 +82,7 @@ const deliverables = [
             compare.map((r) => (
               <tr class="align-top">
                 <th scope="row" class="px-5 py-3 text-sm font-medium text-muted">{r.k}</th>
-                <td class="px-5 py-3 leading-7 text-ink-soft">{r.trial}</td>
+                <td class="px-5 py-3 leading-7 text-ink-soft">{r.personal}</td>
                 <td class="px-5 py-3 leading-7 text-ink-soft">{r.server}</td>
               </tr>
             ))

@@ -36,3 +36,22 @@
 :root[data-theme='dark'] {
   --sl-color-accent: #60a5fa;
 }
+
+/* 顶栏与官网首页对齐：高 64px、logo 28px、文字 15px 半粗、字距收紧、gap 10px */
+:root {
+  --sl-nav-height: 4rem;
+}
+.site-title {
+  gap: 0.625rem;
+  font-size: 15px;
+  line-height: 1.5;
+  letter-spacing: -0.025em;
+  color: #161b26;
+}
+:root[data-theme='dark'] .site-title {
+  color: #e2e8f0;
+}
+.site-title img {
+  width: 28px;
+  height: 28px;
+}

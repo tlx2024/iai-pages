@@ -5,9 +5,11 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { walk } from './lib.mjs';
+import { siteTarget } from '../site-target.mjs';
+const target = siteTarget(process.env);
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
-const BASE = '/iai-pages/';
+const BASE = `${target.base}/`;
 const TEXT_EXT = /\.(html|js|mjs|css|json|xml|txt|md|svg|webmanifest|vtt)$/i;
 
 const RULES = [
@@ -24,7 +26,7 @@ const RULES = [
 const FORBIDDEN_FILES = /(^|\/)\.env(\.|$)|\.(db|sqlite|pem|key|pfx|p12)$/i;
 
 const targets = [
-  { dir: path.join(root, 'dist'), label: 'dist' },
+  { dir: path.resolve(root, target.outDir), label: 'dist' },
   { dir: path.join(root, '..', 'release-notes'), label: 'release-notes' },
 ];
 

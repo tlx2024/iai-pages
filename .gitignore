@@ -5,3 +5,5 @@ site/.astro/
 site/public/fonts/NotoSansSC-subset.woff2
 .DS_Store
 Thumbs.db
+site/.vite/
+site/.cache/

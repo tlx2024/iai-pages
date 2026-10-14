@@ -1,0 +1,144 @@
+---
+import Base from '../../layouts/Base.astro';
+import SectionHeading from '../../components/SectionHeading.astro';
+import CtaBand from '../../components/CtaBand.astro';
+import { href } from '../../lib/url';
+
+const steps = [
+  {
+    step: '01',
+    title: '资料留在本机：文字图层解析与版本归档',
+    lead: '原件在你的硬盘里，云端不存你的知识库。',
+    desc: '把你的 PDF 论文、工艺规范、检验规程或实验记录拖入客户端。本机解析引擎直接在本地完成文本图层提取、分块与目录构建。',
+    details: [
+      {
+        k: '完全免费',
+        v: '本地文档文字层提取、排版解析和目录生成全部在本机完成，不经过网络，不消耗任何积分。',
+      },
+      {
+        k: '原件与版本管理',
+        v: '原件安全存储在本机工作区，支持不可变版本归档。无论文档怎样更迭，历史问答仍能精准锚定当时的旧版切片。',
+      },
+      {
+        k: '云端 OCR 明确授权',
+        v: '遇到纯图片扫描件时，只有经你确认后才上传选定页图到云端视觉识别（qwen-vl-ocr），每份单独授权，识别后加密暂存不超过 30 分钟。',
+      },
+    ],
+  },
+  {
+    step: '02',
+    title: '本体起草与演化：立下共同遵循的作业标准书',
+    lead: '本体不是高深理论，是你业务里的名词、标准和关系规矩。',
+    desc: 'AI 为什么经常说胡话？因为通用模型不知道你厂里的“A01 机台”和“主电机”到底是什么关系，也不知道哪道工序该遵循哪份 SOP。本体就是给 AI 的一份“作业标准书”。',
+    details: [
+      {
+        k: 'AI 引导问题起草',
+        v: '回答起步包里的 6–12 个通俗业务问题，调用官方 AI 整理出草案。生成前明确弹窗报价（约 3–8 积分），草案直接写入本地草稿区，由你逐条决定采纳。',
+      },
+      {
+        k: '直接导入范式包',
+        v: '支持一键导入一人公司（OPC）、配方研制或隐形眼镜工厂三套标准范式，完全本地执行、不扣积分，先跑起来再改。',
+      },
+      {
+        k: '保存版本与公理校验',
+        v: '每次保存为新版本时，自动运行范式公理检查（如委托契约是否有关联审批、设备是否挂载产线）与业务能力问题回归测试，确保越改越准。',
+      },
+    ],
+  },
+  {
+    step: '03',
+    title: 'Wiki 随本体生长：对象页与专题沉淀',
+    lead: '本体发布后，Wiki 页面自动生成，无需人工手动逐页排版。',
+    desc: '在传统工具中，写文档和配系统是两张皮。在 IAI 中，Wiki 是本体的只读编译投影：一旦本体保存版本，相关对象的结构化页面立刻就绪。',
+    details: [
+      {
+        k: '对象页骨架自动生成',
+        v: '每个声明了页面类型的本体概念（如设备、配方、缺陷），系统自动生成对象页骨架与页首属性条，受控摘录关联资料，杜绝 AI 幻觉编造。',
+      },
+      {
+        k: '页面永不静默丢失',
+        v: '当你在新版本中重命名或移除某个类型时，对应的旧 Wiki 页面自动标记为“待处理”，保留全部历史内容，绝不静默丢失。',
+      },
+      {
+        k: '专题深度整理',
+        v: '遇到复杂工艺问题，可选择多份资料发起专题整理。AI 按本体规矩提炼成新 Wiki 专题，发起前确认预算并逐句标注出处。',
+      },
+    ],
+  },
+  {
+    step: '04',
+    title: '按规矩问答与纠错：每句出处直达原文',
+    lead: 'AI 不凭空发散，按你们定好的标准作答，点击出处即见证据。',
+    desc: '向智能助手提问时，系统结合本地检索召回命中的资料片段与本体规矩，提交官方 AI 推理。回答中的每句断言都带有证据链。',
+    details: [
+      {
+        k: '原文查看器 精准高亮',
+        v: '点击回答中的出处编号，右侧抽屉立即展开原文，高亮定位到命中段落。即使文档已更新，仍能展示回答时引用的那一份历史版本。',
+      },
+      {
+        k: '双入径纠错 持续闭环',
+        v: '当助手答得不对时，点击“答得不对”弹出双入径选项：一键加入知识体检题集，同时记为本体问题。正文不泄露，推动下一次本体演化修复。',
+      },
+      {
+        k: '随时能停、随时收回',
+        v: '每次问答前展示预留上限，完成后按实际 Token 扣积分并立即释放剩余预留。断网或积分用完，本地工作区浏览、编辑和检索完全照常。',
+      },
+    ],
+  },
+] as const;
+---
+
+<Base
+  title="工作方式 · IAI 个人版"
+  description="资料在本机 → 本体起草与演化 → Wiki 随本体生长 → 带出处问答。用“作业标准书”把规矩立起来，AI 照章作答。"
+>
+  <section class="container-site pt-14">
+    <SectionHeading
+      as="h1"
+      eyebrow="How It Works"
+      title="工作方式：从本地资料到带出处的权威回答"
+      lead="资料在本机 → 本体起草与演化 → Wiki 随本体生长 → 带出处问答。用“作业标准书”把分散的规矩立起来，AI 照章作答，钱花在哪一目了然。"
+    />
+
+    <div class="mt-16 space-y-16">
+      {
+        steps.map((st) => (
+          <div class="card p-8 sm:p-10">
+            <div class="flex flex-wrap items-baseline gap-4">
+              <span class="font-mono text-3xl font-extrabold text-primary sm:text-4xl">{st.step}</span>
+              <h2 class="text-2xl font-bold text-ink sm:text-3xl">{st.title}</h2>
+            </div>
+            <p class="mt-3 text-base font-medium text-primary">{st.lead}</p>
+            <p class="mt-4 text-sm leading-relaxed text-ink-soft sm:text-base">{st.desc}</p>
+
+            <div class="mt-8 grid gap-4 border-t border-line/60 pt-6 sm:grid-cols-3">
+              {st.details.map((dt) => (
+                <div class="rounded-xl bg-panel-2 p-5">
+                  <h3 class="text-sm font-semibold text-ink">{dt.k}</h3>
+                  <p class="mt-2 text-xs leading-relaxed text-ink-soft">{dt.v}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        ))
+      }
+    </div>
+
+    <div class="mt-16 flex flex-wrap justify-center gap-4">
+      <a href={href('/personal/privacy/')} class="btn btn-primary h-11 px-6">
+        查看出网清单与留存策略
+      </a>
+      <a href={href('/price/')} class="btn btn-secondary h-11 px-6">
+        了解积分计费规则
+      </a>
+      <a href={href('/download/')} class="btn btn-secondary h-11 px-6">
+        下载客户端
+      </a>
+    </div>
+  </section>
+
+  <CtaBand
+    title="规矩立得清，AI 才说得准"
+    lead="不用一次把所有规矩定完。从一个范式起步包开始，让知识在实际问答中一步步生长。"
+  />
+</Base>

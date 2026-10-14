@@ -8,8 +8,8 @@ interface Props {
   lead?: string;
 }
 const {
-  title = '先装一个试用版，看看它在你的场景里能做什么',
-  lead = '试用版在本机运行，自带演示数据，也可以导入你自己的文档。需要接入真实系统时，再谈私有部署。',
+  title = '本机知识库与官方 AI，按自己的节奏使用',
+  lead = '个人版仍在规划与开发中：资料在本机，官方 AI 使用账号与积分。企业系统接入通过私有化交付。',
 } = Astro.props;
 ---
 
@@ -26,7 +26,7 @@ const {
       <div class="mt-7 flex flex-wrap gap-3">
         <a href={href('/download/')} class="btn bg-white text-[#14213d] hover:bg-white/90">
           <Icon name="download" size={18} />
-          下载试用版
+          查看下载进度
         </a>
         <a
           href={CONTACT_EMAIL ? `mailto:${CONTACT_EMAIL}` : href('/contact/')}

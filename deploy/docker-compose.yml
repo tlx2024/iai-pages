@@ -1,0 +1,10 @@
+services:
+  iai-pages:
+    image: nginx:alpine
+    container_name: iai-pages
+    restart: unless-stopped
+    ports:
+      - "8088:80"
+    volumes:
+      - ./www:/usr/share/nginx/html/iai-pages:ro
+      - ./nginx.conf:/etc/nginx/conf.d/default.conf:ro

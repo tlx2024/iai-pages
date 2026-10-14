@@ -1,0 +1,14 @@
+---
+import Base from '../layouts/Base.astro';
+import SectionHeading from '../components/SectionHeading.astro';
+---
+<Base title="条款与隐私" description="个人版数据流说明与正式条款发布状态。">
+  <section class="container-site pt-14">
+    <SectionHeading as="h1" eyebrow="Terms & privacy" title="条款与隐私" lead="正式服务条款、隐私政策、提供方清单和计费规则将在公开服务前完成审核并发布。当前内容用于设计评审。" />
+    <div class="card mt-10 max-w-3xl space-y-4 p-8 leading-8 text-ink-soft">
+      <p>个人版知识库、本体与检索在本机处理。使用官方 AI 时，只发送本次确认的必要上下文；OCR 只发送选定页图。不会扫描并上传整个本机知识库。</p>
+      <p>模型请求输入在云网关处理内存中使用；输出恢复缓存限时加密。上游提供方的数据保留与地区规则将在正式隐私政策中逐项说明。</p>
+      <p>客户端免费下载。官方 AI 使用账号与积分，价格以正式发布为准。当前不开放自助注册、付费购买或公开安装包下载。</p>
+    </div>
+  </section>
+</Base>

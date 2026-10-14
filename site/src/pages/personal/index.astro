@@ -1,0 +1,228 @@
+---
+import Base from '../../layouts/Base.astro';
+import SectionHeading from '../../components/SectionHeading.astro';
+import StatusBadge from '../../components/StatusBadge.astro';
+import Icon from '../../components/Icon.astro';
+import CtaBand from '../../components/CtaBand.astro';
+import { href } from '../../lib/url';
+
+const paradigms = [
+  {
+    key: 'opc',
+    name: '一人公司（OPC）',
+    target: '独立研究者 · 个人工作室 · 超级个体',
+    desc: '一人统领业务与研发。在本体中沉淀业务范畴、交付物标准与委托契约；将重复性分析交由 AI 代理画像协助处理，关键动作设置审批与留痕。',
+    pack: 'server/domain-packs/opc',
+    stats: '8 个核心类型 · 7 条关联关系 · 6 个通俗引导问题',
+    twinNote: '纯业务与数字资产，无物理空间类型（数据孪生入口按需收起，界面清爽专注）',
+    highlights: ['AI 代理画像与委托契约', '关键决策审批在回路', '能力问答快速回归'],
+  },
+  {
+    key: 'formulation',
+    name: '研究与配方小组',
+    target: '实验室 · 材料配方研制 · 生物试剂研发',
+    desc: '以配方演化脉络、实验批次与关键理化指标为核心。沉淀配方对比标准、检验规范与可溯源记录；AI 问答严格依据历史实验与批记录。',
+    pack: 'server/domain-packs/formulation',
+    stats: '10 个核心类型 · 9 条关联关系 · 6 个业务引导问题',
+    twinNote: '聚焦配方批次与实验谱系；自动生成配方与指标的 Wiki 对象页',
+    highlights: ['配方版本与实验批次追溯', '理化指标与质检判定标准', 'Wiki 对象页随版本生长'],
+  },
+  {
+    key: 'lens',
+    name: '工厂与车间',
+    target: '工业产线 · 制造车间 · 质检与运维工程师',
+    desc: '管理产线、工序、设备、缺陷规范与排产。将设备规格书、故障手册与巡检经验收录为本机知识库，统一设备叫法与编码。',
+    pack: 'server/domain-packs/lens（隐形眼镜产线示例）',
+    stats: '12 个核心类型 · 11 条关联关系 · 12 个能力问题',
+    twinNote: '包含产线与车间空间类型（spatial = true），一键开启数据孪生场景映射',
+    highlights: ['设备-工序-缺陷多维对齐', 'SOP 作业标准书严格约束', '空间类型无缝映射数据孪生'],
+  },
+] as const;
+
+const pillars = [
+  {
+    icon: 'layout',
+    title: '不用懂、先跑起来',
+    lead: '无需先掌握本体论或图数据库理论。',
+    points: [
+      '一句话输入工作描述，本机推荐最合适的范式起步包，不调模型、不扣积分',
+      '按引导问题通俗问答，AI 快速起草本体草案，生成前明确报价（约 3–8 积分）',
+      '也可一键直接导入范式包或从空白开始；所有 AI 提案均进入草稿区，由你亲自采纳',
+    ],
+  },
+  {
+    icon: 'message',
+    title: '按规矩回答，句句说得清',
+    lead: '把散落在脑中和文件里的规矩，变成 AI 的作业标准书。',
+    points: [
+      '问答严格依据已发布的本体和本地知识库回答，杜绝模型脱缰幻觉',
+      '回答中每一句断言都附带可点击的出处标签，一键展开原文查看器定位到历史精确版本与段落',
+      '答得不对时支持双入径纠错：一键加入知识体检题集，并记为本体缺口，正文绝不泄露',
+    ],
+  },
+  {
+    icon: 'lock',
+    title: '随时能停、随时能收回',
+    lead: '资料在本机，出网透明，开箱可用。',
+    points: [
+      '知识库、文档原件、本地向量索引与本体全部留在本地计算机，断网照常工作',
+      '官方 AI 每次调用前弹出明确报价与预留上限，确认后才预留积分；结算多退少补',
+      '每笔流水记录请求编号与 Token，绝不记录问答正文；积分耗尽或登录过期绝不锁定本地资料',
+    ],
+  },
+] as const;
+---
+
+<Base
+  title="IAI 个人版"
+  description="一个人的研究或工厂，也有自己的本体和知识库；AI 按你们共同定的规矩回答，每句话都指回原文，钱花在哪一目了然。"
+>
+  {/* Hero 区域 */}
+  <section class="container-site pt-14 sm:pt-20">
+    <div class="max-w-4xl">
+      <div class="flex flex-wrap items-center gap-3">
+        <StatusBadge status="planned" />
+        <span class="rounded-full bg-primary-soft px-3 py-1 text-xs font-medium text-primary">
+          桌面客户端 · Windows 10/11
+        </span>
+      </div>
+      <h1 class="mt-6 text-4xl font-extrabold tracking-tight text-ink sm:text-5xl lg:text-6xl">
+        一个人的研究或工厂，<br class="hidden sm:inline" />也有自己的本体和知识库
+      </h1>
+      <p class="mt-6 text-lg leading-8 text-ink-soft sm:text-xl">
+        AI 按你们共同定的规矩回答，每句话都指回原文，钱花在哪一目了然。<br class="hidden sm:inline" />
+        客户端免费下载，资料留在本机。官方 AI 问答、起草与识别按量使用，价格以正式发布为准。
+      </p>
+
+      <div class="mt-8 flex flex-wrap items-center gap-4">
+        <a href={href('/personal/how-it-works/')} class="btn btn-primary h-11 px-5 text-[15px]">
+          了解工作方式
+        </a>
+        <a href={href('/personal/privacy/')} class="btn btn-secondary h-11 px-5 text-[15px]">
+          查看出网清单
+        </a>
+        <a href={href('/price/')} class="btn btn-secondary h-11 px-5 text-[15px]">
+          价格与规则
+        </a>
+        <a href={href('/download/')} class="btn btn-secondary h-11 px-5 text-[15px]">
+          下载与内测状态
+        </a>
+      </div>
+    </div>
+  </section>
+
+  {/* 三大范式场景卡片 */}
+  <section class="container-site pt-20">
+    <SectionHeading
+      eyebrow="Three Paradigms"
+      title="三大范式起步包，开箱即用"
+      lead="每个人的工作重心不同。IAI 个人版内置三套真实经过工业验证的范式包，涵盖独立个体、实验研制到产线制造的全套结构与引导。"
+    />
+
+    <div class="mt-10 grid gap-6 lg:grid-cols-3">
+      {
+        paradigms.map((p) => (
+          <div class="card flex flex-col justify-between p-6 sm:p-8">
+            <div>
+              <div class="flex items-center justify-between gap-3">
+                <span class="rounded-md bg-primary-soft px-2.5 py-1 text-xs font-semibold text-primary">
+                  {p.key.toUpperCase()}
+                </span>
+                <span class="text-xs text-muted font-mono">{p.pack}</span>
+              </div>
+              <h3 class="mt-4 text-2xl font-bold text-ink">{p.name}</h3>
+              <p class="mt-1 text-xs font-medium text-primary">{p.target}</p>
+              <p class="mt-4 text-sm leading-relaxed text-ink-soft">{p.desc}</p>
+
+              <div class="mt-6 border-t border-line/60 pt-4">
+                <p class="text-xs font-medium text-ink">包内规格：</p>
+                <p class="mt-1 text-xs text-muted">{p.stats}</p>
+                <p class="mt-3 text-xs leading-relaxed text-ink-soft bg-panel-2 rounded-lg p-2.5">
+                  <span class="font-medium text-ink">投影特性：</span>
+                  {p.twinNote}
+                </p>
+              </div>
+
+              <ul class="mt-4 space-y-2 text-xs text-ink-soft">
+                {p.highlights.map((h) => (
+                  <li class="flex items-center gap-2">
+                    <span class="text-primary font-bold">✓</span>
+                    <span>{h}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            <div class="mt-6 pt-4 border-t border-line">
+              <a
+                href={href('/personal/how-it-works/')}
+                class="inline-flex items-center gap-1.5 text-xs font-semibold text-primary hover:underline"
+              >
+                看它如何与资料协同 →
+              </a>
+            </div>
+          </div>
+        ))
+      }
+    </div>
+  </section>
+
+  {/* 三大产品支柱 */}
+  <section class="container-site pt-24">
+    <SectionHeading
+      eyebrow="Core Pillars"
+      title="为什么选 IAI 个人版？"
+      lead="不玩概念、不卖焦虑。把复杂的工业与知识工程提炼为三个踏实的原则。"
+    />
+
+    <div class="mt-12 grid gap-8 md:grid-cols-3">
+      {
+        pillars.map((pi) => (
+          <div class="card p-8">
+            <div class="flex size-11 items-center justify-center rounded-xl bg-primary-soft text-primary">
+              <Icon name={pi.icon as any} size={22} />
+            </div>
+            <h3 class="mt-5 text-xl font-bold text-ink">{pi.title}</h3>
+            <p class="mt-2 text-sm text-ink-soft">{pi.lead}</p>
+            <ul class="mt-6 space-y-3 text-xs leading-relaxed text-ink-soft">
+              {pi.points.map((pt) => (
+                <li class="flex items-start gap-2.5">
+                  <span class="mt-0.5 text-primary font-bold">·</span>
+                  <span>{pt}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        ))
+      }
+    </div>
+  </section>
+
+  {/* 4 步工作流引导 */}
+  <section class="container-site pt-24">
+    <div class="card p-8 sm:p-12">
+      <div class="max-w-3xl">
+        <p class="eyebrow">Continuous Growth</p>
+        <h2 class="mt-2 text-3xl font-bold text-ink sm:text-4xl">
+          资料进本机，本体立规矩，Wiki 随之生长
+        </h2>
+        <p class="mt-4 text-base leading-8 text-ink-soft">
+          这不是普通的聊天窗口。从你拖入第一份工艺文件开始，资料、本体骨架、Wiki 页面和智能问答便紧密咬合在一起，形成可持续演化的知识资产。
+        </p>
+        <div class="mt-8 flex flex-wrap gap-4">
+          <a href={href('/personal/how-it-works/')} class="btn btn-primary">
+            阅读完整工作方式解析
+          </a>
+          <a href={href('/personal/privacy/')} class="btn btn-secondary">
+            查看数据出网与留存清单
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <CtaBand
+    title="一个人的研究或工厂，今天就能开始"
+    lead="客户端免费下载，内测期间赠送启动积分。价格以正式发布为准，本地功能永不受限。"
+  />
+</Base>
