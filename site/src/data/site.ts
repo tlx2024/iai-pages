@@ -18,6 +18,7 @@ export type NavItem = { label: string; href: string };
 
 export const NAV: NavItem[] = [
   { label: '个人版', href: '/personal/' },
+  { label: '本体市场', href: '/packs/' },
   { label: '价格', href: '/price/' },
   { label: '功能', href: '/features/' },
   { label: '场景', href: '/solutions/' },
@@ -33,6 +34,7 @@ export const FOOTER_GROUPS: { title: string; items: NavItem[] }[] = [
     title: '个人版',
     items: [
       { label: '个人版总览', href: '/personal/' },
+      { label: '本体市场', href: '/packs/' },
       { label: '工作方式', href: '/personal/how-it-works/' },
       { label: '出网清单', href: '/personal/privacy/' },
       { label: '价格与规则', href: '/price/' },

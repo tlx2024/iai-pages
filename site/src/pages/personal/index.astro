@@ -4,11 +4,13 @@ import SectionHeading from '../../components/SectionHeading.astro';
 import StatusBadge from '../../components/StatusBadge.astro';
 import Icon from '../../components/Icon.astro';
 import CtaBand from '../../components/CtaBand.astro';
+import { packHref } from '../../data/packs';
 import { href } from '../../lib/url';
 
 const paradigms = [
   {
     key: 'opc',
+    pack: 'personal-opc',
     name: '一人公司（OPC）',
     target: '独立研究者 · 个人工作室 · 超级个体',
     desc: '一人统领业务与研发。在本体中沉淀业务范畴、交付物标准与委托契约；将重复性分析交由 AI 代理画像协助处理，关键动作设置审批与留痕。',
@@ -18,6 +20,7 @@ const paradigms = [
   },
   {
     key: 'formulation',
+    pack: 'formulation-team',
     name: '研究与配方小组',
     target: '实验室 · 材料配方研制 · 生物试剂研发',
     desc: '以配方演化脉络、实验批次与关键理化指标为核心。沉淀配方对比标准、检验规范与可溯源记录；AI 问答严格依据历史实验与批记录。',
@@ -27,6 +30,7 @@ const paradigms = [
   },
   {
     key: 'lens',
+    pack: 'contact-lens-factory',
     name: '工厂与车间',
     target: '工业产线 · 制造车间 · 质检与运维工程师',
     desc: '管理产线、工序、设备、缺陷规范与排产。将设备规格书、故障手册与巡检经验收录为本机知识库，统一设备叫法与编码。',
@@ -95,6 +99,9 @@ const pillars = [
         <a href={href('/personal/how-it-works/')} class="btn btn-primary h-11 px-5 text-[15px]">
           了解工作方式
         </a>
+        <a href={href('/packs/')} class="btn btn-secondary h-11 px-5 text-[15px]">
+          浏览本体市场
+        </a>
         <a href={href('/personal/privacy/')} class="btn btn-secondary h-11 px-5 text-[15px]">
           查看出网清单
         </a>
@@ -151,15 +158,23 @@ const pillars = [
 
             <div class="mt-6 pt-4 border-t border-line">
               <a
-                href={href('/personal/how-it-works/')}
+                href={href(packHref(p.pack))}
                 class="inline-flex items-center gap-1.5 text-xs font-semibold text-primary hover:underline"
               >
-                看它如何与资料协同 →
+                查看包内清单与安装方式 →
               </a>
             </div>
           </div>
         ))
       }
+    </div>
+
+    <div class="mt-8 flex flex-wrap items-center justify-between gap-4 rounded-xl border border-line bg-panel-2 px-6 py-5">
+      <div>
+        <p class="text-sm font-semibold text-ink">三个起步包都随客户端内置，安装不需要联网下载</p>
+        <p class="mt-1 text-xs leading-relaxed text-ink-soft">官网先公开包内清单与许可；在线目录、公开下载与第三方投稿在后续版本开放，客户端会校验内置包签名。</p>
+      </div>
+      <a href={href('/packs/')} class="btn btn-secondary">浏览本体市场</a>
     </div>
   </section>
 

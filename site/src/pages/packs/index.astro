@@ -1,0 +1,201 @@
+---
+import Base from '../../layouts/Base.astro';
+import SectionHeading from '../../components/SectionHeading.astro';
+import StatusBadge from '../../components/StatusBadge.astro';
+import Icon from '../../components/Icon.astro';
+import CtaBand from '../../components/CtaBand.astro';
+import { PACKS, formatBytes, packHref } from '../../data/packs';
+import { href } from '../../lib/url';
+
+const totalTypes = PACKS.reduce((sum, pack) => sum + pack.counts.types, 0);
+const totalExamples = PACKS.reduce((sum, pack) => sum + pack.counts.examples, 0);
+
+const steps = [
+  {
+    title: '下载并打开个人版',
+    desc: '客户端免费下载，资料、本体与知识库留在本机。当前内测版本随包内置三个官方起步包。',
+    link: { label: '查看下载状态', href: '/download/' },
+  },
+  {
+    title: '进入「本体工坊」',
+    desc: '在左栏「领域能力」打开本体工坊，切到「市场」。市场只读取内容，不会上传你的本体。',
+    link: { label: '了解个人版', href: '/personal/' },
+  },
+  {
+    title: '选包并安装',
+    desc: '查看包内类型、示例对象、文章、权限与更新日志，确认后一键装到当前工作区；示例数据随时可清理或恢复。',
+    link: { label: '查看出网清单', href: '/personal/privacy/' },
+  },
+];
+
+const reasons = [
+  {
+    icon: 'clock',
+    title: '不用从空白搭起',
+    desc: '一个包同时带来类型、构建问题、示例对象、文章、Wiki 与驾驶舱，装完就能看到一个完整的行业示例世界。',
+  },
+  {
+    icon: 'graph',
+    title: '包本身就是范式',
+    desc: '类型怎么分、字段怎么定、对象怎么关联都写在包里。与其读说明，不如直接打开一个能问答的示例。',
+  },
+  {
+    icon: 'book',
+    title: '可迁移、可清理',
+    desc: '自己的示例世界可以导出为包交给同事或客户复现；市场包的示例数据带〔示例〕标记，可一键清理后重新装回。',
+  },
+];
+---
+
+<Base
+  title="本体市场"
+  description="IAI 个人版官方精选本体市场：把行业本体、示例对象、文章、智能体与驾驶舱打包，一键装进自己的工作区。"
+>
+  <section class="container-site pt-14 sm:pt-20">
+    <div class="max-w-4xl">
+      <div class="flex flex-wrap items-center gap-3">
+        <StatusBadge status="planned" />
+        <span class="rounded-full bg-primary-soft px-3 py-1 text-xs font-medium text-primary">
+          随个人版客户端内置
+        </span>
+      </div>
+      <p class="eyebrow mt-6">Ontology Market</p>
+      <h1 class="mt-3 text-4xl font-extrabold tracking-tight text-ink sm:text-5xl lg:text-6xl">
+        行业本体，<br class="hidden sm:inline" />装进你的工作台
+      </h1>
+      <p class="mt-6 max-w-3xl text-lg leading-8 text-ink-soft sm:text-xl">
+        一个本体包，就是一套能问答的行业示例世界：类型、构建问题、示例对象、出处文章、Wiki 与驾驶舱一起到位。选一个包开始，再按自己的工作改它。
+      </p>
+      <div class="mt-8 flex flex-wrap items-center gap-4">
+        <a href={href('/download/')} class="btn btn-primary h-11 px-5 text-[15px]">
+          <Icon name="download" size={18} />
+          获取个人版
+        </a>
+        <a href={href('/personal/')} class="btn btn-secondary h-11 px-5 text-[15px]">
+          了解个人版
+        </a>
+        <a href="#packs" class="btn text-ink-soft hover:text-primary">
+          浏览 {PACKS.length} 个精选包
+          <Icon name="arrowRight" size={14} />
+        </a>
+      </div>
+    </div>
+
+    <div class="card mt-10 flex flex-wrap items-start gap-4 p-5 sm:p-6">
+      <div class="flex size-9 shrink-0 items-center justify-center rounded-lg bg-primary-soft text-primary">
+        <Icon name="info" size={18} />
+      </div>
+      <div class="min-w-0 flex-1">
+        <p class="font-semibold text-ink">当前是官方精选、随客户端内置的版本</p>
+        <p class="mt-1 text-sm leading-7 text-ink-soft">
+          在线目录、公开下载、版本更新与第三方投稿将在后续版本开放；客户端已对随包内置的官方包做签名与完整性校验。市场只下载内容，不上传你的本体；页面不读取 Cookie，也不调用运行时接口。
+        </p>
+      </div>
+      <a href={href('/security/')} class="link shrink-0 text-sm">安全与数据 →</a>
+    </div>
+  </section>
+
+  <section id="packs" class="container-site pt-20" aria-labelledby="pack-list-title">
+    <div class="flex flex-wrap items-end justify-between gap-4">
+      <SectionHeading
+        eyebrow="Official Packs"
+        title="三个可以马上装的行业起步包"
+        lead={`${PACKS.length} 个官方包合计 ${totalTypes} 个类型、${totalExamples} 个示例对象。每一个都能在个人版里单独安装，类型不覆盖已有定义。`}
+      />
+      <p class="text-sm text-muted">按首批上线顺序排列</p>
+    </div>
+
+    <div class="mt-10 grid gap-5 lg:grid-cols-3">
+      {
+        PACKS.map((pack) => (
+          <article class="card flex flex-col p-6 transition-colors hover:border-primary">
+            <div class="flex items-start gap-3">
+              <span class="grid size-11 shrink-0 place-items-center rounded-xl bg-primary-soft text-primary">
+                <Icon name={pack.icon} size={22} />
+              </span>
+              <div class="min-w-0 flex-1">
+                <h3 class="text-xl font-bold text-ink">{pack.title}</h3>
+                <p class="mt-1 text-xs text-muted">
+                  {pack.domainLabel} · v{pack.version}
+                </p>
+              </div>
+              <span class="shrink-0 rounded-full bg-primary-soft px-2 py-0.5 text-[11px] font-medium text-primary">
+                官方精选
+              </span>
+            </div>
+
+            <p class="mt-4 flex-1 text-sm leading-7 text-ink-soft">{pack.summary}</p>
+
+            <ul class="mt-3 flex flex-wrap gap-1.5">
+              {pack.tags.slice(0, 4).map((tag) => (
+                <li class="rounded-md bg-panel-2 px-2 py-0.5 text-[11px] text-muted">{tag}</li>
+              ))}
+            </ul>
+
+            <dl class="mt-5 grid grid-cols-3 gap-2 border-t border-line/60 pt-4 text-center">
+              <div>
+                <dt class="text-[11px] text-muted">类型</dt>
+                <dd class="mt-0.5 text-lg font-bold tabular-nums text-ink">{pack.counts.types}</dd>
+              </div>
+              <div>
+                <dt class="text-[11px] text-muted">示例对象</dt>
+                <dd class="mt-0.5 text-lg font-bold tabular-nums text-ink">{pack.counts.examples}</dd>
+              </div>
+              <div>
+                <dt class="text-[11px] text-muted">文章</dt>
+                <dd class="mt-0.5 text-lg font-bold tabular-nums text-ink">{pack.counts.sources}</dd>
+              </div>
+            </dl>
+
+            <div class="mt-4 flex items-center justify-between gap-3 border-t border-line/60 pt-4 text-xs text-muted">
+              <span>{formatBytes(pack.sizeBytes)} · {pack.license}</span>
+              <a href={href(packHref(pack.slug))} class="inline-flex items-center gap-1 font-semibold text-primary hover:underline">
+                查看包内容 <Icon name="arrowRight" size={13} />
+              </a>
+            </div>
+          </article>
+        ))
+      }
+    </div>
+  </section>
+
+  <section class="container-site pt-24">
+    <SectionHeading eyebrow="How to install" title="三步装进当前工作区" lead="不注册发布者、不上传本体；安装前会展示发布者、权限与将创建的内容。" />
+    <ol class="mt-10 grid gap-5 md:grid-cols-3">
+      {
+        steps.map((step, index) => (
+          <li class="card flex flex-col p-6">
+            <span class="grid size-9 place-items-center rounded-full bg-[#14213d] text-sm font-bold text-white">{index + 1}</span>
+            <h3 class="mt-4 text-lg font-semibold">{step.title}</h3>
+            <p class="mt-2 flex-1 text-sm leading-7 text-ink-soft">{step.desc}</p>
+            <a href={href(step.link.href)} class="link mt-4 inline-flex items-center gap-1 text-sm">
+              {step.link.label} <Icon name="arrowRight" size={13} />
+            </a>
+          </li>
+        ))
+      }
+    </ol>
+  </section>
+
+  <section class="container-site pt-24">
+    <SectionHeading eyebrow="Why packs" title="为什么从一个包开始" lead="本体包把行业知识、数据结构、示例与分析视图固化成可分发单元，是 IAI 个人版的冷启动方式。" />
+    <div class="mt-10 grid gap-5 md:grid-cols-3">
+      {
+        reasons.map((reason) => (
+          <div class="card p-6">
+            <span class="grid size-10 place-items-center rounded-lg bg-primary-soft text-primary">
+              <Icon name={reason.icon as any} size={20} />
+            </span>
+            <h3 class="mt-4 text-lg font-semibold">{reason.title}</h3>
+            <p class="mt-2 text-sm leading-7 text-ink-soft">{reason.desc}</p>
+          </div>
+        ))
+      }
+    </div>
+  </section>
+
+  <CtaBand
+    title="先装一个包，再改成自己的样子"
+    lead="个人版客户端、内置本体包与本机知识库都不收费；官方 AI 按账号与积分使用。价格以正式发布为准。"
+  />
+</Base>
