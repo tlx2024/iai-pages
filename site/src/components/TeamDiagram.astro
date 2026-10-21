@@ -39,7 +39,7 @@ const team = [
   </div>
 
   <div class="card p-5 sm:p-6">
-    <p class="text-xs font-medium text-muted">团队 · 每个岗位读它该读的，按契约交付</p>
+    <p class="text-xs font-medium text-muted">团队 · 每个岗位有自己的职责，按契约交付</p>
     <ul class="mt-4 grid gap-2">
       {
         team.map((t) => (
@@ -49,7 +49,7 @@ const team = [
               {t.role}
             </span>
             <span class="text-sm text-ink-soft">
-              <span class="text-muted">读取</span> {t.reads}
+              <span class="text-muted">负责</span> {t.reads}
             </span>
             <span class="text-sm text-ink-soft">
               <span class="text-muted">交付</span> {t.delivers}

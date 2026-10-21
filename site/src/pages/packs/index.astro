@@ -1,7 +1,7 @@
 ---
 import Base from '../../layouts/Base.astro';
 import SectionHeading from '../../components/SectionHeading.astro';
-import StatusBadge from '../../components/StatusBadge.astro';
+import EditionHero from '../../components/EditionHero.astro';
 import Icon from '../../components/Icon.astro';
 import CtaBand from '../../components/CtaBand.astro';
 import { PACKS, formatBytes, packHref } from '../../data/packs';
@@ -51,38 +51,25 @@ const reasons = [
   title="本体市场"
   description="IAI 个人版官方精选本体市场：把行业本体、示例对象、文章、智能体与驾驶舱打包，一键装进自己的工作区。"
 >
-  <section class="container-site pt-14 sm:pt-20">
-    <div class="max-w-4xl">
-      <div class="flex flex-wrap items-center gap-3">
-        <StatusBadge status="planned" />
-        <span class="rounded-full bg-primary-soft px-3 py-1 text-xs font-medium text-primary">
-          随个人版客户端内置
-        </span>
-      </div>
-      <p class="eyebrow mt-6">Ontology Market</p>
-      <h1 class="mt-3 text-4xl font-extrabold tracking-tight text-ink sm:text-5xl lg:text-6xl">
-        行业本体，<br class="hidden sm:inline" />装进你的工作台
-      </h1>
-      <p class="mt-6 max-w-3xl text-lg leading-8 text-ink-soft sm:text-xl">
-        一个本体包，就是一套能问答的行业示例世界：类型、构建问题、示例对象、出处文章、Wiki 与驾驶舱一起到位。选一个包开始，再按自己的工作改它。
-      </p>
-      <div class="mt-8 flex flex-wrap items-center gap-4">
-        <a href={href('/download/')} class="btn btn-primary h-11 px-5 text-[15px]">
-          <Icon name="download" size={18} />
-          获取个人版
-        </a>
-        <a href={href('/personal/')} class="btn btn-secondary h-11 px-5 text-[15px]">
-          了解个人版
-        </a>
-        <a href="#packs" class="btn text-ink-soft hover:text-primary">
-          浏览 {PACKS.length} 个精选包
-          <Icon name="arrowRight" size={14} />
-        </a>
-      </div>
-    </div>
+  <EditionHero
+    eyebrow="Ontology Market"
+    title="行业本体，装进你的工作台"
+    lead="一个本体包，就是一套能问答的行业示例世界：类型、构建问题、示例对象、出处文章、Wiki 与驾驶舱一起到位，有的还带一支示例团队。选一个包开始，再按自己的工作改它。"
+    tag="官方精选 · 随客户端内置"
+  >
+    <a href={href('/download/')} class="btn btn-primary">
+      <Icon name="download" size={18} />
+      申请内测
+    </a>
+    <a href="#packs" class="btn btn-secondary">浏览 {PACKS.length} 个精选包</a>
+    <a href={href('/personal/')} class="btn text-ink-soft hover:text-primary">
+      了解个人版 <Icon name="arrowRight" size={14} />
+    </a>
+  </EditionHero>
 
-    <div class="card mt-10 flex flex-wrap items-start gap-4 p-5 sm:p-6">
-      <div class="flex size-9 shrink-0 items-center justify-center rounded-lg bg-primary-soft text-primary">
+  <section class="container-site">
+    <div class="card flex flex-wrap items-start gap-4 p-5 sm:p-6">
+      <div class="flex size-9 shrink-0 items-center justify-center rounded-lg bg-personal-soft text-personal">
         <Icon name="info" size={18} />
       </div>
       <div class="min-w-0 flex-1">
@@ -95,7 +82,7 @@ const reasons = [
     </div>
   </section>
 
-  <section id="packs" class="container-site pt-20" aria-labelledby="pack-list-title">
+  <section id="packs" class="container-site scroll-mt-28 py-16" aria-labelledby="pack-list-title">
     <div class="flex flex-wrap items-end justify-between gap-4">
       <SectionHeading
         eyebrow="Official Packs"
@@ -108,9 +95,9 @@ const reasons = [
     <div class="mt-10 grid gap-5 lg:grid-cols-3">
       {
         PACKS.map((pack) => (
-          <article class="card flex flex-col p-6 transition-colors hover:border-primary">
+          <article class="card flex flex-col p-6 transition-colors hover:border-personal">
             <div class="flex items-start gap-3">
-              <span class="grid size-11 shrink-0 place-items-center rounded-xl bg-primary-soft text-primary">
+              <span class="grid size-11 shrink-0 place-items-center rounded-xl bg-personal-soft text-personal">
                 <Icon name={pack.icon} size={22} />
               </span>
               <div class="min-w-0 flex-1">
@@ -119,7 +106,7 @@ const reasons = [
                   {pack.domainLabel} · v{pack.version}
                 </p>
               </div>
-              <span class="shrink-0 rounded-full bg-primary-soft px-2 py-0.5 text-[11px] font-medium text-primary">
+              <span class="shrink-0 rounded-full bg-personal-soft px-2 py-0.5 text-[11px] font-medium text-personal">
                 官方精选
               </span>
             </div>
@@ -142,14 +129,14 @@ const reasons = [
                 <dd class="mt-0.5 text-lg font-bold tabular-nums text-ink">{pack.counts.examples}</dd>
               </div>
               <div>
-                <dt class="text-[11px] text-muted">文章</dt>
-                <dd class="mt-0.5 text-lg font-bold tabular-nums text-ink">{pack.counts.sources}</dd>
+                <dt class="text-[11px] text-muted">示例智能体</dt>
+                <dd class="mt-0.5 text-lg font-bold tabular-nums text-ink">{pack.counts.agents}</dd>
               </div>
             </dl>
 
             <div class="mt-4 flex items-center justify-between gap-3 border-t border-line/60 pt-4 text-xs text-muted">
               <span>{formatBytes(pack.sizeBytes)} · {pack.license}</span>
-              <a href={href(packHref(pack.slug))} class="inline-flex items-center gap-1 font-semibold text-primary hover:underline">
+              <a href={href(packHref(pack.slug))} class="inline-flex items-center gap-1 font-semibold text-personal hover:underline">
                 查看包内容 <Icon name="arrowRight" size={13} />
               </a>
             </div>
@@ -159,13 +146,14 @@ const reasons = [
     </div>
   </section>
 
-  <section class="container-site pt-24">
+  <section class="border-y border-line bg-panel py-16">
+    <div class="container-site">
     <SectionHeading eyebrow="How to install" title="三步装进当前工作区" lead="不注册发布者、不上传本体；安装前会展示发布者、权限与将创建的内容。" />
     <ol class="mt-10 grid gap-5 md:grid-cols-3">
       {
         steps.map((step, index) => (
-          <li class="card flex flex-col p-6">
-            <span class="grid size-9 place-items-center rounded-full bg-[#14213d] text-sm font-bold text-white">{index + 1}</span>
+          <li class="flex flex-col rounded-xl border border-line bg-bg p-6">
+            <span class="font-latin text-sm font-semibold tabular-nums text-personal">{String(index + 1).padStart(2, '0')}</span>
             <h3 class="mt-4 text-lg font-semibold">{step.title}</h3>
             <p class="mt-2 flex-1 text-sm leading-7 text-ink-soft">{step.desc}</p>
             <a href={href(step.link.href)} class="link mt-4 inline-flex items-center gap-1 text-sm">
@@ -175,15 +163,16 @@ const reasons = [
         ))
       }
     </ol>
+    </div>
   </section>
 
-  <section class="container-site pt-24">
+  <section class="container-site py-16">
     <SectionHeading eyebrow="Why packs" title="为什么从一个包开始" lead="本体包把行业知识、数据结构、示例与分析视图固化成可分发单元，是 IAI 个人版的冷启动方式。" />
     <div class="mt-10 grid gap-5 md:grid-cols-3">
       {
         reasons.map((reason) => (
           <div class="card p-6">
-            <span class="grid size-10 place-items-center rounded-lg bg-primary-soft text-primary">
+            <span class="grid size-10 place-items-center rounded-lg bg-personal-soft text-personal">
               <Icon name={reason.icon as any} size={20} />
             </span>
             <h3 class="mt-4 text-lg font-semibold">{reason.title}</h3>

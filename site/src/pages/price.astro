@@ -1,5 +1,7 @@
 ---
 import Base from '../layouts/Base.astro';
+import EditionHero from '../components/EditionHero.astro';
+import Icon from '../components/Icon.astro';
 import PersonalBillingDetails from '../components/PersonalBillingDetails.astro';
 import { ENDPOINTS, accountHref } from '../lib/endpoints';
 import { href } from '../lib/url';
@@ -48,21 +50,123 @@ const plans = [
   { name: '个人会员', description: '适合持续使用官方 AI', price: demo ? '¥39' : '待发布', unit: demo ? '/ 月 · 示例' : '价格以正式发布为准', label: '月度官方 AI 方案', action: demo ? '体验会员与账号中心' : '查看会员注册', url: accountHref('register'), featured: true, items: [demo ? '2,000 月度积分（示例）' : '月度积分，权益待内测校准', '问答与 OCR 按量使用', '每次调用前确认内容与预算', '不自动续费，本地功能持续可用'] },
   { name: '积分加量包', description: '按需补充，灵活安排用量', price: demo ? '¥20' : '待发布', unit: demo ? '/ 包 · 示例' : '价格以正式发布为准', label: '按需补充积分', action: '进入账号中心', url: accountHref('account'), featured: false, items: [demo ? '800 积分（示例）' : '积分数量与有效期待发布', '与会员积分分开成批记账', '优先消耗快到期的积分', '可用、预留、消费清楚可查'] },
 ];
+
+const compareRows = [
+  ['本机知识库与检索', '免费使用', '持续可用', '持续可用'],
+  ['官方 AI', '需账号与积分', '月度积分方案', '按需补充积分'],
+  ['使用预算', '本机功能免费', '每次调用前确认', '每次调用前确认'],
+  ['积分与流水', '登录后查看', '账号中心查看', '单独批次查看'],
+  ['当前开放状态', '签名包待发布', '界面演示／待开放', '界面演示／待开放'],
+];
+
+const faqs = [
+  { q: '不买会员，还能使用本机知识库吗？', a: '可以。本地浏览、编辑、检索、备份和导出不依赖云端会员。官方 AI 需要账号与积分。' },
+  { q: '会员和加量包有什么区别？', a: '会员按月度方案提供积分，加量包用于按需补充。积分分批记账，具体数量、有效期和价格以正式发布为准。' },
+  { q: '现在可以注册、购买或下载吗？', a: '本次提供界面演示，真实注册与购买尚未开放，公开签名安装包尚未发布。可从下载页查看发布状态。' },
+  { q: '哪些内容会发送到云端？', a: '按功能发送你确认的问答内容或选定 OCR 页面，以及计量元数据。知识库原件、本体与本地检索留在你的电脑。' },
+];
 ---
+
 <Base title="会员与价格" description="IAI 个人版客户端免费，按需选择官方 AI 会员与积分加量包。">
-  <section class="container-site pt-14">
-    <div class="mx-auto max-w-3xl text-center"><p class="eyebrow">IAI Personal Edition</p><h1 class="mt-4 text-4xl font-bold tracking-tight sm:text-5xl">选择适合你的 AI 使用方式</h1><p class="mt-5 text-base leading-8 text-ink-soft">资料留在本机，官方 AI 按需连接。<br />从免费客户端开始，随使用频率选择会员与加量包。</p></div>
-    <div class="mx-auto mt-8 max-w-4xl rounded-lg border border-line bg-panel px-5 py-3 text-center text-sm leading-7 text-ink-soft">{demo ? '界面演示：金额与积分均为设计样例，真实注册、会员购买与支付尚未开放。' : '会员与加量包正在内测校准。当前不开放自助注册与购买，价格以正式发布为准。'}</div>
-    <div class="mx-auto mt-10 flex w-fit gap-1 rounded-xl border border-line bg-panel-2 p-1" role="tablist" aria-label="交付方案"><button class="pricing-tab active" id="personal-tab" role="tab" aria-selected="true" aria-controls="personal-plans">个人版</button><button class="pricing-tab" id="enterprise-tab" role="tab" aria-selected="false" aria-controls="enterprise-plans" tabindex="-1">企业私有化</button></div>
-    <div id="personal-plans" role="tabpanel" aria-labelledby="personal-tab" class="mt-8">
-      <div class="grid gap-5 md:grid-cols-3">{plans.map(plan => <article class:list={['card flex flex-col p-7', plan.featured && 'border-primary ring-1 ring-primary']}><div class:list={['mb-5 w-fit rounded-md px-2.5 py-1 text-xs', plan.featured ? 'bg-primary-soft text-primary' : 'bg-panel-2 text-muted']}>{plan.label}</div><h2 class="text-xl font-semibold">{plan.name}</h2><p class="mt-2 text-sm text-muted">{plan.description}</p><div class="my-6"><span class="font-latin text-4xl font-semibold tracking-tight">{plan.price}</span><span class="ml-2 text-xs text-muted">{plan.unit}</span></div><a class:list={['btn justify-center', plan.featured ? 'btn-primary' : 'btn-secondary']} href={plan.url}>{plan.action}</a><ul class="mt-6 flex-1 space-y-3 border-t border-line pt-5 text-sm leading-6 text-ink-soft">{plan.items.map(item => <li>{item}</li>)}</ul></article>)}</div>
-      <p class="mt-6 text-center text-xs leading-6 text-muted">签名安装包尚未发布。积分权益不锁定本机资料；会员到期或云端不可用，本地功能仍可使用。</p>
-      <section class="card mt-12 p-6 sm:p-8"><h2 class="text-2xl font-semibold">哪种方式更适合你</h2><div class="mt-6 overflow-x-auto"><table class="w-full text-left text-sm"><caption class="sr-only">免费客户端、个人会员与加量包权益对比</caption><thead><tr><th>使用场景</th><th>免费客户端</th><th>个人会员</th><th>积分加量包</th></tr></thead><tbody><tr><th>本机知识库与检索</th><td>免费使用</td><td>持续可用</td><td>持续可用</td></tr><tr><th>官方 AI</th><td>需账号与积分</td><td>月度积分方案</td><td>按需补充积分</td></tr><tr><th>使用预算</th><td>本机功能免费</td><td>每次调用前确认</td><td>每次调用前确认</td></tr><tr><th>积分与流水</th><td>登录后查看</td><td>账号中心查看</td><td>单独批次查看</td></tr><tr><th>当前开放状态</th><td>签名包待发布</td><td>界面演示／待开放</td><td>界面演示／待开放</td></tr></tbody></table></div></section>
+  <EditionHero
+    eyebrow="Pricing"
+    title="客户端免费，官方 AI 按需用"
+    lead="资料留在本机，官方 AI 按需连接。从免费客户端开始，随使用频率选择会员与加量包；每次调用前先报价。"
+    align="center"
+  />
+
+  <section class="container-site">
+    <div class="mx-auto max-w-4xl rounded-lg border border-line bg-panel px-5 py-3 text-center text-sm leading-7 text-ink-soft">
+      {demo ? '界面演示：金额与积分均为设计样例，真实注册、会员购买与支付尚未开放。' : '会员与加量包正在内测校准。当前不开放自助注册与购买，价格以正式发布为准。'}
     </div>
-    <div id="enterprise-plans" role="tabpanel" aria-labelledby="enterprise-tab" class="mt-8" hidden><div class="card mx-auto max-w-3xl p-8"><p class="eyebrow">PRIVATE DEPLOYMENT</p><h2 class="mt-2 text-2xl font-semibold">面向团队的企业私有化交付</h2><p class="mt-4 leading-8 text-ink-soft">系统接入、团队权限、审批与治理通过私有化项目交付。服务器套件、企业客户端与镜像包按项目核对，不提供公开镜像直链。</p><div class="mt-6 flex flex-wrap gap-3"><a href={href('/enterprise/deployment/')} class="btn btn-primary">了解私有部署</a><a href={href('/enterprise/contact/')} class="btn btn-secondary">联系咨询</a></div></div></div>
-    <section class="mx-auto mt-16 max-w-3xl"><h2 class="text-center text-2xl font-semibold">常见问题</h2><div class="mt-8 space-y-3"><details class="card p-5"><summary class="cursor-pointer font-medium">不买会员，还能使用本机知识库吗？</summary><p class="mt-4 text-sm leading-7 text-ink-soft">可以。本地浏览、编辑、检索、备份和导出不依赖云端会员。官方 AI 需要账号与积分。</p></details><details class="card p-5"><summary class="cursor-pointer font-medium">会员和加量包有什么区别？</summary><p class="mt-4 text-sm leading-7 text-ink-soft">会员按月度方案提供积分，加量包用于按需补充。积分分批记账，具体数量、有效期和价格以正式发布为准。</p></details><details class="card p-5"><summary class="cursor-pointer font-medium">现在可以注册、购买或下载吗？</summary><p class="mt-4 text-sm leading-7 text-ink-soft">本次提供界面演示，真实注册与购买尚未开放，公开签名安装包尚未发布。可从下载页查看发布状态。</p></details><details class="card p-5"><summary class="cursor-pointer font-medium">哪些内容会发送到云端？</summary><p class="mt-4 text-sm leading-7 text-ink-soft">按功能发送你确认的问答内容或选定 OCR 页面，以及计量元数据。知识库原件、本体与本地检索留在你的电脑。</p></details></div></section>
-    <PersonalBillingDetails freeFeatures={freeFeatures} creditFeatures={creditFeatures} demo={demo} />
+
+    <div class="mx-auto mt-10 flex w-fit gap-1 rounded-xl border border-line bg-panel-2 p-1" role="tablist" aria-label="交付方案">
+      <button class="pricing-tab active" id="personal-tab" role="tab" aria-selected="true" aria-controls="personal-plans">个人版</button>
+      <button class="pricing-tab" id="enterprise-tab" role="tab" aria-selected="false" aria-controls="enterprise-plans" tabindex="-1">企业私有化</button>
+    </div>
+
+    <div id="personal-plans" role="tabpanel" aria-labelledby="personal-tab" class="mt-8">
+      <div class="grid gap-5 md:grid-cols-3">
+        {
+          plans.map((plan) => (
+            <article class:list={['card flex flex-col border-t-[3px] p-7', plan.featured ? 'border-t-personal ring-1 ring-personal' : 'border-t-line']}>
+              <div class:list={['mb-5 w-fit rounded-md px-2.5 py-1 text-xs', plan.featured ? 'bg-personal-soft text-personal' : 'bg-panel-2 text-muted']}>{plan.label}</div>
+              <h2 class="text-xl font-semibold">{plan.name}</h2>
+              <p class="mt-2 text-sm text-muted">{plan.description}</p>
+              <div class="my-6">
+                <span class="font-latin text-4xl font-semibold tracking-tight">{plan.price}</span>
+                <span class="ml-2 text-xs text-muted">{plan.unit}</span>
+              </div>
+              <a class:list={['btn justify-center', plan.featured ? 'btn-primary' : 'btn-secondary']} href={plan.url}>
+                {plan.action}
+              </a>
+              <ul class="mt-6 flex-1 space-y-2.5 border-t border-line pt-5">
+                {plan.items.map((item) => (
+                  <li class="flex gap-2 text-sm leading-6 text-ink-soft">
+                    <Icon name="check" size={15} class="mt-0.5 shrink-0 text-faint" />
+                    {item}
+                  </li>
+                ))}
+              </ul>
+            </article>
+          ))
+        }
+      </div>
+      <p class="mt-6 text-center text-xs leading-6 text-muted">签名安装包尚未发布。积分权益不锁定本机资料；会员到期或云端不可用，本地功能仍可使用。</p>
+
+      <section class="card mt-12 p-6 sm:p-8">
+        <h2 class="text-2xl font-semibold">哪种方式更适合你</h2>
+        <div class="mt-6 overflow-x-auto">
+          <table class="w-full text-left text-sm">
+            <caption class="sr-only">免费客户端、个人会员与加量包权益对比</caption>
+            <thead>
+              <tr><th>使用场景</th><th>免费客户端</th><th>个人会员</th><th>积分加量包</th></tr>
+            </thead>
+            <tbody>
+              {compareRows.map(([k, ...cells]) => (
+                <tr>
+                  <th>{k}</th>
+                  {cells.map((c) => <td>{c}</td>)}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </section>
+    </div>
+
+    <div id="enterprise-plans" role="tabpanel" aria-labelledby="enterprise-tab" class="mt-8" hidden>
+      <div class="card mx-auto max-w-3xl border-t-[3px] border-t-enterprise p-8">
+        <p class="eyebrow eyebrow-enterprise">Private Deployment</p>
+        <h2 class="mt-2 text-2xl font-semibold">企业版按项目报价</h2>
+        <p class="mt-4 leading-8 text-ink-soft">系统接入、团队权限、审批与治理通过私有化项目交付。报价随接入范围、部署形态与交付清单确定；服务器套件、企业客户端与镜像包按项目核对，不提供公开镜像直链。</p>
+        <div class="mt-6 flex flex-wrap gap-3">
+          <a href={href('/enterprise/contact/')} class="btn btn-enterprise">预约演示</a>
+          <a href={href('/enterprise/deployment/')} class="btn btn-secondary">部署与交付</a>
+        </div>
+      </div>
+    </div>
   </section>
+
+  <section class="mt-16 border-y border-line bg-panel py-16">
+    <div class="container-site">
+      <h2 class="text-center text-2xl font-semibold">常见问题</h2>
+      <div class="mx-auto mt-8 max-w-3xl space-y-3">
+        {
+          faqs.map((f) => (
+            <details class="rounded-xl border border-line bg-bg p-5">
+              <summary class="cursor-pointer font-medium">{f.q}</summary>
+              <p class="mt-4 text-sm leading-7 text-ink-soft">{f.a}</p>
+            </details>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <div class="container-site">
+    <PersonalBillingDetails freeFeatures={freeFeatures} creditFeatures={creditFeatures} demo={demo} />
+  </div>
 </Base>
 <style>
   .pricing-tab{min-height:44px;min-width:132px;padding:10px 20px;border-radius:8px;font-size:14px;color:var(--muted);cursor:pointer}.pricing-tab.active{background:var(--panel);color:var(--ink);box-shadow:0 2px 4px #1018280a;font-weight:600}th,td{padding:16px 12px;border-bottom:1px solid var(--line);white-space:nowrap}thead th{color:var(--muted);font-weight:500;background:var(--panel-2)}tbody th{font-weight:500}td{color:var(--ink-soft)}summary{min-height:32px}button:focus-visible{outline:2px solid var(--primary);outline-offset:3px}

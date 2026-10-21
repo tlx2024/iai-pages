@@ -1,6 +1,6 @@
 ---
 import Base from '../../layouts/Base.astro';
-import SectionHeading from '../../components/SectionHeading.astro';
+import EditionHero from '../../components/EditionHero.astro';
 import CtaBand from '../../components/CtaBand.astro';
 import egressContract from '../../data/personal-egress.json';
 import { href } from '../../lib/url';
@@ -12,20 +12,19 @@ const { principles, egressItems, cloudStoragePolicy } = egressContract;
   title="出网清单与数据去向 · IAI 个人版"
   description="资料留在本机，出网按功能清单列出。说明每个功能发什么、发到哪、存多久。不拿用户数据炼模型，断网照常工作。"
 >
-  <section class="container-site pt-14">
-    <SectionHeading
-      as="h1"
-      eyebrow="Privacy & Egress"
-      title="隐私与出网清单"
-      lead="资料留在本机，出网按功能逐项列出。本页与桌面客户端设置页读同一份清单；云端审计与它的对账尚未接入。"
-    />
+  <EditionHero
+    eyebrow="Privacy & Egress"
+    title="隐私与出网清单"
+    lead="资料留在本机，出网按功能逐项列出。本页与桌面客户端设置页读同一份清单；云端审计与它的对账尚未接入。"
+  />
 
+  <section class="container-site">
     {/* 核心原则 */}
-    <div class="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+    <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
       {
         principles.map((pr, i) => (
           <div class="card p-6">
-            <span class="font-mono text-xs font-bold text-primary">PRINCIPLE 0{i + 1}</span>
+            <span class="font-latin text-xs font-semibold text-personal">PRINCIPLE 0{i + 1}</span>
             <p class="mt-2 text-sm leading-relaxed text-ink">{pr}</p>
           </div>
         ))

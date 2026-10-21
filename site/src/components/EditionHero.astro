@@ -1,0 +1,42 @@
+---
+// 个人版子页的统一首屏：光晕底、版本标签、前置条件、标题与导语，行动按钮放 slot。
+import EditionTag from './EditionTag.astro';
+import { EDITIONS, type EditionKey } from '../data/editions';
+
+interface Props {
+  edition?: EditionKey;
+  eyebrow: string;
+  title: string;
+  lead?: string;
+  /** 标签文字，默认是该版的可用性 */
+  tag?: string;
+  /** 标签旁的说明，默认是该版的前置条件 */
+  note?: string;
+  align?: 'left' | 'center';
+}
+const { edition = 'personal', eyebrow, title, lead, tag, note, align = 'left' } = Astro.props;
+const ed = EDITIONS[edition];
+const center = align === 'center';
+---
+
+<section class="relative overflow-hidden">
+  <div class="pointer-events-none absolute inset-0" style="background: var(--hero-glow)" aria-hidden="true"></div>
+  <div class="container-site relative pb-12 pt-12 sm:pt-16">
+    <div class:list={['max-w-4xl', center && 'mx-auto text-center']}>
+      <div class:list={['flex flex-wrap items-center gap-2', center && 'justify-center']}>
+        <EditionTag edition={edition} label={tag ?? ed.status} />
+        <span class="rounded-full border border-line px-3 py-0.5 text-xs text-muted">{note ?? ed.requires}</span>
+      </div>
+      <p class:list={['eyebrow mt-6', edition === 'enterprise' && 'eyebrow-enterprise']}>{eyebrow}</p>
+      <h1 class="mt-2 text-[2.25rem] font-bold leading-[1.2] tracking-tight sm:text-5xl">{title}</h1>
+      {lead && <p class:list={['mt-5 text-base leading-8 text-ink-soft sm:text-lg', center ? 'mx-auto max-w-2xl' : 'max-w-3xl']}>{lead}</p>}
+      {
+        Astro.slots.has('default') && (
+          <div class:list={['mt-8 flex flex-wrap items-center gap-3', center && 'justify-center']}>
+            <slot />
+          </div>
+        )
+      }
+    </div>
+  </div>
+</section>

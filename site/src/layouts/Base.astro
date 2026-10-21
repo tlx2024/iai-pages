@@ -2,6 +2,8 @@
 import '../styles/site.css';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
+import EditionSubnav from '../components/EditionSubnav.astro';
+import { editionOf } from '../data/editions';
 import { href } from '../lib/url';
 import { BRAND } from '../data/site';
 
@@ -15,6 +17,7 @@ interface Props {
 const { title, description = `${BRAND.full}：${BRAND.tagline}个人版按本体组建专业 AI 团队，企业版覆盖整个企业的 AI 生态。` } = Astro.props;
 const pageTitle = title ? `${title} · ${BRAND.full}` : `${BRAND.full} · ${BRAND.en}`;
 const canonical = new URL(Astro.url.pathname, Astro.site);
+const edition = editionOf(Astro.url.pathname, import.meta.env.BASE_URL.replace(/\/$/, ''));
 const ogImage = new URL(href('/og.jpg'), Astro.site);
 ---
 
@@ -58,6 +61,7 @@ const ogImage = new URL(href('/og.jpg'), Astro.site);
       >跳到正文</a
     >
     <Header />
+    {edition && <EditionSubnav edition={edition} />}
     <main id="main">
       <slot />
     </main>

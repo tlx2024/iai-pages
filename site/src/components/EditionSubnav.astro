@@ -1,0 +1,42 @@
+---
+// 版本子导航：个人版、企业版路径下的页面共用一条，Base 按当前路径自动渲染。
+import { EDITIONS, type EditionKey } from '../data/editions';
+import { href } from '../lib/url';
+
+interface Props {
+  edition: EditionKey;
+}
+const ed = EDITIONS[Astro.props.edition];
+const ent = ed.key === 'enterprise';
+const local = Astro.url.pathname.replace(import.meta.env.BASE_URL.replace(/\/$/, ''), '') || '/';
+// 总览只在本页高亮；其余按前缀，/packs/xxx/ 也算本体市场
+const current = (p: string) => (p === ed.pages[0].href ? local === p : local.startsWith(p));
+---
+
+<nav class="border-b border-line bg-panel" aria-label={`${ed.name}页面`}>
+  <div class="container-site flex items-center gap-4 overflow-x-auto">
+    <span class:list={['shrink-0 py-3 text-sm font-semibold', ent ? 'text-enterprise' : 'text-personal']}>{ed.name}</span>
+    <span class="h-4 w-px shrink-0 bg-line" aria-hidden="true"></span>
+    <ul class="flex shrink-0 items-center gap-1">
+      {
+        ed.pages.map((p) => (
+          <li>
+            <a
+              href={href(p.href)}
+              class:list={[
+                'relative block whitespace-nowrap px-2.5 py-3 text-sm transition-colors',
+                current(p.href) ? 'font-medium text-ink' : 'text-muted hover:text-ink',
+              ]}
+              aria-current={current(p.href) ? 'page' : undefined}
+            >
+              {p.label}
+              {current(p.href) && (
+                <span class:list={['absolute inset-x-2.5 bottom-0 h-0.5 rounded-full', ent ? 'bg-enterprise' : 'bg-personal']} aria-hidden="true" />
+              )}
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+</nav>

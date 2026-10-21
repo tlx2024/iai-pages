@@ -28,14 +28,14 @@ const steps: { title: string; lead: string; points: string[]; status: Availabili
   {
     title: '按本体组建团队',
     lead: '本体就是团队的岗位说明书。',
-    points: ['按本体里的岗位和委托契约建 AI 成员', '每个成员只读它该读的类型，按契约交付', '起步包可以自带示例团队，装完就能看到分工'],
+    points: ['按本体里的岗位和委托契约建 AI 成员', '每个成员写清职责与交付物，加入项目后才在项目里出现', '起步包可以自带示例团队，装完就能看到分工'],
     status: 'invite',
     note: '一句话直接生成整支团队：规划中',
   },
   {
     title: '在项目里派活',
     lead: '项目内可行动，项目外不行动。',
-    points: ['任务挂在项目下，团队在项目根目录内读写与运行', '关键动作由你签批，交付留痕可查', '答得不对点一下，记为本体缺口，下次改本体时处理'],
+    points: ['在项目对话里点名成员派活；AI 推断的派活先出确认卡', '可约定每天、工作日或每周一定时运行', '读写与运行限定在项目根目录内，关键动作由你签批'],
     status: 'invite',
   },
 ];
@@ -113,7 +113,7 @@ const pillars = [
   {/* ---------- 四步 ---------- */}
   <section class="border-y border-line bg-panel py-16">
     <div class="container-site">
-      <SectionHeading eyebrow="How it works" title="从一句话到一支能派活的团队" lead="每一步都可以停下来改。本体变了，团队的分工和读取范围跟着变。" />
+      <SectionHeading eyebrow="How it works" title="从一句话到一支能派活的团队" lead="每一步都可以停下来改。本体变了，再据此调整团队的岗位与分工。" />
       <ol class="mt-10 grid gap-4 md:grid-cols-2">
         {
           steps.map((s, i) => (

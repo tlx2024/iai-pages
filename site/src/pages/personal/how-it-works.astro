@@ -1,6 +1,6 @@
 ---
 import Base from '../../layouts/Base.astro';
-import SectionHeading from '../../components/SectionHeading.astro';
+import EditionHero from '../../components/EditionHero.astro';
 import CtaBand from '../../components/CtaBand.astro';
 import { href } from '../../lib/url';
 
@@ -67,6 +67,26 @@ const steps = [
   },
   {
     step: '04',
+    title: '按本体组建团队：岗位、职责与派活',
+    lead: '本体写清了业务里有哪些岗位和契约，团队就按它来组。',
+    desc: '团队里的每个成员是一个智能体：有名字、职责说明和交付物。成员加入某个项目后，才会出现在这个项目的名册里；你在项目对话里派活，它在项目范围内完成。',
+    details: [
+      {
+        k: '起步包自带示例团队',
+        v: '一人公司起步包带 5 个示例智能体，按虚拟部门与岗位组织，装完就能看到分工；其他包的团队按你的岗位自己创建。示例智能体带〔示例〕标记，可随时清理。',
+      },
+      {
+        k: '派活先确认',
+        v: '在项目对话里点名成员即可派活；助手自己推断出要派给谁时，先弹确认卡，你确认后才开始运行。运行结果写回同一条会话，可以逐步回看。',
+      },
+      {
+        k: '定时运行与边界',
+        v: '可以和成员约定每天、工作日或每周一定时运行。读写与运行限定在项目根目录内，项目外不行动；关键动作需要你签批。“一句话生成整支团队”仍在规划中。',
+      },
+    ],
+  },
+  {
+    step: '05',
     title: '按规矩问答与纠错：每句出处直达原文',
     lead: '按已定的标准作答，点击出处就能看到原文。',
     desc: '向智能助手提问时，系统结合本地检索召回命中的资料片段与本体规矩，提交官方 AI 推理。回答里的每个结论都标出处。',
@@ -90,25 +110,36 @@ const steps = [
 
 <Base
   title="工作方式 · IAI 个人版"
-  description="资料在本机 → 本体起草与演化 → Wiki 随本体生长 → 带出处问答。把规矩写进本体，AI 按它作答。"
+  description="资料在本机 → 本体起草与演化 → Wiki 随本体生长 → 按本体组建团队 → 带出处问答。把规矩写进本体，AI 按它作答。"
 >
-  <section class="container-site pt-14">
-    <SectionHeading
-      as="h1"
-      eyebrow="How It Works"
-      title="工作方式：从本地资料到带出处的回答"
-      lead="资料在本机 → 本体起草与演化 → Wiki 随本体生长 → 带出处问答。把分散的规矩写进本体，AI 按它作答，花在哪里都有记录。"
-    />
+  <EditionHero
+    eyebrow="How it works"
+    title="从本地资料到一支能派活的团队"
+    lead="资料在本机 → 本体起草与演化 → Wiki 随本体生长 → 按本体组建团队 → 带出处问答。把分散的规矩写进本体，团队按它分工，AI 按它作答，花在哪里都有记录。"
+  />
 
-    <div class="mt-16 space-y-16">
+  <section class="container-site">
+    <ol class="mb-10 flex flex-wrap gap-2 text-sm" aria-label="五个步骤">
       {
         steps.map((st) => (
-          <div class="card p-8 sm:p-10">
+          <li>
+            <a href={`#step-${st.step}`} class="inline-flex items-center gap-1.5 rounded-full border border-line bg-panel px-3 py-1.5 text-ink-soft hover:border-personal hover:text-personal">
+              <span class="font-latin text-xs font-semibold text-personal">{st.step}</span>
+              {st.title.split('：')[0]}
+            </a>
+          </li>
+        ))
+      }
+    </ol>
+    <div class="space-y-6">
+      {
+        steps.map((st) => (
+          <div id={`step-${st.step}`} class="card scroll-mt-28 p-6 sm:p-10">
             <div class="flex flex-wrap items-baseline gap-4">
-              <span class="font-mono text-3xl font-extrabold text-primary sm:text-4xl">{st.step}</span>
+              <span class="font-latin text-3xl font-bold tabular-nums text-personal sm:text-4xl">{st.step}</span>
               <h2 class="text-2xl font-bold text-ink sm:text-3xl">{st.title}</h2>
             </div>
-            <p class="mt-3 text-base font-medium text-primary">{st.lead}</p>
+            <p class="mt-3 text-base font-medium text-personal">{st.lead}</p>
             <p class="mt-4 text-sm leading-relaxed text-ink-soft sm:text-base">{st.desc}</p>
 
             <div class="mt-8 grid gap-4 border-t border-line/60 pt-6 sm:grid-cols-3">

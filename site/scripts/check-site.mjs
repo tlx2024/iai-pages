@@ -39,5 +39,24 @@ for (const file of htmlFiles) {
       problems.push(`${file}: missing local target: ${url}`);
   }
 }
+// Moved routes: every nginx 301 needs a static redirect stub (Pages cannot send 301) pointing at a
+// built target, and every stub needs a 301 rule.
+const redirectConf = path.resolve(root, '../deploy/www-redirects.conf');
+const rules = new Map();
+for (const m of fs.readFileSync(redirectConf, 'utf8').matchAll(/^location ~ \^(\/[\w-]+\/)\?\$ \{ return 301 (\/[\w/-]+\/); \}$/gm))
+  rules.set(m[1], m[2]);
+if (!rules.size) problems.push('deploy/www-redirects.conf: no redirect rules parsed');
+for (const [from, to] of rules) {
+  const stub = path.join(dist, from, 'index.html');
+  if (!fs.existsSync(stub)) { problems.push(`redirect ${from}: static stub missing`); continue; }
+  const refresh = fs.readFileSync(stub, 'utf8').match(/http-equiv="refresh" content="0; url=([^"]+)"/);
+  if (!refresh || refresh[1] !== `${target.base}${to}`) problems.push(`redirect ${from}: stub points to ${refresh?.[1]}, nginx to ${to}`);
+  if (!fs.existsSync(path.join(dist, to, 'index.html'))) problems.push(`redirect ${from}: target ${to} not built`);
+}
+for (const file of htmlFiles) {
+  if (!/http-equiv="refresh"/.test(fs.readFileSync(path.join(dist, file), 'utf8'))) continue;
+  const from = `/${path.dirname(file).replace(/\\/g, '/')}/`;
+  if (!rules.has(from)) problems.push(`${file}: redirect stub has no 301 rule in deploy/www-redirects.conf`);
+}
 if (problems.length) throw new Error([...new Set(problems)].join('\n'));
 console.log(`[site] ${target.mode}: ${htmlFiles.length} pages; product claims and links passed`);
