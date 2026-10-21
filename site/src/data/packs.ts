@@ -57,8 +57,8 @@ export const PACKS: Pack[] = [
     bundleFormat: 'iai.ontology-design.v2',
     counts: { types: 7, examples: 28, sources: 12, questions: 12, agents: 0, cockpits: 0 },
     sizeBytes: 94669,
-    permissions: [],
-    grantsNote: '本包含参考场景，安装时会授予本人资源树管理权限（resources:manage）。',
+    permissions: ['alarm:read', 'field:report'],
+    grantsNote: '安装时会授予 alarm:read、field:report 与本人资源树管理权限（resources:manage）。',
     highlights: [
       '7 个类型覆盖产线、工位、检测、缺陷、设备与 SOP',
       '28 个带〔示例〕标记的对象，装完即可浏览与问答',
@@ -89,8 +89,9 @@ export const PACKS: Pack[] = [
     bundleFormat: 'iai.ontology-design.v2',
     counts: { types: 10, examples: 153, sources: 14, questions: 10, agents: 0, cockpits: 1 },
     sizeBytes: 156105,
-    permissions: [],
-    grantsNote: '本包未声明额外权限；安装后即可在当前个人工作区浏览与问答。',
+    permissions: ['rnd:data:read', 'rnd:data:write', 'rnd:formula:view', 'rnd:project:manage'],
+    grantsNote:
+      '安装时会授予 rnd:data:read、rnd:data:write、rnd:formula:view、rnd:project:manage 与本人资源树管理权限（resources:manage）。',
     highlights: [
       '配方版本与实验批次可追溯',
       '153 个示例对象覆盖原料、实验与表征结果',
@@ -121,8 +122,9 @@ export const PACKS: Pack[] = [
     bundleFormat: 'iai.ontology-design.v2',
     counts: { types: 13, examples: 34, sources: 9, questions: 13, agents: 5, cockpits: 1 },
     sizeBytes: 94723,
-    permissions: [],
-    grantsNote: '本包包含 5 个示例智能体，安装后会按现有个人版策略启用。',
+    permissions: ['data:read', 'ontology:model'],
+    grantsNote:
+      '本包含 5 个示例智能体；安装时会授予 data:read、ontology:model 与本人资源树管理权限（resources:manage），并按现有个人版策略启用示例智能体。',
     highlights: [
       '13 个类型覆盖创始人、虚拟部门、委托契约与交付成果',
       '5 个示例智能体，展示一个人如何组织 AI 代理',
