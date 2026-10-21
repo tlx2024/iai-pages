@@ -1,7 +1,7 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "title": "IAI 个人版出网清单单一来源契约",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "updatedAt": "2026-10-21",
   "description": "个人版出网清单的唯一来源。桌面设置页（apps/web/lib/personal-egress.json）与官网隐私页（iai-pages site/src/data/personal-egress.json）各持一份副本，由 scripts/repos/repos.py check 核对一致；云端审计字段的对账尚未接入。修改须过评审。",
   "principles": [
@@ -55,12 +55,12 @@
     {
       "id": "ocr",
       "fn": "云端扫描页识别",
-      "what": "选定扫描页的页面图像（本机无法提取文字、且未装本机增强解析时，逐份确认后发送）",
+      "what": "扫描件或图片的页面图像：本机解析不了、也没有本机增强解析时，每份文件先报价，确认后才逐页发送",
       "where": "官方网关 → 上游 OCR 视觉模型（qwen-vl-ocr）",
-      "retention": "页图与识别结果不落盘，随请求返回本机",
-      "cost": "按识别页数计费，识别前报价确认",
+      "retention": "页图只在本次请求内存中处理，不落盘；识别结果随请求返回本机",
+      "cost": "按每页实际用量计费，识别前报价确认上限，没用完的退回",
       "offline": "暂停云端识别；有文字层的 PDF 与 Office 文件在本机解析，免费",
-      "status": "planned"
+      "status": "available"
     },
     {
       "id": "ontology_suggest",
