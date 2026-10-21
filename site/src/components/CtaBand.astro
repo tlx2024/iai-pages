@@ -2,40 +2,103 @@
 import Icon from './Icon.astro';
 import { href } from '../lib/url';
 import { CONTACT_EMAIL } from '../data/site';
+import { EDITIONS, type EditionKey } from '../data/editions';
 
 interface Props {
+  /** 不传时左右两版并列；传入时只给该版的主次入口 */
+  edition?: EditionKey;
   title?: string;
   lead?: string;
 }
-const {
-  title = '本机知识库与官方 AI，按自己的节奏使用',
-  lead = '个人版仍在规划与开发中：资料在本机，官方 AI 使用账号与积分。企业系统接入通过私有化交付。',
-} = Astro.props;
+const { edition, title, lead } = Astro.props;
+const contact = CONTACT_EMAIL ? `mailto:${CONTACT_EMAIL}` : href('/enterprise/contact/');
+const ed = edition ? EDITIONS[edition] : null;
 ---
 
-<section class="container-site pt-16">
-  <div class="relative overflow-hidden rounded-2xl bg-[#14213d] px-6 py-12 text-white sm:px-12">
-    <div
-      class="pointer-events-none absolute -right-24 -top-24 size-80 rounded-full bg-[#2f6bff] opacity-40 blur-3xl"
-      aria-hidden="true"
-    >
-    </div>
-    <div class="relative max-w-2xl">
-      <h2 class="text-2xl font-bold leading-snug sm:text-3xl">{title}</h2>
-      <p class="mt-3 leading-7 text-white/75">{lead}</p>
-      <div class="mt-7 flex flex-wrap gap-3">
-        <a href={href('/download/')} class="btn bg-white text-[#14213d] hover:bg-white/90">
-          <Icon name="download" size={18} />
-          查看下载进度
-        </a>
-        <a
-          href={CONTACT_EMAIL ? `mailto:${CONTACT_EMAIL}` : href('/contact/')}
-          class="btn border border-white/30 text-white hover:border-white/60"
-        >
-          <Icon name="mail" size={18} />
-          咨询私有部署
-        </a>
+{
+  ed ? (
+    <section class="container-site pt-16">
+      <div
+        class:list={[
+          'relative overflow-hidden rounded-2xl px-6 py-12 text-white ring-1 ring-white/10 sm:px-12',
+          ed.key === 'enterprise' ? 'bg-enterprise-hero' : 'bg-[#14213d]',
+        ]}
+      >
+        <div
+          class:list={[
+            'pointer-events-none absolute -right-24 -top-24 size-80 rounded-full opacity-40 blur-3xl',
+            ed.key === 'enterprise' ? 'bg-[#4f7096]' : 'bg-[#2f6bff]',
+          ]}
+          aria-hidden="true"
+        />
+        <div class="relative max-w-2xl">
+          <h2 class="text-2xl font-bold leading-snug sm:text-3xl">{title ?? ed.promise}</h2>
+          <p class="mt-3 leading-7 text-white/75">{lead ?? ed.requires}</p>
+          <div class="mt-7 flex flex-wrap gap-3">
+            {ed.key === 'enterprise' ? (
+              <>
+                <a href={contact} class="btn bg-white text-[#111c2e] hover:bg-white/90">
+                  <Icon name="mail" size={18} />
+                  预约演示
+                </a>
+                <a href={href('/enterprise/deployment/')} class="btn border border-white/30 text-white hover:border-white/60">
+                  看部署与硬件
+                </a>
+              </>
+            ) : (
+              <>
+                <a href={href('/download/')} class="btn bg-white text-[#14213d] hover:bg-white/90">
+                  <Icon name="download" size={18} />
+                  申请内测 / 下载进度
+                </a>
+                <a href={href('/packs/')} class="btn border border-white/30 text-white hover:border-white/60">
+                  看起步包
+                </a>
+              </>
+            )}
+          </div>
+        </div>
       </div>
-    </div>
-  </div>
-</section>
+    </section>
+  ) : (
+    <section class="container-site pt-16" aria-labelledby="cta-title">
+      <h2 id="cta-title" class="sr-only">
+        {title ?? '选一条路径开始'}
+      </h2>
+      <div class="grid gap-4 lg:grid-cols-2">
+        <div class="relative overflow-hidden rounded-2xl bg-[#14213d] px-6 py-10 text-white ring-1 ring-white/10 sm:px-10">
+          <div class="pointer-events-none absolute -right-20 -top-20 size-64 rounded-full bg-[#2f6bff] opacity-40 blur-3xl" aria-hidden="true" />
+          <div class="relative">
+            <p class="font-latin text-sm text-white/60">{EDITIONS.personal.name} · {EDITIONS.personal.en}</p>
+            <p class="mt-2 text-xl font-bold leading-snug sm:text-2xl">{EDITIONS.personal.promise}</p>
+            <p class="mt-3 text-sm text-white/70">{EDITIONS.personal.requires}</p>
+            <div class="mt-6 flex flex-wrap gap-3">
+              <a href={href('/download/')} class="btn bg-white text-[#14213d] hover:bg-white/90">
+                申请内测
+              </a>
+              <a href={href('/personal/')} class="btn border border-white/30 text-white hover:border-white/60">
+                了解个人版
+              </a>
+            </div>
+          </div>
+        </div>
+        <div class="relative overflow-hidden rounded-2xl bg-enterprise-hero px-6 py-10 text-white ring-1 ring-white/10 sm:px-10">
+          <div class="pointer-events-none absolute -right-20 -top-20 size-64 rounded-full bg-[#4f7096] opacity-40 blur-3xl" aria-hidden="true" />
+          <div class="relative">
+            <p class="font-latin text-sm text-white/60">{EDITIONS.enterprise.name} · {EDITIONS.enterprise.en}</p>
+            <p class="mt-2 text-xl font-bold leading-snug sm:text-2xl">{EDITIONS.enterprise.promise}</p>
+            <p class="mt-3 text-sm text-white/70">{EDITIONS.enterprise.requires}</p>
+            <div class="mt-6 flex flex-wrap gap-3">
+              <a href={contact} class="btn bg-white text-[#111c2e] hover:bg-white/90">
+                预约演示
+              </a>
+              <a href={href('/enterprise/')} class="btn border border-white/30 text-white hover:border-white/60">
+                了解企业版
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  )
+}

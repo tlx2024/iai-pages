@@ -23,7 +23,9 @@ const year = new Date().getFullYear();
               {CONTACT_EMAIL}
             </a>
           ) : (
-            '联系方式即将公布'
+            <a class="link" href={href('/enterprise/contact/')}>
+              联系方式即将公布
+            </a>
           )
         }
       </p>

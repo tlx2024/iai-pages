@@ -36,22 +36,25 @@ export default defineConfig({
           items: [
             { label: '文档首页', slug: 'docs' },
             'docs/quickstart',
+            'docs/models',
           ],
         },
         {
-          label: '指南',
-          items: [
-            'docs/trial',
-            'docs/deployment',
-            'docs/models',
-          ],
+          label: '个人版',
+          items: ['docs/trial'],
+        },
+        {
+          label: '企业版',
+          items: ['docs/deployment'],
         },
         'docs/faq',
         {
           label: '官网',
           items: [
             { label: '返回首页', link: '/' },
-            { label: '功能', link: '/features/assistant/' },
+            { label: '个人版', link: '/personal/' },
+            { label: '企业版', link: '/enterprise/' },
+            { label: '能力', link: '/features/' },
             { label: '下载', link: '/download/' },
             { label: '更新日志', link: '/changelog/' },
           ],

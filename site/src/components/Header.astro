@@ -5,9 +5,17 @@ import Icon from './Icon.astro';
 import ThemeToggle from './ThemeToggle.astro';
 import { accountHref } from '../lib/endpoints';
 import { NAV, BRAND } from '../data/site';
+import { EDITIONS, editionOf } from '../data/editions';
 import { href, isActive } from '../lib/url';
 
+// 静态站不放登录态：账号相关一律跳到账号域，不在本页读写任何身份信息。
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 const path = Astro.url.pathname;
+const local = path.replace(base, '') || '/';
+const current = editionOf(path, base);
+// 主 CTA 跟随所在路径：企业路径「预约演示」，其余「申请内测」
+const cta = current === 'enterprise' ? EDITIONS.enterprise.secondary : EDITIONS.personal.secondary;
+const active = (item: (typeof NAV)[number]) => (item.edition ? current === item.edition : isActive(path, item.href));
 ---
 
 <header class="sticky top-0 z-40 border-b border-line bg-bg/85 backdrop-blur supports-[backdrop-filter]:bg-bg/75">
@@ -19,65 +27,70 @@ const path = Astro.url.pathname;
       </span>
     </a>
 
-    <nav class="hidden flex-1 items-center justify-center gap-0 xl:flex" aria-label="主导航">
+    <nav class="ml-6 hidden items-center gap-1 lg:flex" aria-label="主导航">
       {
-        NAV.map((item) => (
-          <a
-            href={href(item.href)}
-            class:list={[
-              'rounded-lg px-2 py-2 text-sm transition-colors hover:text-primary',
-              isActive(path, item.href) ? 'text-primary font-medium' : 'text-ink-soft',
-            ]}
-            aria-current={isActive(path, item.href) ? 'page' : undefined}
-          >
-            {item.label}
-          </a>
-        ))
+        NAV.map((item) => {
+          const ed = item.edition ? EDITIONS[item.edition] : null;
+          return (
+            <div class="group relative">
+              <a
+                href={href(item.href)}
+                class:list={[
+                  'relative inline-flex items-center gap-1 rounded-lg px-3 py-2 text-sm transition-colors hover:text-primary',
+                  active(item) ? 'font-medium text-ink' : 'text-ink-soft',
+                ]}
+                aria-current={active(item) ? 'page' : undefined}
+              >
+                {item.label}
+                {ed && <Icon name="chevronDown" size={14} class="text-faint transition-transform group-hover:rotate-180" />}
+                {active(item) && (
+                  <span
+                    class:list={[
+                      'absolute inset-x-3 -bottom-[13px] h-0.5 rounded-full',
+                      item.edition === 'enterprise' ? 'bg-enterprise' : 'bg-primary',
+                    ]}
+                    aria-hidden="true"
+                  />
+                )}
+              </a>
+              {ed && (
+                <div class="invisible absolute left-0 top-full z-50 pt-2 opacity-0 transition-opacity duration-150 group-focus-within:visible group-focus-within:opacity-100 group-hover:visible group-hover:opacity-100">
+                  <div class="w-[22rem] rounded-xl border border-line bg-panel p-2 shadow-[var(--shadow-float)]">
+                    <p class:list={['px-3 pb-1 pt-2 text-xs font-medium', ed.key === 'enterprise' ? 'text-enterprise' : 'text-primary']}>
+                      {ed.promise}
+                    </p>
+                    <ul>
+                      {ed.pages.map((pg) => (
+                        <li>
+                          <a href={href(pg.href)} class="flex items-baseline justify-between gap-4 rounded-lg px-3 py-2 hover:bg-panel-2">
+                            <span class="text-sm font-medium text-ink">{pg.label}</span>
+                            <span class="text-xs text-muted">{pg.desc}</span>
+                          </a>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                </div>
+              )}
+            </div>
+          );
+        })
       }
     </nav>
 
-    <div class="ml-auto flex items-center gap-2 xl:ml-0">
+    <div class="ml-auto flex items-center gap-2">
       <ThemeToggle />
-
-      <!-- 未登录访客状态（默认渲染） -->
-      <div id="header-guest-actions" class="flex items-center gap-2">
-        <a class="hidden px-2.5 py-2 text-sm text-ink-soft hover:text-primary sm:inline-flex" href={accountHref('account')}>账号中心</a>
-        <a class="btn btn-secondary hidden px-3 text-sm sm:inline-flex" href={accountHref('register')}>会员注册</a>
-      </div>
-
-      <!-- 已登录会员状态（直接展示个人信息与退出按钮，不做下拉设计） -->
-      <div id="header-user-actions" class="hidden items-center gap-2">
-        <a
-          href={accountHref('account')}
-          class="flex items-center gap-2 rounded-full border border-line bg-surface/90 py-1 pl-1 pr-3 text-xs font-medium text-ink transition hover:border-primary/40 hover:bg-surface"
-          id="header-user-btn"
-          title="点击前往账号中心"
-        >
-          <span id="header-user-avatar" class="grid size-7 place-items-center rounded-full bg-gradient-to-br from-blue-600 to-indigo-600 font-bold text-white shadow-sm">
-            IAI
-          </span>
-          <span id="header-user-name" class="max-w-[120px] truncate text-[13px] font-semibold text-ink">
-            个人会员
-          </span>
-          <span class="rounded-full border border-amber-300 bg-amber-50 px-1.5 py-0.5 text-[10.5px] font-semibold text-amber-800">
-            会员
-          </span>
-        </a>
-
-        <button
-          type="button"
-          id="header-logout-btn"
-          class="hidden items-center gap-1 rounded-lg px-2 py-1.5 text-xs text-ink-soft transition hover:bg-red-50 hover:text-red-600 sm:inline-flex"
-          title="退出当前登录"
-        >
-          <Icon name="logOut" size={14} />
-          <span>退出</span>
-        </button>
-      </div>
+      <a class="hidden px-2.5 py-2 text-sm text-ink-soft hover:text-primary sm:inline-flex" href={accountHref('account')}>账号中心</a>
+      <a
+        href={href(cta.href)}
+        class:list={['btn hidden h-9 px-3.5 text-sm sm:inline-flex', current === 'enterprise' ? 'btn-enterprise' : 'btn-primary']}
+      >
+        {cta.label}
+      </a>
 
       <button
         type="button"
-        class="grid size-11 place-items-center rounded-lg border border-line text-ink-soft hover:text-primary xl:hidden"
+        class="grid size-11 place-items-center rounded-lg border border-line text-ink-soft hover:text-primary lg:hidden"
         aria-controls="mobile-nav"
         aria-expanded="false"
         aria-label="打开导航"
@@ -89,48 +102,51 @@ const path = Astro.url.pathname;
     </div>
   </div>
 
-  <nav id="mobile-nav" class="hidden border-t border-line bg-bg xl:hidden" aria-label="主导航（窄屏）">
-    <ul class="container-site grid gap-1 py-3">
+  <nav id="mobile-nav" class="hidden max-h-[calc(100vh-4rem)] overflow-y-auto border-t border-line bg-bg lg:hidden" aria-label="主导航（窄屏）">
+    <div class="container-site grid gap-5 py-4">
       {
-        NAV.map((item) => (
-          <li>
-            <a
-              href={href(item.href)}
-              class:list={[
-                'block rounded-lg px-3 py-2.5 text-[15px]',
-                isActive(path, item.href) ? 'bg-primary-soft text-primary' : 'text-ink-soft',
-              ]}
-            >
-              {item.label}
-            </a>
-          </li>
-        ))
+        (['personal', 'enterprise'] as const).map((k) => {
+          const ed = EDITIONS[k];
+          return (
+            <section>
+              <p class:list={['px-3 text-xs font-medium', k === 'enterprise' ? 'text-enterprise' : 'text-primary']}>
+                {ed.name} · {ed.promise}
+              </p>
+              <ul class="mt-1 grid grid-cols-2 gap-1">
+                {ed.pages.map((pg) => (
+                  <li>
+                    <a
+                      href={href(pg.href)}
+                      class:list={['block rounded-lg px-3 py-2.5 text-[15px]', local === pg.href ? 'bg-panel-2 text-ink' : 'text-ink-soft']}
+                    >
+                      {pg.label}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </section>
+          );
+        })
       }
-      <!-- 窄屏访客入口 -->
-      <li class="grid grid-cols-2 gap-2 pt-2" id="mobile-guest-actions">
-        <a href={accountHref('account')} class="btn btn-secondary justify-center">账号登录</a>
-        <a href={accountHref('register')} class="btn btn-secondary justify-center">会员注册</a>
-      </li>
-
-      <!-- 窄屏会员卡片 -->
-      <li class="hidden pt-2" id="mobile-user-actions">
-        <div class="rounded-xl border border-line bg-surface p-3 shadow-sm">
-          <div class="flex items-center gap-3">
-            <span id="mobile-user-avatar" class="grid size-10 place-items-center rounded-full bg-gradient-to-br from-blue-600 to-indigo-600 font-bold text-white shadow-sm">
-              IAI
-            </span>
-            <div class="min-w-0 flex-1">
-              <div class="truncate text-sm font-semibold text-ink" id="mobile-user-name">个人会员</div>
-              <div class="text-xs text-ink-soft">服务正常生效中</div>
-            </div>
-          </div>
-          <div class="mt-3 grid grid-cols-2 gap-2 border-t border-line pt-2.5">
-            <a href={accountHref('account')} class="btn btn-secondary justify-center text-xs">账号中心</a>
-            <button type="button" id="mobile-logout-btn" class="btn btn-secondary justify-center text-xs text-red-600">退出登录</button>
-          </div>
-        </div>
-      </li>
-    </ul>
+      <ul class="grid grid-cols-2 gap-1 border-t border-line pt-3">
+        {
+          NAV.filter((i) => !i.edition).map((item) => (
+            <li>
+              <a
+                href={href(item.href)}
+                class:list={['block rounded-lg px-3 py-2.5 text-[15px]', isActive(path, item.href) ? 'bg-panel-2 text-ink' : 'text-ink-soft']}
+              >
+                {item.label}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+      <div class="grid grid-cols-2 gap-2">
+        <a href={accountHref('account')} class="btn btn-secondary justify-center">账号中心</a>
+        <a href={href(cta.href)} class:list={['btn justify-center', current === 'enterprise' ? 'btn-enterprise' : 'btn-primary']}>{cta.label}</a>
+      </div>
+    </div>
   </nav>
 </header>
 
@@ -146,93 +162,4 @@ const path = Astro.url.pathname;
     btn.querySelector('.nav-open')?.classList.toggle('hidden', open);
     btn.querySelector('.nav-close')?.classList.toggle('hidden', !open);
   });
-
-  // 会员登录态与个人信息状态实时联动
-  function syncAuthUI() {
-    try {
-      const url = new URL(window.location.href);
-      const syncRaw = url.searchParams.get('user_sync');
-      if (syncRaw) {
-        try {
-          const parsed = JSON.parse(decodeURIComponent(syncRaw));
-          if (parsed && (parsed.logged_in || parsed.username || parsed.phone)) {
-            parsed.logged_in = true;
-            localStorage.setItem('iai_user', JSON.stringify(parsed));
-          }
-        } catch (e) {}
-        url.searchParams.delete('user_sync');
-        window.history.replaceState(null, '', url.pathname + (url.search ? url.search : '') + url.hash);
-      }
-
-      if (url.searchParams.get('logout')) {
-        localStorage.removeItem('iai_user');
-        url.searchParams.delete('logout');
-        window.history.replaceState(null, '', url.pathname + (url.search ? url.search : '') + url.hash);
-      }
-
-      const raw = localStorage.getItem('iai_user');
-      let user: any = null;
-      if (raw) {
-        try { user = JSON.parse(raw); } catch (e) {}
-      }
-
-      const isLoggedIn = Boolean(user && (user.logged_in || user.username || user.phone));
-      const guestDesktop = document.getElementById('header-guest-actions');
-      const userDesktop = document.getElementById('header-user-actions');
-      const guestMobile = document.getElementById('mobile-guest-actions');
-      const userMobile = document.getElementById('mobile-user-actions');
-
-      if (isLoggedIn && user) {
-        if (guestDesktop) guestDesktop.classList.add('hidden');
-        if (userDesktop) {
-          userDesktop.classList.remove('hidden');
-          userDesktop.classList.add('flex');
-        }
-        if (guestMobile) guestMobile.classList.add('hidden');
-        if (userMobile) userMobile.classList.remove('hidden');
-
-        const name = user.display_name || user.username || (user.phone ? user.phone.replace(/(\d{3})\d{4}(\d{4})/, '$1 **** $2') : '个人会员');
-        const initial = user.avatar || (user.username ? user.username.slice(0, 2).toUpperCase() : 'IAI');
-        const sub = user.phone ? user.phone.replace(/(\d{3})\d{4}(\d{4})/, '$1 **** $2') : (user.username || '个人会员');
-
-        const avatarEl = document.getElementById('header-user-avatar');
-        if (avatarEl) avatarEl.textContent = initial;
-        const nameEl = document.getElementById('header-user-name');
-        if (nameEl) nameEl.textContent = name;
-        const menuName = document.getElementById('menu-user-name');
-        if (menuName) menuName.textContent = name;
-        const menuSub = document.getElementById('menu-user-sub');
-        if (menuSub) menuSub.textContent = sub;
-
-        const mAvatar = document.getElementById('mobile-user-avatar');
-        if (mAvatar) mAvatar.textContent = initial;
-        const mName = document.getElementById('mobile-user-name');
-        if (mName) mName.textContent = name;
-      } else {
-        if (guestDesktop) guestDesktop.classList.remove('hidden');
-        if (userDesktop) {
-          userDesktop.classList.add('hidden');
-          userDesktop.classList.remove('flex');
-        }
-        if (guestMobile) guestMobile.classList.remove('hidden');
-        if (userMobile) userMobile.classList.add('hidden');
-      }
-    } catch (err) {}
-  }
-
-  // 初始化执行
-  syncAuthUI();
-
-  // 跨标签页监听登录状态变动
-  window.addEventListener('storage', (e) => {
-    if (e.key === 'iai_user') syncAuthUI();
-  });
-
-  // 退出登录响应
-  function handleLogout() {
-    try { localStorage.removeItem('iai_user'); } catch (e) {}
-    syncAuthUI();
-  }
-  document.getElementById('header-logout-btn')?.addEventListener('click', handleLogout);
-  document.getElementById('mobile-logout-btn')?.addEventListener('click', handleLogout);
 </script>

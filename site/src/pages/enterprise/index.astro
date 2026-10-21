@@ -1,0 +1,331 @@
+---
+import { Image } from 'astro:assets';
+import Base from '../../layouts/Base.astro';
+import Icon from '../../components/Icon.astro';
+import PromoVideo from '../../components/PromoVideo.astro';
+import SectionHeading from '../../components/SectionHeading.astro';
+import EcosystemMap from '../../components/EcosystemMap.astro';
+import CtaBand from '../../components/CtaBand.astro';
+import { featureHref } from '../../data/features';
+import { EDITIONS } from '../../data/editions';
+import { shotById } from '../../data/shots';
+import { CONTACT_EMAIL } from '../../data/site';
+import { href } from '../../lib/url';
+
+const ed = EDITIONS.enterprise;
+const night = shotById('night');
+const contact = CONTACT_EMAIL ? `mailto:${CONTACT_EMAIL}` : href('/enterprise/contact/');
+
+const modes = [
+  {
+    icon: 'message',
+    title: '对话',
+    en: 'Conversation',
+    desc: '用现场的说法查询运行、报警、质量、排产和知识文档，需要时调用技能完成分析与处置。',
+    link: featureHref('assistant'),
+  },
+  {
+    icon: 'layout',
+    title: '工作台',
+    en: 'Workbench',
+    desc: '知识空间、本体对象、运行与待办、报告与成果集中在一处，按岗位组织。',
+    link: featureHref('knowledge'),
+  },
+  {
+    icon: 'bot',
+    title: '智能体中心',
+    en: 'Agent Center',
+    desc: '把固定流程配置成可复用、可审批、可审计的智能体和多 Agent 工作流。',
+    link: featureHref('agents'),
+  },
+] as const;
+
+// 执行账本：一件事从接入到留痕的八个环节
+const ledger = [
+  { step: '接入', en: 'Plug in', desc: '连接 MES、SCADA、ERP 等现有系统，不推倒重来。', link: featureHref('integrations') },
+  { step: '提问', en: 'Ask', desc: '用现场的说法提问，助手识别意图、检索知识、调用技能。', link: featureHref('assistant') },
+  { step: '依据', en: 'Cite', desc: '回答附带引用，能翻到原文、版本和审核记录。', link: featureHref('knowledge') },
+  { step: '风险', en: 'Risk', desc: '每个技能标明只读还是写入，以及风险等级。', link: featureHref('agents') },
+  { step: '审批', en: 'Approve', desc: '会改动现场的动作，先经人确认再执行。', link: featureHref('governance') },
+  { step: '自治', en: 'Autonomy', desc: '报警事件唤起智能体，先查清楚再汇报。', link: featureHref('agents') },
+  { step: '本体', en: 'Identity', desc: '各系统里的编号，对齐到同一个对象。', link: featureHref('ontology') },
+  { step: '留痕', en: 'Record', desc: '执行账本与审计日志记下每一步。', link: featureHref('governance') },
+];
+
+const diffs = [
+  {
+    icon: 'ledger',
+    title: '执行账本',
+    vs: '对比：通用聊天机器人',
+    common: '对话即结果，刷新就丢；只能给文字建议，动作要人另开系统去做。',
+    ours: [
+      '执行账本持久化，断线后从断点续读',
+      '技能直接调用系统接口，结果写回账本',
+      '写操作挂起等待审批，批准后原处继续',
+      '任务通过数据库租约调度，节点故障可由其他节点接管',
+    ],
+  },
+  {
+    icon: 'graph',
+    title: '权威本体',
+    vs: '对比：纯文本向量检索',
+    common: '同一台设备的不同叫法容易混淆；新旧文件混在一起，模型据此编出答案。',
+    ours: ['多源身份对齐到唯一对象', '知识条目保存不可变版本，可回看任一时点', '双时间线记录发生时间与录入时间', 'Wiki 由确定性模板从生产事实生成，人工核对后发布'],
+  },
+  {
+    icon: 'lock',
+    title: '安全网关',
+    vs: '对比：直接调用大模型',
+    common: '要么权限给得太大，要么只能看不能动；业务数据原样送往外部模型。',
+    ours: ['工具网关按角色与领域标签拦截越权调用', '配方敏感字段在送往模型前自动掩码', '可以只用本机模型（vLLM / Ollama），数据不出厂', '登录、调用、审批、出网全部写入审计'],
+  },
+] as const;
+
+const nightSteps = [
+  { time: '02:15', text: '压片机 A03 主电机温升报警进入事件总线，唤起“温升异常排查”智能体。' },
+  { time: '02:15', text: '智能体依次调用只读技能：查看设备对象、汇总当日运行数据、归纳报警。' },
+  { time: '02:16', text: '执行根因分析：按策略列出候选原因，逐条寻找支持与反驳的证据。' },
+  { time: '02:16', text: '根因候选与证据写入运行中心，标记为“等待早班确认”。' },
+  { time: '07:00', text: '早班工程师查看证据并确认结论；需要改动设备的处置走审批。' },
+];
+
+const forms = [
+  {
+    icon: 'server',
+    title: '服务器版',
+    en: 'Private Deployment',
+    points: ['部署在企业内网，多用户、多组织', '接入真实 MES / SCADA / ERP 与消息通道', '可完全使用本机模型，数据不出厂', '部署套件与镜像包按私有化项目交付'],
+  },
+  {
+    icon: 'monitor',
+    title: '企业客户端',
+    en: 'Desktop Client',
+    points: ['只含界面，连接企业的 IAI 服务器', '适合岗位电脑长期使用', '随服务器版一起交付', '不单独公开下载'],
+  },
+] as const;
+
+const subpages = ed.pages.filter((p) => p.href !== '/enterprise/' && p.href !== '/enterprise/contact/');
+---
+
+<Base title="企业版" description={`${ed.promise}。${ed.lead}`}>
+  {/* ---------- 深色首屏 ---------- */}
+  <section class="relative overflow-hidden bg-enterprise-hero text-white">
+    <div
+      class="pointer-events-none absolute inset-0"
+      style="background: radial-gradient(55% 70% at 85% 0%, rgba(79,112,150,.45) 0%, rgba(79,112,150,0) 70%)"
+      aria-hidden="true"
+    >
+    </div>
+    <div class="container-site relative grid gap-12 pb-16 pt-14 sm:pt-20 lg:grid-cols-[minmax(0,6fr)_minmax(0,6fr)] lg:items-center">
+      <div>
+        <p class="font-latin text-[15px] font-medium text-[#a7bed8]">IAI Enterprise · 私有化交付</p>
+        <h1 class="mt-3 text-[2.25rem] font-bold leading-[1.2] tracking-tight sm:text-5xl">{ed.promise}</h1>
+        <p class="mt-6 max-w-xl text-base leading-8 text-white/75 sm:text-lg">{ed.lead}</p>
+        <div class="mt-8 flex flex-wrap gap-3">
+          <a href={contact} class="btn bg-white text-[#111c2e] hover:bg-white/90">
+            <Icon name="mail" size={18} />
+            预约演示
+          </a>
+          <a href={href('/enterprise/deployment/')} class="btn border border-white/30 text-white hover:border-white/60">看部署与硬件</a>
+          <a href="#video" class="btn text-white/75 hover:text-white">
+            <Icon name="play" size={14} />
+            60 秒介绍
+          </a>
+        </div>
+        <p class="mt-6 text-sm text-white/55">{ed.requires}</p>
+      </div>
+      <EcosystemMap onDark />
+    </div>
+  </section>
+
+  {/* ---------- 生态分层详解 ---------- */}
+  <section class="container-site py-16">
+    <SectionHeading
+      eyebrow="One ecosystem"
+      title="向下接系统，向上给岗位，中间是一套规矩"
+      lead="企业版不是又一个独立系统，而是把已有系统、文件和人连起来的中枢。每一层都可以单独上线，从一个场景开始。"
+    />
+    <div class="mt-10">
+      <EcosystemMap detail />
+    </div>
+  </section>
+
+  {/* ---------- 三种用法 ---------- */}
+  <section class="border-y border-line bg-panel py-16">
+    <div class="container-site">
+      <SectionHeading eyebrow="Three ways to work" title="一个入口，三种用法" lead="同一个中枢，按岗位给出不同的工作方式。" />
+      <div class="mt-10 grid gap-4 md:grid-cols-3">
+        {
+          modes.map((m) => (
+            <a href={href(m.link)} class="group flex flex-col rounded-xl border border-line bg-bg p-6 transition-colors hover:border-enterprise">
+              <span class="grid size-10 place-items-center rounded-lg bg-enterprise-soft text-enterprise">
+                <Icon name={m.icon} size={20} />
+              </span>
+              <h3 class="mt-5 text-lg font-semibold">
+                {m.title}
+                <span class="font-latin ml-2 text-sm font-normal text-faint">{m.en}</span>
+              </h3>
+              <p class="mt-2 flex-1 text-[15px] leading-7 text-ink-soft">{m.desc}</p>
+              <span class="mt-4 inline-flex items-center gap-1 text-sm text-enterprise">
+                了解更多
+                <Icon name="arrowRight" size={14} class="transition-transform group-hover:translate-x-0.5" />
+              </span>
+            </a>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  {/* ---------- 执行账本 ---------- */}
+  <section class="container-site py-16">
+    <SectionHeading
+      eyebrow="Execution ledger"
+      title="从接入到留痕，每一步都在账上"
+      lead="一次处置拆成可检查的环节：谁问的、依据是什么、动作风险多大、谁批准的、系统返回了什么，都记在执行账本里。"
+    />
+    <ol class="mt-10 grid gap-px overflow-hidden rounded-xl border border-line bg-line sm:grid-cols-2 lg:grid-cols-4">
+      {
+        ledger.map((l, i) => (
+          <li class="bg-panel">
+            <a href={href(l.link)} class="group block h-full p-5 transition-colors hover:bg-panel-2">
+              <span class="font-latin text-xs font-medium tabular-nums text-enterprise">{String(i + 1).padStart(2, '0')}</span>
+              <p class="mt-2 font-semibold">
+                {l.step}
+                <span class="font-latin ml-1.5 text-xs font-normal text-faint">{l.en}</span>
+              </p>
+              <p class="mt-1 text-sm leading-6 text-muted">{l.desc}</p>
+            </a>
+          </li>
+        ))
+      }
+    </ol>
+  </section>
+
+  {/* ---------- 为什么不是一个聊天框 ---------- */}
+  <section class="border-y border-line bg-panel py-16">
+    <div class="container-site">
+      <SectionHeading
+        eyebrow="Built for the plant floor"
+        title="为什么不是一个聊天框"
+        lead="企业需要的是懂规矩、有记忆、能动手，同时动手前先问人的系统。与通用方案的差别集中在三处。"
+      />
+      <div class="mt-10 grid gap-4 lg:grid-cols-3">
+        {
+          diffs.map((d) => (
+            <article class="flex flex-col rounded-xl border border-line bg-bg p-6">
+              <div class="flex items-center gap-3">
+                <span class="grid size-9 place-items-center rounded-lg bg-enterprise-soft text-enterprise">
+                  <Icon name={d.icon} size={18} />
+                </span>
+                <h3 class="text-lg font-semibold">{d.title}</h3>
+              </div>
+              <p class="mt-4 text-xs font-medium text-faint">{d.vs}</p>
+              <p class="mt-1 text-sm leading-6 text-muted">{d.common}</p>
+              <p class="mt-5 text-xs font-medium text-enterprise">IAI 的做法</p>
+              <ul class="mt-2 space-y-2">
+                {d.ours.map((o) => (
+                  <li class="flex gap-2 text-[15px] leading-6 text-ink-soft">
+                    <Icon name="check" size={16} class="mt-1 shrink-0 text-ok" />
+                    {o}
+                  </li>
+                ))}
+              </ul>
+            </article>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  {/* ---------- 示例场景 ---------- */}
+  <section class="container-site py-16">
+    <div class="grid items-center gap-10 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)]">
+      <div>
+        <SectionHeading
+          eyebrow="Runs while you sleep"
+          title="夜里报警，智能体先去查"
+          lead="演示数据里的一个场景：没有人值守的深夜，报警事件唤起排查智能体，早班到岗时，带证据的结论已经在等人确认。"
+        />
+        <ol class="mt-8 space-y-4 border-l border-line pl-5">
+          {
+            nightSteps.map((s) => (
+              <li class="relative">
+                <span class="absolute -left-[25px] top-2 size-2.5 rounded-full border-2 border-enterprise bg-bg" aria-hidden="true" />
+                <span class="font-latin text-xs font-medium tabular-nums text-enterprise">{s.time}</span>
+                <p class="mt-0.5 text-[15px] leading-7 text-ink-soft">{s.text}</p>
+              </li>
+            ))
+          }
+        </ol>
+      </div>
+      <figure>
+        <Image
+          src={night.image}
+          alt="运行中心里的夜间排查任务：智能体依次调用查看对象、日汇总、报警归纳和根因分析技能，结果等待早班确认"
+          widths={[640, 960, 1440]}
+          sizes="(min-width: 1024px) 680px, 100vw"
+          class="w-full rounded-xl border border-line"
+        />
+        <figcaption class="mt-2 text-xs text-muted">宣传片画面：运行中心 · 演示数据</figcaption>
+      </figure>
+    </div>
+  </section>
+
+  {/* ---------- 宣传片 ---------- */}
+  <section class="border-t border-line bg-panel py-16">
+    <div class="container-site">
+      <SectionHeading eyebrow="60-second tour" title="60 秒看完一次处置" lead="画面由产品真实组件与演示数据渲染。" />
+      <div class="mt-10">
+        <PromoVideo />
+      </div>
+    </div>
+  </section>
+
+  {/* ---------- 交付形态与子页 ---------- */}
+  <section class="container-site py-16">
+    <SectionHeading
+      eyebrow="Delivery"
+      title="怎么交付"
+      lead="按私有化项目交付：先核对场景与接入清单，再定部署形态与硬件。镜像包含产品代码，不公开下载。"
+    />
+    <div class="mt-10 grid gap-4 lg:grid-cols-[repeat(2,minmax(0,1fr))_minmax(0,0.9fr)]">
+      {
+        forms.map((f) => (
+          <article class="card flex flex-col p-6">
+            <span class="grid size-10 place-items-center rounded-lg bg-enterprise-soft text-enterprise">
+              <Icon name={f.icon} size={20} />
+            </span>
+            <h3 class="mt-5 text-lg font-semibold">
+              {f.title}
+              <span class="font-latin ml-2 text-sm font-normal text-faint">{f.en}</span>
+            </h3>
+            <ul class="mt-3 space-y-2">
+              {f.points.map((p) => (
+                <li class="flex gap-2 text-[15px] leading-6 text-ink-soft">
+                  <Icon name="check" size={16} class="mt-1 shrink-0 text-faint" />
+                  {p}
+                </li>
+              ))}
+            </ul>
+          </article>
+        ))
+      }
+      <nav class="card divide-y divide-line-soft" aria-label="企业版详细页">
+        {
+          subpages.map((p) => (
+            <a href={href(p.href)} class="group flex items-center justify-between gap-3 px-5 py-4 hover:bg-panel-2">
+              <span>
+                <span class="block font-medium text-ink">{p.label}</span>
+                <span class="block text-sm text-muted">{p.desc}</span>
+              </span>
+              <Icon name="arrowRight" size={16} class="shrink-0 text-enterprise transition-transform group-hover:translate-x-0.5" />
+            </a>
+          ))
+        }
+      </nav>
+    </div>
+  </section>
+
+  <CtaBand edition="enterprise" title="从一个具体场景开始" lead="告诉我们你的行业、要接的系统和部署约束，我们按项目给出接入清单与交付方案。" />
+</Base>

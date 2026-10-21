@@ -1,0 +1,27 @@
+---
+// 旧路由的静态跳转页：Pages 托管不能配 301，这里用 meta refresh + canonical 兜底；生产 nginx 另配 301。
+import { href } from '../lib/url';
+
+interface Props {
+  to: string;
+  title: string;
+}
+const { to, title } = Astro.props;
+const target = href(to);
+const canonical = new URL(target, Astro.site);
+---
+
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title} 已迁移</title>
+    <meta name="robots" content="noindex" />
+    <link rel="canonical" href={canonical} />
+    <meta http-equiv="refresh" content={`0; url=${target}`} />
+  </head>
+  <body style="font-family: system-ui, sans-serif; padding: 2rem; background: #f5f6f8; color: #161b26">
+    <p>{title}已迁到 <a href={target}>{target}</a>。</p>
+  </body>
+</html>

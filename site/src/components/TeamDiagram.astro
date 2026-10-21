@@ -1,0 +1,66 @@
+---
+// 个人版：本体是团队的岗位说明书。左侧本体里的类型与规矩，右侧按岗位组出的 AI 团队。
+// 示例取自一人公司的业务说法，团队成员是示意，不代表某个起步包的固定配置。
+const ontology = [
+  { name: '客户与线索', kind: '对象' },
+  { name: '委托契约', kind: '规矩' },
+  { name: '交付成果', kind: '对象' },
+  { name: '质量标准', kind: '规矩' },
+  { name: '收支', kind: '对象' },
+];
+const team = [
+  { role: '市场助理', reads: '客户与线索', delivers: '线索周报' },
+  { role: '交付助理', reads: '委托契约 · 质量标准', delivers: '交付成果' },
+  { role: '财务助理', reads: '收支 · 委托契约', delivers: '对账单' },
+];
+---
+
+<div class="grid items-stretch gap-4 lg:grid-cols-[minmax(0,5fr)_auto_minmax(0,7fr)]">
+  <div class="card p-5 sm:p-6">
+    <p class="text-xs font-medium text-muted">本体 · 业务里有什么、按什么规矩</p>
+    <ul class="mt-4 grid gap-2">
+      {
+        ontology.map((o) => (
+          <li class="flex items-center justify-between rounded-lg border border-line-soft bg-panel-2 px-3 py-2">
+            <span class="text-[15px] font-medium text-ink">{o.name}</span>
+            <span class:list={['rounded px-1.5 py-0.5 text-[11px] font-medium', o.kind === '规矩' ? 'bg-warn-soft text-warn-fg' : 'bg-personal-soft text-personal']}>
+              {o.kind}
+            </span>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+
+  <div class="flex items-center justify-center text-personal" aria-hidden="true">
+    <svg viewBox="0 0 48 24" class="h-6 w-12 rotate-90 lg:rotate-0" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M4 12h38M34 5l8 7-8 7"></path>
+    </svg>
+  </div>
+
+  <div class="card p-5 sm:p-6">
+    <p class="text-xs font-medium text-muted">团队 · 每个岗位读它该读的，按契约交付</p>
+    <ul class="mt-4 grid gap-2">
+      {
+        team.map((t) => (
+          <li class="grid gap-1 rounded-lg border border-line-soft px-4 py-3 sm:grid-cols-[8.5rem_1fr_auto] sm:items-center sm:gap-4">
+            <span class="flex items-center gap-2 font-semibold text-ink">
+              <span class="grid size-7 place-items-center rounded-full bg-personal-soft text-[11px] text-personal">AI</span>
+              {t.role}
+            </span>
+            <span class="text-sm text-ink-soft">
+              <span class="text-muted">读取</span> {t.reads}
+            </span>
+            <span class="text-sm text-ink-soft">
+              <span class="text-muted">交付</span> {t.delivers}
+            </span>
+          </li>
+        ))
+      }
+      <li class="flex items-center gap-2 rounded-lg border border-dashed border-line-strong px-4 py-3 text-sm text-ink-soft">
+        <span class="grid size-7 shrink-0 place-items-center rounded-full bg-panel-2 text-[11px] text-muted">你</span>
+        负责人：分派任务、签批关键动作，每次交付都留痕可查
+      </li>
+    </ul>
+  </div>
+</div>

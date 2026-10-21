@@ -29,6 +29,14 @@
   --neutral-soft: #f2f4f7;
   --shadow-float: 0 6px 24px rgba(16, 24, 40, 0.08);
   --hero-glow: radial-gradient(60% 60% at 50% 0%, rgba(47, 107, 255, 0.10) 0%, rgba(47, 107, 255, 0) 70%);
+  /* 版本色：只用于身份标识（门卡顶边、版本标签、该路径的 eyebrow），不用于正文与大面积背景 */
+  --edition-personal: var(--primary);
+  --edition-personal-soft: var(--primary-soft);
+  --edition-enterprise: #35506e;
+  --edition-enterprise-soft: #e9eef5;
+  /* 企业版深色首屏：两种主题下都是深底浅字 */
+  --enterprise-hero: #111c2e;
+  --enterprise-hero-line: rgba(255, 255, 255, 0.12);
   color-scheme: light;
 }
 
@@ -55,6 +63,10 @@
   --neutral-soft: rgba(148, 163, 184, 0.12);
   --shadow-float: 0 6px 24px rgba(0, 0, 0, 0.3);
   --hero-glow: radial-gradient(60% 60% at 50% 0%, rgba(59, 130, 246, 0.16) 0%, rgba(59, 130, 246, 0) 70%);
+  --edition-enterprise: #8aa6c6;
+  --edition-enterprise-soft: rgba(138, 166, 198, 0.14);
+  --enterprise-hero: #0b1322;
+  --enterprise-hero-line: rgba(255, 255, 255, 0.1);
   color-scheme: dark;
 }
 
@@ -79,6 +91,11 @@
   --color-warn-fg: var(--warn-fg);
   --color-warn-soft: var(--warn-soft);
   --color-neutral-soft: var(--neutral-soft);
+  --color-personal: var(--edition-personal);
+  --color-personal-soft: var(--edition-personal-soft);
+  --color-enterprise: var(--edition-enterprise);
+  --color-enterprise-soft: var(--edition-enterprise-soft);
+  --color-enterprise-hero: var(--enterprise-hero);
 }
 
 @theme {
@@ -136,6 +153,9 @@
     letter-spacing: 0.01em;
     color: var(--primary);
   }
+  .eyebrow-enterprise {
+    color: var(--edition-enterprise);
+  }
   .card {
     background: var(--panel);
     border: 1px solid var(--line);
@@ -162,6 +182,19 @@
   }
   :root[data-theme="dark"] .btn-primary:hover {
     background: #2563eb;
+  }
+  .btn-enterprise {
+    background: var(--edition-enterprise);
+    color: #fff;
+  }
+  .btn-enterprise:hover {
+    background: #2a425c;
+  }
+  :root[data-theme="dark"] .btn-enterprise {
+    color: #0b1322;
+  }
+  :root[data-theme="dark"] .btn-enterprise:hover {
+    background: #a7bed8;
   }
   .btn-secondary {
     background: var(--panel);

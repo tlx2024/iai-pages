@@ -1,0 +1,62 @@
+---
+// 企业版生态分层：向下接系统与通道，中间统一本体与治理，向上给岗位入口。纯 HTML，两种主题可读。
+interface Props {
+  /** 深色首屏上使用 */
+  onDark?: boolean;
+  /** 详版列出每层的说明 */
+  detail?: boolean;
+}
+const { onDark = false, detail = false } = Astro.props;
+
+const layers = [
+  {
+    key: 'entry',
+    name: '岗位入口',
+    en: 'Every role',
+    items: ['Web 工作台', '企业客户端', '钉钉 / 企业微信 / 飞书', '驾驶舱与 Wiki'],
+    note: '班组长、工艺员、质量、设备、管理层各用各的入口，看到的是同一套事实。',
+  },
+  {
+    key: 'core',
+    name: '企业中枢',
+    en: 'One hub',
+    items: ['统一本体', '企业知识库', '技能与智能体中心', '审批与权限', '执行账本与审计'],
+    note: '设备、物料、工艺、人对齐到同一个对象；每个动作有依据、分风险、可审批、留痕。',
+  },
+  {
+    key: 'plug',
+    name: '接入层',
+    en: 'Plug in',
+    items: ['MES', 'SCADA', 'ERP', 'WMS', 'LIMS', '视觉检测', 'Webhook / MCP'],
+    note: '不推倒重来：通过统一接入协议连接现有系统，凭据集中托管，上线前可先用模拟器演练。',
+  },
+];
+
+const box = onDark ? 'border-[var(--enterprise-hero-line)] bg-white/[0.04]' : 'border-line bg-panel';
+const hub = onDark ? 'bg-white/[0.09] ring-1 ring-white/15' : 'ring-1 ring-[color-mix(in_srgb,var(--edition-enterprise)_30%,transparent)]';
+---
+
+<ol class="grid gap-3" aria-label="企业版生态分层">
+  {
+    layers.map((l) => (
+      <li class:list={['rounded-xl border p-4 sm:p-5', box, l.key === 'core' && hub]}>
+        <div class="flex flex-col gap-3 sm:flex-row sm:items-start sm:gap-6">
+          <div class="w-32 shrink-0">
+            <p class:list={['font-semibold', onDark ? 'text-white' : 'text-ink']}>{l.name}</p>
+            <p class:list={['font-latin text-xs', onDark ? 'text-white/50' : 'text-faint']}>{l.en}</p>
+          </div>
+          <div class="min-w-0 flex-1">
+            <ul class="flex flex-wrap gap-1.5">
+              {l.items.map((it) => (
+                <li class:list={['rounded-md px-2.5 py-1 text-sm', onDark ? 'bg-white/10 text-white/90' : 'bg-enterprise-soft text-ink-soft']}>
+                  {it}
+                </li>
+              ))}
+            </ul>
+            {detail && <p class:list={['mt-3 text-sm leading-6', onDark ? 'text-white/65' : 'text-muted']}>{l.note}</p>}
+          </div>
+        </div>
+      </li>
+    ))
+  }
+</ol>

@@ -1,0 +1,23 @@
+---
+import type { EditionKey } from '../data/editions';
+import { EDITIONS } from '../data/editions';
+
+interface Props {
+  edition: EditionKey;
+  /** 不传时显示版本名 */
+  label?: string;
+  class?: string;
+}
+const { edition, label, class: cls } = Astro.props;
+---
+
+<span
+  class:list={[
+    'inline-flex shrink-0 items-center gap-1.5 whitespace-nowrap rounded-full px-2.5 py-0.5 text-xs font-medium',
+    edition === 'enterprise' ? 'bg-enterprise-soft text-enterprise' : 'bg-personal-soft text-personal',
+    cls,
+  ]}
+>
+  <span class:list={['size-1.5 rounded-full', edition === 'enterprise' ? 'bg-enterprise' : 'bg-personal']} aria-hidden="true"></span>
+  {label ?? EDITIONS[edition].name}
+</span>

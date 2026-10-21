@@ -1,0 +1,39 @@
+---
+// 首页两扇门：两版等重并列，各讲各的事。
+import Icon from './Icon.astro';
+import EditionTag from './EditionTag.astro';
+import { EDITIONS, type EditionKey } from '../data/editions';
+import { href } from '../lib/url';
+
+interface Props {
+  edition: EditionKey;
+}
+const ed = EDITIONS[Astro.props.edition];
+const ent = ed.key === 'enterprise';
+---
+
+<article class:list={['card relative flex flex-col overflow-hidden border-t-[3px] p-6 text-left sm:p-8', ent ? 'border-t-enterprise' : 'border-t-personal']}>
+  <div class="flex flex-wrap items-center justify-between gap-2">
+    <EditionTag edition={ed.key} label={`${ed.name} · ${ed.en}`} />
+    <span class="text-xs text-muted">{ed.status}</span>
+  </div>
+  <h2 class="mt-5 text-2xl font-bold leading-snug tracking-tight sm:text-[1.75rem]">{ed.promise}</h2>
+  <ul class="mt-5 flex-1 space-y-2.5">
+    {
+      ed.points.map((p) => (
+        <li class="flex gap-2.5 text-[15px] leading-6 text-ink-soft">
+          <Icon name="check" size={16} class:list={['mt-1 shrink-0', ent ? 'text-enterprise' : 'text-personal']} />
+          {p}
+        </li>
+      ))
+    }
+  </ul>
+  <div class="mt-7 flex flex-wrap items-center gap-3">
+    <a href={href(ed.primary.href)} class:list={['btn', ent ? 'btn-enterprise' : 'btn-primary']}>
+      {ed.primary.label}
+      <Icon name="arrowRight" size={16} />
+    </a>
+    <a href={href(ed.secondary.href)} class="btn btn-secondary">{ed.secondary.label}</a>
+  </div>
+  <p class="mt-4 text-xs text-muted">{ed.requires}</p>
+</article>

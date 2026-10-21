@@ -1,239 +1,223 @@
 ---
 import Base from '../../layouts/Base.astro';
 import SectionHeading from '../../components/SectionHeading.astro';
-import StatusBadge from '../../components/StatusBadge.astro';
+import EditionTag from '../../components/EditionTag.astro';
+import TeamDiagram from '../../components/TeamDiagram.astro';
 import Icon from '../../components/Icon.astro';
 import CtaBand from '../../components/CtaBand.astro';
-import { packHref } from '../../data/packs';
+import { AVAILABILITY_LABEL, EDITIONS, type Availability } from '../../data/editions';
+import { PACKS, packHref } from '../../data/packs';
 import { href } from '../../lib/url';
+
+// 个人版主线：本体 → 团队 → 项目里派活。知识库与出处是团队靠谱的理由，不是首要卖点。
+const ed = EDITIONS.personal;
+
+const steps: { title: string; lead: string; points: string[]; status: Availability; note?: string }[] = [
+  {
+    title: '描述你的工作',
+    lead: '不用先学本体论。',
+    points: ['一句话说清你在做什么，本机推荐合适的起步包', '推荐在本机完成，不调用模型、不扣积分', '也可以直接从空白开始'],
+    status: 'invite',
+  },
+  {
+    title: '起草本体',
+    lead: '把散在脑子里和文件里的规矩写下来。',
+    points: ['回答 6–12 个通俗引导问题，AI 起草对象、关系与规矩', '生成前先报价（约 3–8 积分），草案进草稿区由你逐条采纳', '保存新版本时自动跑能力问题回归，越改越准'],
+    status: 'invite',
+  },
+  {
+    title: '按本体组建团队',
+    lead: '本体就是团队的岗位说明书。',
+    points: ['按本体里的岗位和委托契约建 AI 成员', '每个成员只读它该读的类型，按契约交付', '起步包可以自带示例团队，装完就能看到分工'],
+    status: 'invite',
+    note: '一句话直接生成整支团队：规划中',
+  },
+  {
+    title: '在项目里派活',
+    lead: '项目内可行动，项目外不行动。',
+    points: ['任务挂在项目下，团队在项目根目录内读写与运行', '关键动作由你签批，交付留痕可查', '答得不对点一下，记为本体缺口，下次改本体时处理'],
+    status: 'invite',
+  },
+];
 
 const paradigms = [
   {
-    key: 'opc',
     pack: 'personal-opc',
-    name: '一人公司（OPC）',
     target: '独立研究者 · 个人工作室 · 超级个体',
-    desc: '一人统领业务与研发。在本体中沉淀业务范畴、交付物标准与委托契约；将重复性分析交由 AI 代理画像协助处理，关键动作设置审批与留痕。',
-    stats: '8 个核心类型 · 7 条关联关系 · 6 个通俗引导问题',
-    twinNote: '纯业务与数字资产，没有物理空间类型，数据孪生入口默认收起',
-    highlights: ['AI 代理画像与委托契约', '关键决策审批在回路', '能力问答快速回归'],
+    team: '虚拟部门 + AI 代理画像 + 委托契约，一个人统领业务与交付；关键决策签批在回路。',
   },
   {
-    key: 'formulation',
     pack: 'formulation-team',
-    name: '研究与配方小组',
-    target: '实验室 · 材料配方研制 · 生物试剂研发',
-    desc: '以配方演化脉络、实验批次与关键理化指标为核心。沉淀配方对比标准、检验规范与可溯源记录；AI 问答严格依据历史实验与批记录。',
-    stats: '10 个核心类型 · 9 条关联关系 · 6 个业务引导问题',
-    twinNote: '聚焦配方批次与实验谱系；自动生成配方与指标的 Wiki 对象页',
-    highlights: ['配方版本与实验批次追溯', '理化指标与质检判定标准', 'Wiki 对象页随版本生长'],
+    target: '实验室 · 材料配方 · 生物试剂研发',
+    team: '以配方、实验批次和表征指标为核心；回答严格依据历史实验与批记录，团队成员按需自建。',
   },
   {
-    key: 'lens',
     pack: 'contact-lens-factory',
-    name: '工厂与车间',
-    target: '工业产线 · 制造车间 · 质检与运维工程师',
-    desc: '管理产线、工序、设备、缺陷规范与排产。将设备规格书、故障手册与巡检经验收录为本机知识库，统一设备叫法与编码。',
-    stats: '12 个核心类型 · 11 条关联关系 · 12 个能力问题',
-    twinNote: '包含产线与车间空间类型，可以把对象映射到数据孪生场景',
-    highlights: ['设备-工序-缺陷多维对齐', 'SOP 作业标准书严格约束', '产线、车间对象可映射到数据孪生'],
+    target: '产线 · 车间 · 质检与设备工程师',
+    team: '产线、工位、检测、缺陷与 SOP 对齐到同一套叫法；可把产线映射到数据孪生，团队成员按需自建。',
   },
 ] as const;
 
 const pillars = [
   {
-    icon: 'layout',
-    title: '不用先学概念',
-    lead: '不需要先了解本体论或图数据库。',
-    points: [
-      '用一句话描述你的工作，本机推荐合适的起步包，不调用模型、不扣积分',
-      '按引导问题通俗问答，AI 快速起草本体草案，生成前明确报价（约 3–8 积分）',
-      '也可以直接导入起步包或从空白开始；AI 的提案都先进草稿区，由你决定是否采纳',
-    ],
-  },
-  {
-    icon: 'message',
-    title: '按规矩回答，说得出处',
-    lead: '把散在脑子里和文件里的规矩，写成 AI 回答时遵循的标准。',
-    points: [
-      '问答只依据已发布的本体和本地知识库；找不到出处的结论会标明',
-      '回答里的每个结论都带出处标签，点开即可定位到当时引用的版本和段落',
-      '答得不对可以反馈：加入知识体检题集，同时记为本体缺口；反馈里不带问答正文',
-    ],
-  },
-  {
     icon: 'lock',
-    title: '随时能停',
-    lead: '资料在本机，出网内容可查。',
-    points: [
-      '知识库、文档原件、本地向量索引与本体都留在本机，断网照常工作',
-      '官方 AI 在调用前显示报价与预留上限，确认后才预留积分；结算按实际用量多退少补',
-      '流水只记录请求编号与 Token 数，不记录问答正文；积分用完或登录过期，本地资料照常可用',
-    ],
+    title: '资料留在本机',
+    points: ['知识库、文档原件、向量索引与本体都在本机，断网照常工作', '积分用完或登录过期，本地资料照常可用'],
+  },
+  {
+    icon: 'book',
+    title: '句句有出处',
+    points: ['回答只依据已发布的本体和本地资料，找不到出处会标明', '点开出处即可定位到当时引用的版本和段落'],
+  },
+  {
+    icon: 'ledger',
+    title: '花钱先确认',
+    points: ['官方 AI 调用前显示报价与预留上限，确认后才预留积分', '流水只记请求编号与 Token 数，不记录问答正文'],
   },
 ] as const;
 ---
 
-<Base
-  title="IAI 个人版"
-  description="一个人的研究或工厂，也有自己的本体和知识库；AI 按你们共同定的规矩回答，每句话都指回原文，钱花在哪一目了然。"
->
-  {/* Hero 区域 */}
-  <section class="container-site pt-14 sm:pt-20">
-    <div class="max-w-4xl">
-      <div class="flex flex-wrap items-center gap-3">
-        <StatusBadge status="planned" />
-        <span class="rounded-full bg-primary-soft px-3 py-1 text-xs font-medium text-primary">
-          桌面客户端 · Windows 10/11
-        </span>
+<Base title="IAI 个人版" description={`${ed.promise}。${ed.lead}`}>
+  {/* ---------- 首屏 ---------- */}
+  <section class="relative overflow-hidden">
+    <div class="pointer-events-none absolute inset-0" style="background: var(--hero-glow)" aria-hidden="true"></div>
+    <div class="container-site relative pb-14 pt-14 sm:pt-20">
+      <div class="max-w-4xl">
+        <div class="flex flex-wrap items-center gap-2">
+          <EditionTag edition="personal" label={ed.status} />
+          <span class="rounded-full border border-line px-3 py-0.5 text-xs text-muted">{ed.requires}</span>
+        </div>
+        <h1 class="mt-6 text-[2.25rem] font-bold leading-[1.2] tracking-tight [&>span]:inline-block sm:text-5xl lg:text-6xl">
+          <span>按你的行业建本体，</span><span>再组一支专业 AI 团队</span>
+        </h1>
+        <p class="mt-6 max-w-3xl text-base leading-8 text-ink-soft sm:text-lg">{ed.lead}</p>
+        <div class="mt-8 flex flex-wrap items-center gap-3">
+          <a href={href('/download/')} class="btn btn-primary">
+            <Icon name="download" size={18} />
+            申请内测
+          </a>
+          <a href="#packs" class="btn btn-secondary">看起步包</a>
+          <a href={href('/personal/how-it-works/')} class="btn text-ink-soft hover:text-primary">
+            工作方式 <Icon name="arrowRight" size={14} />
+          </a>
+        </div>
       </div>
-      <h1 class="mt-6 text-4xl font-extrabold tracking-tight text-ink sm:text-5xl lg:text-6xl">
-        一个人的研究或工厂，<br class="hidden sm:inline" />也有自己的本体和知识库
-      </h1>
-      <p class="mt-6 text-lg leading-8 text-ink-soft sm:text-xl">
-        AI 按你们共同定的规矩回答，每句话都指回原文，钱花在哪一目了然。<br class="hidden sm:inline" />
-        客户端免费下载，资料留在本机。官方 AI 问答、起草与识别按量使用，价格以正式发布为准。
-      </p>
 
-      <div class="mt-8 flex flex-wrap items-center gap-4">
-        <a href={href('/personal/how-it-works/')} class="btn btn-primary h-11 px-5 text-[15px]">
-          了解工作方式
-        </a>
-        <a href={href('/packs/')} class="btn btn-secondary h-11 px-5 text-[15px]">
-          浏览本体市场
-        </a>
-        <a href={href('/personal/privacy/')} class="btn btn-secondary h-11 px-5 text-[15px]">
-          查看出网清单
-        </a>
-        <a href={href('/price/')} class="btn btn-secondary h-11 px-5 text-[15px]">
-          价格与规则
-        </a>
-        <a href={href('/download/')} class="btn btn-secondary h-11 px-5 text-[15px]">
-          下载与内测状态
-        </a>
+      <div class="mt-14">
+        <TeamDiagram />
+        <p class="mt-3 text-xs text-muted">示意：一人公司的本体与团队。岗位与成员随你的本体而定。</p>
       </div>
     </div>
   </section>
 
-  {/* 三大范式场景卡片 */}
-  <section class="container-site pt-20">
-    <SectionHeading
-      eyebrow="Three Paradigms"
-      title="三套内置起步包"
-      lead="按工作类型选择：独立个体、实验与配方研制、产线与车间。导入后可以任意修改。"
-    />
-
-    <div class="mt-10 grid gap-6 lg:grid-cols-3">
-      {
-        paradigms.map((p) => (
-          <div class="card flex flex-col justify-between p-6 sm:p-8">
-            <div>
-              <div class="flex items-center justify-between gap-3">
-                <span class="rounded-md bg-primary-soft px-2.5 py-1 text-xs font-semibold text-primary">
-                  {p.key.toUpperCase()}
-                </span>
+  {/* ---------- 四步 ---------- */}
+  <section class="border-y border-line bg-panel py-16">
+    <div class="container-site">
+      <SectionHeading eyebrow="How it works" title="从一句话到一支能派活的团队" lead="每一步都可以停下来改。本体变了，团队的分工和读取范围跟着变。" />
+      <ol class="mt-10 grid gap-4 md:grid-cols-2">
+        {
+          steps.map((s, i) => (
+            <li class="flex flex-col rounded-xl border border-line bg-bg p-6">
+              <div class="flex items-center justify-between gap-2">
+                <span class="font-latin text-sm font-semibold tabular-nums text-personal">{String(i + 1).padStart(2, '0')}</span>
+                <span class="text-xs text-muted">{AVAILABILITY_LABEL[s.status]}</span>
               </div>
-              <h3 class="mt-4 text-2xl font-bold text-ink">{p.name}</h3>
-              <p class="mt-1 text-xs font-medium text-primary">{p.target}</p>
-              <p class="mt-4 text-sm leading-relaxed text-ink-soft">{p.desc}</p>
-
-              <div class="mt-6 border-t border-line/60 pt-4">
-                <p class="text-xs font-medium text-ink">包内规格：</p>
-                <p class="mt-1 text-xs text-muted">{p.stats}</p>
-                <p class="mt-3 text-xs leading-relaxed text-ink-soft bg-panel-2 rounded-lg p-2.5">
-                  <span class="font-medium text-ink">投影特性：</span>
-                  {p.twinNote}
-                </p>
-              </div>
-
-              <ul class="mt-4 space-y-2 text-xs text-ink-soft">
-                {p.highlights.map((h) => (
-                  <li class="flex items-center gap-2">
-                    <span class="text-primary font-bold">✓</span>
-                    <span>{h}</span>
+              <h3 class="mt-3 text-xl font-semibold">{s.title}</h3>
+              <p class="mt-1 text-sm text-personal">{s.lead}</p>
+              <ul class="mt-4 flex-1 space-y-2">
+                {s.points.map((p) => (
+                  <li class="flex gap-2 text-[15px] leading-6 text-ink-soft">
+                    <Icon name="check" size={16} class="mt-1 shrink-0 text-faint" />
+                    {p}
                   </li>
                 ))}
               </ul>
-            </div>
+              {s.note && <p class="mt-4 rounded-md bg-neutral-soft px-2.5 py-1.5 text-xs text-muted">{s.note}</p>}
+            </li>
+          ))
+        }
+      </ol>
+      <p class="mt-6 text-sm text-muted">
+        资料怎么进本机、Wiki 怎么随本体生长、出处怎么定位，见<a class="link" href={href('/personal/how-it-works/')}>工作方式</a>。
+      </p>
+    </div>
+  </section>
 
-            <div class="mt-6 pt-4 border-t border-line">
-              <a
-                href={href(packHref(p.pack))}
-                class="inline-flex items-center gap-1.5 text-xs font-semibold text-primary hover:underline"
-              >
-                查看包内清单与安装方式 →
-              </a>
-            </div>
-          </div>
-        ))
+  {/* ---------- 起步包 = 团队起点 ---------- */}
+  <section id="packs" class="container-site scroll-mt-24 py-16">
+    <SectionHeading eyebrow="Starter packs" title="三套起步包，三种团队起点" lead="随客户端内置，安装不需要联网。装进来的是一套本体、示例对象和出处资料；导入后可以任意修改。" />
+    <div class="mt-10 grid gap-4 lg:grid-cols-3">
+      {
+        paradigms.map((pd) => {
+          const p = PACKS.find((x) => x.slug === pd.pack)!;
+          return (
+            <a href={href(packHref(p.slug))} class="card group flex flex-col p-6 transition-colors hover:border-personal">
+              <span class="grid size-10 place-items-center rounded-lg bg-personal-soft text-personal">
+                <Icon name={p.icon} size={20} />
+              </span>
+              <h3 class="mt-5 text-xl font-semibold">{p.title}</h3>
+              <p class="mt-1 text-xs font-medium text-personal">{pd.target}</p>
+              <p class="mt-3 flex-1 text-[15px] leading-7 text-ink-soft">{pd.team}</p>
+              <dl class="mt-5 grid grid-cols-3 gap-2 border-t border-line-soft pt-4 text-center">
+                <div>
+                  <dt class="text-xs text-muted">类型</dt>
+                  <dd class="font-latin text-lg font-semibold tabular-nums">{p.counts.types}</dd>
+                </div>
+                <div>
+                  <dt class="text-xs text-muted">示例对象</dt>
+                  <dd class="font-latin text-lg font-semibold tabular-nums">{p.counts.examples}</dd>
+                </div>
+                <div>
+                  <dt class="text-xs text-muted">示例智能体</dt>
+                  <dd class="font-latin text-lg font-semibold tabular-nums">{p.counts.agents}</dd>
+                </div>
+              </dl>
+              <span class="mt-4 inline-flex items-center gap-1 text-sm text-personal">
+                包内清单与安装方式 <Icon name="arrowRight" size={14} class="transition-transform group-hover:translate-x-0.5" />
+              </span>
+            </a>
+          );
+        })
       }
     </div>
-
-    <div class="mt-8 flex flex-wrap items-center justify-between gap-4 rounded-xl border border-line bg-panel-2 px-6 py-5">
-      <div>
-        <p class="text-sm font-semibold text-ink">三个起步包都随客户端内置，安装不需要联网下载</p>
-        <p class="mt-1 text-xs leading-relaxed text-ink-soft">官网先公开包内清单与许可；在线目录、公开下载与第三方投稿在后续版本开放，客户端会校验内置包签名。</p>
-      </div>
+    <div class="mt-6 flex flex-wrap items-center justify-between gap-4 rounded-xl border border-line bg-panel-2 px-6 py-5">
+      <p class="text-sm leading-6 text-ink-soft">
+        在线目录、公开下载与第三方投稿在后续版本开放；客户端会校验内置包签名。
+      </p>
       <a href={href('/packs/')} class="btn btn-secondary">浏览本体市场</a>
     </div>
   </section>
 
-  {/* 三大产品支柱 */}
-  <section class="container-site pt-24">
-    <SectionHeading
-      eyebrow="Core Pillars"
-      title="三个承诺"
-      lead="资料留在本机，回答有出处，花钱先确认。"
-    />
-
-    <div class="mt-12 grid gap-8 md:grid-cols-3">
-      {
-        pillars.map((pi) => (
-          <div class="card p-8">
-            <div class="flex size-11 items-center justify-center rounded-xl bg-primary-soft text-primary">
-              <Icon name={pi.icon as any} size={22} />
-            </div>
-            <h3 class="mt-5 text-xl font-bold text-ink">{pi.title}</h3>
-            <p class="mt-2 text-sm text-ink-soft">{pi.lead}</p>
-            <ul class="mt-6 space-y-3 text-xs leading-relaxed text-ink-soft">
-              {pi.points.map((pt) => (
-                <li class="flex items-start gap-2.5">
-                  <span class="mt-0.5 text-primary font-bold">·</span>
-                  <span>{pt}</span>
-                </li>
-              ))}
-            </ul>
-          </div>
-        ))
-      }
-    </div>
-  </section>
-
-  {/* 4 步工作流引导 */}
-  <section class="container-site pt-24">
-    <div class="card p-8 sm:p-12">
-      <div class="max-w-3xl">
-        <p class="eyebrow">How it fits together</p>
-        <h2 class="mt-2 text-3xl font-bold text-ink sm:text-4xl">
-          资料进本机，本体立规矩，Wiki 随之生长
-        </h2>
-        <p class="mt-4 text-base leading-8 text-ink-soft">
-          从拖入第一份文件开始：资料决定本体的雏形，本体生成 Wiki 页面，问答引用资料和 Wiki，答错的地方再回头改本体。
-        </p>
-        <div class="mt-8 flex flex-wrap gap-4">
-          <a href={href('/personal/how-it-works/')} class="btn btn-primary">
-            阅读完整工作方式解析
-          </a>
-          <a href={href('/personal/privacy/')} class="btn btn-secondary">
-            查看数据出网与留存清单
-          </a>
-        </div>
+  {/* ---------- 三个承诺 ---------- */}
+  <section class="border-t border-line bg-panel py-16">
+    <div class="container-site">
+      <SectionHeading eyebrow="Why you can trust the team" title="团队靠得住，是因为这三条" />
+      <div class="mt-10 grid gap-4 md:grid-cols-3">
+        {
+          pillars.map((pi) => (
+            <article class="rounded-xl border border-line bg-bg p-6">
+              <span class="grid size-10 place-items-center rounded-lg bg-personal-soft text-personal">
+                <Icon name={pi.icon} size={20} />
+              </span>
+              <h3 class="mt-5 text-lg font-semibold">{pi.title}</h3>
+              <ul class="mt-3 space-y-2">
+                {pi.points.map((pt) => (
+                  <li class="flex gap-2 text-[15px] leading-6 text-ink-soft">
+                    <Icon name="check" size={16} class="mt-1 shrink-0 text-faint" />
+                    {pt}
+                  </li>
+                ))}
+              </ul>
+            </article>
+          ))
+        }
+      </div>
+      <div class="mt-6 flex flex-wrap gap-x-6 gap-y-2 text-sm">
+        <a class="link" href={href('/personal/privacy/')}>出网清单：什么会发出去</a>
+        <a class="link" href={href('/price/')}>价格与积分规则</a>
       </div>
     </div>
   </section>
 
-  <CtaBand
-    title="一个人的研究或工厂，今天就能开始"
-    lead="客户端免费下载，本机功能不依赖账号。内测规则与价格以正式发布为准。"
-  />
+  <CtaBand edition="personal" title="从一个起步包开始，组你的第一支 AI 团队" lead="客户端免费，本机功能不依赖账号。内测规则与价格以正式发布为准。" />
 </Base>
