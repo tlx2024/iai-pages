@@ -17,7 +17,7 @@ const { principles, egressItems, cloudStoragePolicy } = egressContract;
       as="h1"
       eyebrow="Privacy & Egress"
       title="隐私与出网清单"
-      lead="资料留在本机，出网按功能清单透明说明。桌面客户端设置页、官网隐私页与云端审计网关严格共享同一份单一事实来源契约（Single Source of Truth）。"
+      lead="资料留在本机，出网按功能逐项列出。本页与桌面客户端设置页读同一份清单；云端审计与它的对账尚未接入。"
     />
 
     {/* 核心原则 */}
@@ -36,7 +36,7 @@ const { principles, egressItems, cloudStoragePolicy } = egressContract;
     <div class="mt-16">
       <h2 class="text-2xl font-bold text-ink">出网明细清单</h2>
       <p class="mt-2 text-sm text-ink-soft">
-        每个功能的出网数据、接收端与生命周期均受代码门禁硬性约束，不私藏暗门，绝不全量上传。
+        每个功能发什么、发到哪、存多久。标为“尚未开放”的功能目前不会出网。
       </p>
 
       <div class="card mt-6 overflow-x-auto p-0">
@@ -55,7 +55,7 @@ const { principles, egressItems, cloudStoragePolicy } = egressContract;
             {
               egressItems.map((item) => (
                 <tr class="transition-colors hover:bg-panel-2/50">
-                  <td class="p-4 pl-6 font-semibold text-ink whitespace-nowrap">{item.fn}</td>
+                  <td class="p-4 pl-6 font-semibold text-ink whitespace-nowrap">{item.fn}{item.status === 'planned' && <span class="ml-2 text-xs font-normal text-ink-soft">尚未开放</span>}</td>
                   <td class="p-4 text-xs leading-relaxed text-ink-soft max-w-xs">{item.what}</td>
                   <td class="p-4 text-xs text-ink-soft">{item.where}</td>
                   <td class="p-4 text-xs leading-relaxed text-ink-soft max-w-xs">{item.retention}</td>
@@ -92,7 +92,7 @@ const { principles, egressItems, cloudStoragePolicy } = egressContract;
       <div class="card border-line/90 p-8">
         <div class="flex items-center gap-2">
           <span class="flex size-6 items-center justify-center rounded-full bg-red-500/10 text-xs font-bold text-red-600">✕</span>
-          <h3 class="text-xl font-bold text-ink">云端绝不保存的信息</h3>
+          <h3 class="text-xl font-bold text-ink">云端不保存的信息</h3>
         </div>
         <p class="mt-2 text-xs text-ink-soft">你的核心知识资产永远留在你的电脑上：</p>
         <ul class="mt-6 space-y-3 text-xs leading-relaxed text-ink-soft">
