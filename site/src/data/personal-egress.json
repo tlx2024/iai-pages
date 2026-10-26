@@ -1,8 +1,8 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "title": "IAI 个人版出网清单单一来源契约",
-  "version": "1.3.0",
-  "updatedAt": "2026-10-21",
+  "version": "1.5.0",
+  "updatedAt": "2026-10-26",
   "description": "个人版出网清单的唯一来源。桌面设置页（apps/web/lib/personal-egress.json）与官网隐私页（iai-pages site/src/data/personal-egress.json）各持一份副本，由 scripts/repos/repos.py check 核对一致；云端审计字段的对账尚未接入。修改须过评审。",
   "principles": [
     "资料在本机：知识库、原件、本体与本地向量索引永不主动上传。",
@@ -100,6 +100,26 @@
       "retention": "云端保存加密的手机号或邮箱、登录记录与已授权设备名；本机访问令牌只在内存，刷新凭据由 Windows DPAPI 保管",
       "cost": "免费",
       "offline": "初次激活绑定需联网；绑定后离线直接进入本地工作区",
+      "status": "available"
+    },
+    {
+      "id": "heartbeat",
+      "fn": "安装版本心跳",
+      "what": "应用版本、变体（personal）、操作系统与架构，以及本机已验签生效的远程配置版本号（有才带）；不含任何资料、提问、账号内容或完整 IP（云端只留 /24 前缀）。云端的回执里可能带一份已签名的配置（公告、默认模型、升级建议等），本机用内置公钥验签通过才应用，验不过就保留上一版",
+      "where": "IAI 官方网关",
+      "retention": "云端保存最近一次上报与在线时间，用于版本分布、灰度发布与阻断有缺陷的版本",
+      "cost": "免费（不扣积分）",
+      "offline": "可在账号页关闭上报。关闭后仍可使用官方 AI，只是不参与灰度。已被阻断的版本在升级前不能使用官方 AI，也不会扣积分。断网时暂停上报",
+      "status": "available"
+    },
+    {
+      "id": "redeem",
+      "fn": "兑换码入账",
+      "what": "你输入的兑换码",
+      "where": "IAI 官方网关",
+      "retention": "云端记录兑换码的使用状态与入账流水",
+      "cost": "免费，入账增加积分",
+      "offline": "只在你主动输入兑换码时发生；断网时无法兑换",
       "status": "available"
     },
     {
