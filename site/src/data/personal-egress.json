@@ -1,8 +1,8 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "title": "IAI 个人版出网清单单一来源契约",
-  "version": "1.5.0",
-  "updatedAt": "2026-10-26",
+  "version": "1.6.0",
+  "updatedAt": "2026-10-27",
   "description": "个人版出网清单的唯一来源。桌面设置页（apps/web/lib/personal-egress.json）与官网隐私页（iai-pages site/src/data/personal-egress.json）各持一份副本，由 scripts/repos/repos.py check 核对一致；云端审计字段的对账尚未接入。修改须过评审。",
   "principles": [
     "资料在本机：知识库、原件、本体与本地向量索引永不主动上传。",
@@ -120,6 +120,16 @@
       "retention": "云端记录兑换码的使用状态与入账流水",
       "cost": "免费，入账增加积分",
       "offline": "只在你主动输入兑换码时发生；断网时无法兑换",
+      "status": "available"
+    },
+    {
+      "id": "diagnostics",
+      "fn": "上传诊断包",
+      "what": "你在账号页点击“上传诊断”并确认后，才会发送：应用版本、变体、操作系统与架构，是否被阻断或暂停的标记，以及启动日志末尾 30 行（本机路径已折叠，不含令牌、资料或提问内容）。发送前界面会展示全部内容",
+      "where": "IAI 官方网关",
+      "retention": "云端保存上传的诊断包并关联一条运维事件，用于排查你反馈的问题；运维台只能查看已上传的包，不能主动拉取",
+      "cost": "免费（不扣积分）",
+      "offline": "只在你主动点击时发生；不上传不影响任何功能，断网时无法上传",
       "status": "available"
     },
     {
