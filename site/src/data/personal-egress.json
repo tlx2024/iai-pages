@@ -1,8 +1,8 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "title": "IAI 个人版出网清单单一来源契约",
-  "version": "1.7.0",
-  "updatedAt": "2026-10-28",
+  "version": "1.8.0",
+  "updatedAt": "2026-10-29",
   "description": "个人版出网清单的唯一来源。桌面设置页（apps/web/lib/personal-egress.json）与官网隐私页（iai-pages site/src/data/personal-egress.json）各持一份副本，由 scripts/repos/repos.py check 核对一致；云端审计字段的对账尚未接入。修改须过评审。",
   "principles": [
     "资料在本机：知识库、原件、本体与本地向量索引永不主动上传。",
@@ -141,6 +141,26 @@
       "cost": "中继本身不扣积分；电脑调用官方 AI 时按原有额度计费",
       "offline": "电脑离线时文字与链接可密封交云端暂存；附件保留手机本机，电脑上线后发送。关闭保持在线或吊销手机后停止实时访问",
       "status": "available"
+    },
+    {
+      "id": "wechat_miniapp",
+      "fn": "微信小程序登录与绑定",
+      "what": "微信临时登录码由 IAI 服务端向微信换取身份；用户主动绑定时关联 IAI 账号，不向手机下发 AppSecret 或 session_key",
+      "where": "IAI 账号中心 → 腾讯微信 jscode2session",
+      "retention": "IAI 保存小程序 AppID、openid 的带密钥摘要与绑定审计；不保存 session_key，不自动合并网站微信身份",
+      "cost": "免费",
+      "offline": "需联网；未绑定先提示绑定，不静默创建账号；默认关闭，配置并开启后可用",
+      "status": "planned"
+    },
+    {
+      "id": "mobile_clients",
+      "fn": "原生与小程序登录会话",
+      "what": "验证码证明或 PKCE 授权证明、客户端类型、设备名称与会话标识；不含本地资料或问答正文",
+      "where": "IAI 账号中心",
+      "retention": "云端保存刷新令牌家族摘要、账号与设备元数据、最近使用和吊销状态；退出吊销当前会话，配对信任另行管理",
+      "cost": "免费",
+      "offline": "初次登录与刷新需联网；关闭对应端开关后停止访问；默认关闭，待开发云验证后开放",
+      "status": "planned"
     },
     {
       "id": "local_only",
