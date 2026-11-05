@@ -86,10 +86,10 @@ const foundations = [
   </section>
 
   {/* ---------- 个人路径 ---------- */}
-  <section class="border-y border-line bg-panel py-16">
+  <section class="personal-section border-y border-line bg-panel py-16">
     <div class="container-site">
       <div class="flex flex-wrap items-end justify-between gap-6">
-        <SectionHeading eyebrow="Personal · Ontology to team" title={EDITIONS.personal.promise} lead="本体就是团队的岗位说明书。先把业务里的对象和规矩写清，再按岗位组 AI 成员，派活、签批、留痕都在项目里。">
+        <SectionHeading eyebrow="01 / Personal" title="把你的经验，变成团队的工作方法" lead="先把业务对象、岗位和规矩写清楚，形成一份本体。再按岗位组建 AI 团队，在项目里分派任务、核对结果。">
           <div class="mt-4"><EditionTag edition="personal" label={EDITIONS.personal.status} /></div>
         </SectionHeading>
         <a href={href('/personal/')} class="link inline-flex items-center gap-1 text-sm">
@@ -97,12 +97,12 @@ const foundations = [
         </a>
       </div>
 
-      <ol class="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+      <ol class="work-steps mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         {
           personalSteps.map((s, i) => (
-            <li class="flex flex-col rounded-xl border border-line bg-bg p-5">
+            <li class="work-step flex flex-col p-5">
               <div class="flex items-center justify-between gap-2">
-                <span class="font-latin text-sm font-semibold tabular-nums text-personal">{String(i + 1).padStart(2, '0')}</span>
+                <span class="step-number font-latin font-semibold tabular-nums">{String(i + 1).padStart(2, '0')}</span>
                 <span class="text-xs text-muted">{AVAILABILITY_LABEL[s.status]}</span>
               </div>
               <h3 class="mt-3 text-lg font-semibold">{s.title}</h3>
@@ -113,13 +113,13 @@ const foundations = [
         }
       </ol>
 
-      <div class="mt-8 rounded-xl border border-line bg-bg p-5 sm:p-6">
-        <p class="text-sm font-semibold text-ink">三套起步包，三种团队起点</p>
+      <div class="starter-packs mt-8">
+        <p class="text-sm font-semibold text-ink">不用从零开始，选一套起步包</p>
         <ul class="mt-4 grid gap-3 md:grid-cols-3">
           {
             PACKS.map((p) => (
               <li>
-                <a href={href(packHref(p.slug))} class="group flex h-full flex-col rounded-lg border border-line-soft p-4 transition-colors hover:border-personal">
+                <a href={href(packHref(p.slug))} class="starter-card group flex h-full flex-col rounded-lg border border-line p-5 transition-colors hover:border-personal">
                   <span class="flex items-center gap-2 font-medium text-ink">
                     <Icon name={p.icon} size={16} class="text-personal" />
                     {p.title}
@@ -139,11 +139,11 @@ const foundations = [
   </section>
 
   {/* ---------- 企业生态 ---------- */}
-  <section class="container-site py-16">
+  <section class="enterprise-section container-site py-16">
     <div class="grid gap-10 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] lg:items-center">
       <div>
-        <p class="eyebrow eyebrow-enterprise">Enterprise · One ecosystem</p>
-        <h2 class="mt-2 text-3xl font-bold leading-tight tracking-tight sm:text-[2.25rem]">{EDITIONS.enterprise.promise}</h2>
+        <p class="eyebrow eyebrow-enterprise">02 / Enterprise</p>
+        <h2 class="mt-3 text-3xl font-bold leading-snug tracking-tight sm:text-[2.25rem]">让各个岗位，<br />在同一套规矩下协作</h2>
         <p class="mt-4 text-base leading-8 text-ink-soft sm:text-lg">{EDITIONS.enterprise.lead}</p>
         <div class="mt-4"><EditionTag edition="enterprise" label={EDITIONS.enterprise.status} /></div>
         <div class="mt-8 flex flex-wrap gap-3">
@@ -158,17 +158,17 @@ const foundations = [
   </section>
 
   {/* ---------- 共同底座 ---------- */}
-  <section class="border-t border-line bg-panel py-16">
+  <section class="foundation-section border-t border-line bg-panel py-16">
     <div class="container-site">
       <SectionHeading
-        eyebrow="Same foundation"
-        title="两条路，同一套底线"
-        lead="不管是一个人的团队还是一整家企业，IAI 都守这三条。下面写清两版分别怎么做到。"
+        eyebrow="03 / Built on trust"
+        title="放心交给 AI，决定权仍在你"
+        lead="回答能核对，动作先确认，过程可回看。个人版与企业版，守住同样的底线。"
       />
       <div class="mt-10 grid gap-4 lg:grid-cols-3">
         {
           foundations.map((f) => (
-            <article class="flex flex-col rounded-xl border border-line bg-bg p-6">
+            <article class="trust-card flex flex-col rounded-xl border border-line bg-bg p-6">
               <span class="grid size-10 place-items-center rounded-lg bg-panel-2 text-ink-soft">
                 <Icon name={f.icon} size={20} />
               </span>
@@ -204,5 +204,17 @@ const foundations = [
   .hero-actions :global(.btn) { min-height: 46px; padding-inline: 24px; }
   .preview-wrap { margin-top: 72px; }
   .edition-section { scroll-margin-top: 90px; padding-block: 88px; }
-  @media (max-width: 640px) { .preview-wrap { margin-top: 48px; } .edition-section { padding-block: 56px; } }
+  .personal-section, .enterprise-section, .foundation-section { padding-block: 88px; }
+  .work-step { border-top: 1px solid var(--line-strong); padding-inline: 0; padding-top: 22px; }
+  .step-number { font-size: 32px; line-height: 1; letter-spacing: -.04em; color: var(--primary); }
+  .starter-packs { border-top: 1px solid var(--line); padding-top: 28px; }
+  .starter-card { background: var(--bg); }
+  .trust-card { background: var(--panel); border-width: 0 0 0 1px; border-radius: 0; padding-block: 0; }
+  @media (max-width: 640px) {
+    .preview-wrap { margin-top: 48px; }
+    .edition-section, .personal-section, .enterprise-section, .foundation-section { padding-block: 56px; }
+    .work-steps { gap: 24px; }
+    .work-step { padding-bottom: 0; }
+    .trust-card { margin-top: 12px; }
+  }
 </style>
