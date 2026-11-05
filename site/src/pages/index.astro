@@ -6,6 +6,7 @@ import EditionDoor from '../components/EditionDoor.astro';
 import EditionTag from '../components/EditionTag.astro';
 import EcosystemMap from '../components/EcosystemMap.astro';
 import CtaBand from '../components/CtaBand.astro';
+import HomeWorkPreview from '../components/HomeWorkPreview.astro';
 import { AVAILABILITY_LABEL, EDITIONS, type Availability } from '../data/editions';
 import { PACKS, packHref } from '../data/packs';
 import { BRAND } from '../data/site';
@@ -51,25 +52,37 @@ const foundations = [
 
 <Base>
   {/* ---------- 首屏：共同做法 + 两扇门 ---------- */}
-  <section class="relative overflow-hidden">
+  <section class="home-hero relative overflow-hidden">
     <div class="pointer-events-none absolute inset-0" style="background: var(--hero-glow)" aria-hidden="true"></div>
     <div class="container-site relative pb-16 pt-14 sm:pt-20">
       <div class="mx-auto max-w-3xl text-center">
-        <p class="eyebrow">{BRAND.en}</p>
-        <h1 class="mt-3 text-[2.25rem] font-bold leading-[1.2] tracking-tight [&>span]:inline-block sm:text-6xl">
+        <p class="eyebrow">{BRAND.en} · 从业务规矩到专业协作</p>
+        <h1 class="hero-title mt-5 font-bold tracking-tight [&>span]:inline-block">
           <span>先立规矩，</span><span>再让 AI 干活</span>
         </h1>
         <p class="mx-auto mt-6 max-w-2xl text-base leading-8 text-ink-soft sm:text-lg">
-          IAI 用本体把你的业务说清楚：有哪些对象、谁负责什么、按什么标准交付。AI 按它回答、按它分工，每句话都有出处。
+          把你的资料、岗位和业务规矩，变成 AI 工作的依据。<br class="hidden sm:block" />从一个人的专业团队，到一家企业的 AI 生态。
         </p>
-        <p class="mt-3 text-sm text-muted">一个人用，还是一家企业用，走的是两条不同的路。</p>
+        <div class="hero-actions mt-8 flex flex-wrap justify-center gap-3">
+          <a href="#work-preview" class="btn btn-primary">查看工作示意 <Icon name="arrowRight" size={16} /></a>
+          <a href="#editions" class="btn btn-secondary">选择适合的版本</a>
+        </div>
+        <p class="mt-5 text-xs text-muted">有据可查 · 人工确认 · 全程留痕</p>
       </div>
+      <div class="preview-wrap"><HomeWorkPreview /></div>
+    </div>
+  </section>
 
-      <div class="mx-auto mt-12 grid max-w-5xl gap-4 md:grid-cols-2">
+  <section id="editions" class="edition-section container-site py-16" aria-labelledby="editions-title">
+      <div class="mx-auto max-w-2xl text-center">
+        <p class="eyebrow">Your work, your way</p>
+        <h2 id="editions-title" class="mt-3 text-3xl font-bold tracking-tight sm:text-4xl">从你的工作方式出发</h2>
+        <p class="mt-4 text-base leading-8 text-muted">一个人用，还是一家企业用，走的是两条不同的路。</p>
+      </div>
+      <div class="mx-auto mt-10 grid max-w-5xl gap-5 md:grid-cols-2">
         <EditionDoor edition="personal" />
         <EditionDoor edition="enterprise" />
       </div>
-    </div>
   </section>
 
   {/* ---------- 个人路径 ---------- */}
@@ -183,3 +196,13 @@ const foundations = [
 
   <CtaBand />
 </Base>
+
+<style>
+  .home-hero { background: var(--panel); border-bottom: 1px solid var(--line); }
+  .home-hero::before { content: ''; position: absolute; inset: 160px 0 0; pointer-events: none; background-image: linear-gradient(to right, var(--line-soft) 1px, transparent 1px); background-size: 48px 100%; mask-image: linear-gradient(transparent, #000 45%, transparent); }
+  .hero-title { font-size: clamp(2.15rem, 5vw, 4rem); line-height: 1.25; letter-spacing: -.045em; }
+  .hero-actions :global(.btn) { min-height: 46px; padding-inline: 24px; }
+  .preview-wrap { margin-top: 72px; }
+  .edition-section { scroll-margin-top: 90px; padding-block: 88px; }
+  @media (max-width: 640px) { .preview-wrap { margin-top: 48px; } .edition-section { padding-block: 56px; } }
+</style>

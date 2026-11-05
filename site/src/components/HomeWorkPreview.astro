@@ -1,0 +1,98 @@
+---
+import Icon from './Icon.astro';
+const scenes = [
+  { id: 'knowledge', name: '资料问答', icon: 'book', question: '这次设备点检，要先检查哪些项目？', title: '先找到依据，再给出建议', rule: '只引用项目资料；缺少依据时明确说明。', steps: ['查找项目中的点检规程', '对照设备与适用版本', '整理检查项，保留原文线索'], result: '建议先核对设备状态，再按规程检查。未找到的参数保留待核实，不代替现场判断。', file: '点检建议 · 附资料引用', note: '个人版引用本机资料；企业版按知识库权限检索。' },
+  { id: 'team', name: '团队分工', icon: 'user', question: '帮我把这个项目的资料整理任务分下去。', title: '每个成员，都有明确的职责', rule: '成员按岗位与委托契约工作，交付标准由你定义。', steps: ['在本体里写清岗位和职责', '按岗位创建成员并加入项目', '在项目中派活，检查交付结果'], result: '资料整理、内容核对、结果汇总，各有负责人。先明确岗位与规矩，再将任务交给团队。', file: '项目分工 · 职责与交付标准', note: '需按岗位创建成员；一句话直接生成整支团队仍在规划中。' },
+  { id: 'approval', name: '执行审批', icon: 'shield', question: '这份处理建议可以直接执行吗？', title: '需要你决定的地方，停下来等你', rule: '会改动东西的动作先确认，执行过程保留记录。', steps: ['展示准备执行的动作', '等待有权限的人确认', '确认后继续，留下执行记录'], result: '处理建议已整理。请先核对影响范围与执行内容，再决定是否继续。', file: '执行建议 · 等待人工确认', note: '个人版限制在项目范围内；企业版按风险与角色权限审批。' },
+] as const;
+---
+
+<section id="work-preview" class="work-preview" aria-labelledby="preview-heading">
+  <div class="preview-intro">
+    <div><p class="eyebrow">From context to action</p><h2 id="preview-heading">看见 AI 怎样把工作往前推进</h2></div>
+    <span class="demo-label">交互示意 · 非真实运行记录</span>
+  </div>
+  <fieldset class="scene-picker">
+    <legend class="sr-only">选择工作示意，使用方向键切换</legend>
+    {scenes.map((scene, i) => <input class="scene-radio" type="radio" name="work-scene" id={`scene-${scene.id}`} checked={i === 0} aria-controls={`panel-${scene.id}`} />)}
+    <div class="scene-labels">
+      {scenes.map((scene, i) => <label for={`scene-${scene.id}`}><span class="scene-number">0{i + 1}</span><Icon name={scene.icon} size={17} />{scene.name}</label>)}
+    </div>
+    <div class="scene-panels">
+      {scenes.map((scene) => <div id={`panel-${scene.id}`} class={`scene-panel panel-${scene.id}`} role="region" aria-label={`${scene.name}示意`}>
+        <aside class="context-panel">
+          <p class="context-caption">工作上下文</p>
+          <div class="project-name"><span class="project-symbol">I</span><div><strong>我的项目</strong><span>资料 · 本体 · AI 成员</span></div></div>
+          <div class="rule-card"><span class="rule-label"><Icon name="shield" size={15} />这项工作的规矩</span><p>{scene.rule}</p></div>
+          <p class="context-foot">先定义边界，让每一步有据可循。</p>
+        </aside>
+        <div class="conversation">
+          <div class="conversation-bar"><span>项目工作台</span><span class="demo-label">示意内容</span></div>
+          <div class="user-message">{scene.question}</div>
+          <div class="assistant-heading"><span class="assistant-symbol">AI</span><h3>{scene.title}</h3></div>
+          <ol class="process-list">{scene.steps.map(step => <li><Icon name="check" size={14} /><span>{step}</span></li>)}</ol>
+          <p class="result-text">{scene.result}</p>
+          <div class="result-file"><Icon name="ledger" size={19} /><span>{scene.file}</span><span class="file-label">示例</span></div>
+          <p class="boundary-note">{scene.note}</p>
+        </div>
+      </div>)}
+    </div>
+  </fieldset>
+</section>
+
+<style>
+  .work-preview { max-width: 1040px; margin: 0 auto; scroll-margin-top: 110px; }
+  .preview-intro { display: flex; justify-content: space-between; align-items: end; gap: 20px; margin-bottom: 24px; text-align: left; }
+  .preview-intro h2 { font-size: clamp(1.2rem, 3vw, 1.65rem); font-weight: 650; margin-top: 8px; letter-spacing: -.025em; }
+  .demo-label { color: var(--muted); font-size: 12px; }
+  .scene-picker { min-width: 0; position: relative; }
+  .scene-radio { position: absolute; width: 1px; height: 1px; opacity: 0; }
+  .scene-labels { display: flex; gap: 8px; margin-bottom: 16px; }
+  .scene-labels label { display: flex; justify-content: center; align-items: center; gap: 10px; padding: 12px 22px; border: 1px solid var(--line); border-radius: 8px; background: var(--panel); color: var(--ink-soft); font-size: 14px; cursor: pointer; transition: border-color .15s; }
+  .scene-labels label:hover { border-color: var(--primary); }
+  .scene-number { color: var(--muted); font-family: var(--font-latin); font-size: 11px; }
+  #scene-knowledge:checked ~ .scene-labels [for="scene-knowledge"], #scene-team:checked ~ .scene-labels [for="scene-team"], #scene-approval:checked ~ .scene-labels [for="scene-approval"] { color: var(--primary); background: var(--primary-soft); border-color: var(--primary); }
+  #scene-knowledge:focus-visible ~ .scene-labels [for="scene-knowledge"], #scene-team:focus-visible ~ .scene-labels [for="scene-team"], #scene-approval:focus-visible ~ .scene-labels [for="scene-approval"] { outline: 2px solid var(--primary); outline-offset: 3px; }
+  .scene-panels { border: 1px solid var(--line-strong); border-radius: 14px; overflow: hidden; background: var(--panel); box-shadow: 0 24px 64px -32px rgb(16 24 40 / .24); text-align: left; }
+  .scene-panel { display: none; grid-template-columns: 260px minmax(0, 1fr); min-height: 440px; }
+  #scene-knowledge:checked ~ .scene-panels .panel-knowledge, #scene-team:checked ~ .scene-panels .panel-team, #scene-approval:checked ~ .scene-panels .panel-approval { display: grid; }
+  .context-panel { background: var(--panel-2); border-right: 1px solid var(--line); padding: 28px 22px; display: flex; flex-direction: column; }
+  .context-caption { font-size: 12px; color: var(--muted); margin-bottom: 24px; }
+  .project-name { display: flex; gap: 12px; align-items: center; }
+  .project-symbol, .assistant-symbol { display: grid; place-items: center; background: var(--primary-soft); color: var(--primary); width: 36px; height: 36px; border: 1px solid var(--line); border-radius: 9px; flex-shrink: 0; font-weight: 700; }
+  .project-name strong { display: block; font-size: 14px; }
+  .project-name div > span { display: block; font-size: 11px; color: var(--muted); margin-top: 4px; }
+  .rule-card { padding: 16px; margin-top: 28px; background: var(--panel); border: 1px solid var(--line); border-radius: 8px; }
+  .rule-label { display: flex; gap: 7px; align-items: center; font-size: 12px; font-weight: 600; }
+  .rule-card p, .context-foot { font-size: 12px; color: var(--muted); line-height: 1.9; }
+  .rule-card p { margin-top: 12px; }
+  .context-foot { margin-top: auto; padding-top: 24px; }
+  .conversation { padding: 22px 32px 28px; }
+  .conversation-bar { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding-bottom: 18px; border-bottom: 1px solid var(--line-soft); color: var(--muted); font-size: 12px; }
+  .user-message { width: fit-content; max-width: 95%; margin: 24px 0 24px auto; padding: 12px 16px; background: var(--panel-2); border-radius: 12px 12px 3px 12px; font-size: 14px; line-height: 1.8; }
+  .assistant-heading { display: flex; align-items: center; gap: 10px; }
+  .assistant-symbol { width: 28px; height: 28px; font-size: 11px; border-radius: 7px; }
+  .assistant-heading h3 { font-size: 15px; font-weight: 650; }
+  .process-list { display: grid; gap: 9px; margin-top: 17px; }
+  .process-list li { display: flex; gap: 9px; align-items: center; font-size: 12px; color: var(--muted); }
+  .process-list :global(svg) { color: var(--primary); flex-shrink: 0; }
+  .result-text { font-size: 14px; line-height: 1.9; color: var(--ink-soft); margin: 18px 0; }
+  .result-file { display: flex; align-items: center; gap: 10px; border: 1px solid var(--line); border-radius: 8px; padding: 12px; font-size: 12px; }
+  .result-file :global(svg) { color: var(--primary); flex-shrink: 0; }
+  .file-label { margin-left: auto; font-size: 11px; color: var(--muted); white-space: nowrap; }
+  .boundary-note { font-size: 11px; line-height: 1.8; color: var(--muted); margin-top: 12px; }
+  @media (max-width: 700px) {
+    .preview-intro { align-items: start; flex-direction: column; gap: 10px; }
+    .scene-labels { gap: 6px; }
+    .scene-labels label { flex: 1; gap: 6px; padding: 12px 6px; font-size: 13px; }
+    .scene-number { display: none; }
+    .scene-panel { grid-template-columns: minmax(0, 1fr); }
+    .context-panel { padding: 16px; border-right: 0; border-bottom: 1px solid var(--line); }
+    .context-caption, .context-foot, .project-name { display: none; }
+    .rule-card { margin: 0; padding: 0; background: transparent; border: 0; }
+    .rule-card p { margin-top: 6px; }
+    .conversation { padding: 18px 16px; }
+  }
+  @media (prefers-reduced-motion: reduce) { .scene-labels label { transition: none; } }
+</style>
+
