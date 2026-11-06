@@ -5,6 +5,7 @@ import { fileURLToPath } from 'node:url';
 import { walk } from './lib.mjs';
 import { siteTarget } from '../site-target.mjs';
 import { artifactProblems } from './artifact-policy.mjs';
+import { toneProblems, visibleText } from './tone.mjs';
 
 const target = siteTarget(process.env);
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
@@ -20,9 +21,20 @@ for (const file of htmlFiles) {
   const html = fs.readFileSync(path.join(dist, file), 'utf8');
   if (!target.accountPreview && /https?:\/\/(?:127\.0\.0\.1|localhost):/.test(html))
     problems.push(`${file}: local preview origin leaked into a distributable build`);
+  // 静态跳转页没有正文标题；其余页面必须恰有一个 H1。
+  if (!/http-equiv="refresh"/.test(html)) {
+    const h1s = html.match(/<h1\b/gi) ?? [];
+    if (h1s.length !== 1) problems.push(`${file}: expected exactly one <h1>, found ${h1s.length}`);
+  }
   const text = html.replace(/<script\b[^>]*>[\s\S]*?<\/script>/gi, '').replace(/<[^>]+>/g, ' ');
   if (/120\s*天|离线试用|桌面试用|下载试用|IAI-Trial_|原文永不上传|最终解释权/.test(text))
     problems.push(`${file}: stale or unsupported product claim`);
+  // 口吻门禁。术语表不在本站构建里强制：出网清单按契约原文，个人版页面仍写「工作区」，改名归品牌迁移。
+  for (const problem of toneProblems(visibleText(html), { terms: false }))
+    problems.push(`${file}: ${problem}`);
+  // “闭环”只允许出现在“RCA 闭环”这一技术表述里，不作为营销卖点词。
+  const forbidden = [...new Set(text.match(/杜绝|无缝|赋能|工业验证|领先|颠覆|秒级|零风险|(?<!RCA )闭环/g) ?? [])];
+  if (forbidden.length) problems.push(`${file}: forbidden marketing word: ${forbidden.join(', ')}`);
   if (/releases\/download\/[^"\s]+(?:Trial|trial)[^"\s]*/.test(html))
     problems.push(`${file}: obsolete trial artifact link`);
   if (target.mode === 'www' && /(?:href|src|poster)="\/iai-pages\//.test(html))
