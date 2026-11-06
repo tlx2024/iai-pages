@@ -14,51 +14,51 @@ export const CONTACT_EMAIL = '';
 /** 公开制品仓库（官网与 Release 都在这里） */
 export const PUBLIC_REPO = 'tlx2024/iai-pages';
 
-export type NavItem = { label: string; href: string; edition?: 'personal' | 'enterprise' };
+export type NavItem = { label: string; href: string };
 
-/** 一级导航：两条路径 + 能力 + 文档。个人版、企业版的二级面板来自 editions.ts */
+/** 一级导航：功能、场景、部署、安全、文档、更新日志 */
 export const NAV: NavItem[] = [
-  { label: '个人版', href: '/personal/', edition: 'personal' },
-  { label: '企业版', href: '/enterprise/', edition: 'enterprise' },
-  { label: '能力', href: '/features/' },
+  { label: '功能', href: '/features/' },
+  { label: '场景', href: '/enterprise/solutions/' },
+  { label: '部署', href: '/enterprise/deployment/' },
+  { label: '安全', href: '/enterprise/security/' },
   { label: '文档', href: '/docs/' },
+  { label: '更新日志', href: '/changelog/' },
 ];
 
 export const FOOTER_GROUPS: { title: string; items: NavItem[] }[] = [
   {
-    title: '个人版',
+    title: '产品与方案',
     items: [
-      { label: '个人版总览', href: '/personal/' },
-      { label: '工作方式', href: '/personal/how-it-works/' },
-      { label: '本体市场', href: '/packs/' },
-      { label: '出网清单', href: '/personal/privacy/' },
-      { label: '价格与积分', href: '/price/' },
-    ],
-  },
-  {
-    title: '企业版',
-    items: [
-      { label: '企业版总览', href: '/enterprise/' },
-      { label: '部署与交付', href: '/enterprise/deployment/' },
-      { label: '安全与数据', href: '/enterprise/security/' },
+      { label: '功能总览', href: '/features/' },
       { label: '行业场景', href: '/enterprise/solutions/' },
-      { label: '预约演示', href: '/enterprise/contact/' },
+      { label: '部署形态', href: '/enterprise/deployment/' },
+      { label: '安全与数据', href: '/enterprise/security/' },
     ],
   },
   {
-    title: '能力与资源',
+    title: '获取与交付',
     items: [
-      { label: '能力与版本对照', href: '/features/' },
-      { label: '下载与内测', href: '/download/' },
-      { label: '快速开始', href: '/docs/quickstart/' },
-      { label: '常见问题', href: '/docs/faq/' },
+      { label: '预约演示', href: '/enterprise/contact/' },
+      { label: '私有部署', href: '/enterprise/deployment/' },
+      { label: '制品与下载', href: '/download/' },
       { label: '更新日志', href: '/changelog/' },
+    ],
+  },
+  {
+    title: '文档与支持',
+    items: [
+      { label: '文档首页', href: '/docs/' },
+      { label: '快速开始', href: '/docs/quickstart/' },
+      { label: '私有部署指南', href: '/docs/deployment/' },
+      { label: '模型准备', href: '/docs/models/' },
+      { label: '常见问题', href: '/docs/faq/' },
     ],
   },
   {
     title: '关于',
     items: [
-      { label: '条款与隐私', href: '/terms/' },
+      { label: '交付与安全条款', href: '/terms/' },
       { label: '联系我们', href: '/enterprise/contact/' },
       { label: '字体与素材许可', href: '/licenses/' },
     ],

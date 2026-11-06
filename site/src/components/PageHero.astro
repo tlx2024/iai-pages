@@ -1,0 +1,44 @@
+---
+// 公共页（不属于个人版或企业版）的统一首屏：光晕底、范围标签、标题与导语。
+interface Props {
+  eyebrow?: string;
+  title: string;
+  lead?: string;
+  badge?: string;
+  note?: string;
+  align?: 'left' | 'center';
+}
+const { eyebrow, title, lead, badge, note, align = 'left' } = Astro.props;
+const center = align === 'center';
+---
+
+<section class="relative overflow-hidden">
+  <div class="pointer-events-none absolute inset-0" style="background: var(--hero-glow)" aria-hidden="true"></div>
+  <div class="container-site relative pb-10 pt-12 sm:pt-16">
+    <div class:list={['max-w-4xl', center && 'mx-auto text-center']}>
+      {
+        (badge || note) && (
+          <div class:list={['flex flex-wrap items-center gap-2', center && 'justify-center']}>
+            {badge && (
+              <span class="inline-flex shrink-0 items-center gap-1.5 whitespace-nowrap rounded-full border border-line bg-panel px-2.5 py-0.5 text-xs font-medium text-ink-soft">
+                <span class="size-1.5 rounded-full bg-primary" aria-hidden="true" />
+                {badge}
+              </span>
+            )}
+            {note && <span class="rounded-full border border-line px-3 py-0.5 text-xs text-muted">{note}</span>}
+          </div>
+        )
+      }
+      {eyebrow && <p class:list={['eyebrow', (badge || note) ? 'mt-6' : '']}>{eyebrow}</p>}
+      <h1 class="mt-2 text-[2.25rem] font-bold leading-[1.2] tracking-tight sm:text-5xl">{title}</h1>
+      {lead && <p class:list={['mt-5 text-base leading-8 text-ink-soft sm:text-lg', center ? 'mx-auto max-w-2xl' : 'max-w-3xl']}>{lead}</p>}
+      {
+        Astro.slots.has('default') && (
+          <div class:list={['mt-6', center && 'flex justify-center']}>
+            <slot />
+          </div>
+        )
+      }
+    </div>
+  </div>
+</section>

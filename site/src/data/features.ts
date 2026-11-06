@@ -55,7 +55,7 @@ export const STATUS_HINT: Record<Status, string> = {
   coming: '已在开发，尚未公开发布',
 };
 
-export const EDITION_LABEL: Record<Edition, string> = { personal: '个人版（规划中）', server: '企业版' };
+export const EDITION_LABEL: Record<Edition, string> = { server: '企业版', personal: '企业版' };
 
 export const FEATURES: Feature[] = [
   {
@@ -351,16 +351,16 @@ export const FEATURES: Feature[] = [
   {
     slug: 'desktop',
     nav: '桌面端',
-    eyebrow: 'Local knowledge, official AI',
-    title: '桌面端',
-    tagline: '资料留在本机，按需使用官方 AI。',
-    summary: '个人版聚焦本机知识库、本体与检索，官方 AI 使用账号与积分。企业客户端连接企业内网服务器，随私有化交付。',
+    eyebrow: 'Enterprise workstation',
+    title: '企业桌面客户端',
+    tagline: '岗位电脑上的统一入口，连接企业内网服务器。',
+    summary: '企业桌面客户端连接企业内网 IAI 服务器，提供多岗位协同、本地运行环境与安全通道，随私有化交付。',
     shots: ['desktop'],
     capabilities: [
-      { title: '个人版本机知识库', desc: '知识库、本体、检索与 Wiki 编排在本机运行。', status: 'planned', edition: 'personal' },
-      { title: '官方 AI 与积分', desc: '系统浏览器授权设备，确认内容与预算后按量调用。价格以正式发布为准。', status: 'planned', edition: 'personal' },
-      { title: '个人版签名安装包', desc: '即将通过官方域名提供，展示 SHA256 与发行签名状态。', status: 'planned', edition: 'personal' },
       { title: '企业客户端', desc: '连接企业服务器，随私有化项目交付。', status: 'shipped', edition: 'server' },
+      { title: '本地运行环境', desc: '支持连接企业内网私有模型（vLLM / Ollama），支持纯内网离线运行。', status: 'shipped', edition: 'server' },
+      { title: '多岗位协同工作台', desc: '知识空间、本体对象、运行待办与报告集中呈现。', status: 'shipped', edition: 'server' },
+      { title: '客户端企业签名', desc: '提供企业安全签名的分发包，展示 SHA256 与版本校验。', status: 'shipped', edition: 'server' },
     ],
   },
 ];

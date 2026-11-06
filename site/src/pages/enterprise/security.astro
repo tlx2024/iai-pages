@@ -1,7 +1,7 @@
 ---
 import Base from '../../layouts/Base.astro';
 import Icon from '../../components/Icon.astro';
-import SectionHeading from '../../components/SectionHeading.astro';
+import EnterpriseHero from '../../components/EnterpriseHero.astro';
 import StatusBadge from '../../components/StatusBadge.astro';
 import CtaBand from '../../components/CtaBand.astro';
 import type { Status } from '../../data/features';
@@ -91,14 +91,18 @@ const blocks: Block[] = [
 ---
 
 <Base title="安全与数据" description="IAI 如何对待工厂数据：私有化部署与本机模型、RBAC 与 ABAC、写操作审批、执行账本与审计、配方脱敏。">
-  <section class="container-site pt-14">
-    <SectionHeading
-      as="h1"
-      eyebrow="Security & data"
-      title="安全与数据"
-      lead="在工厂里，AI 能不能用，先看三件事：数据会不会出去，权限会不会越界，出了问题能不能说清楚。下面逐项说明 IAI 的做法，以及每一项的当前状态。"
-    />
-  </section>
+  <EnterpriseHero
+    eyebrow="Security & data"
+    title="安全与数据"
+    lead="在工厂里，AI 能不能用，先看三件事：数据会不会出去，权限会不会越界，出了问题能不能说清楚。下面逐项说明 IAI 的做法，以及每一项的当前状态。"
+    points={['数据留在厂内', '权限与审批', '执行账本与审计']}
+  >
+    <a href={href('/enterprise/contact/')} class="btn bg-white text-[#111c2e] hover:bg-white/90">
+      <Icon name="mail" size={18} />
+      预约演示
+    </a>
+    <a href={href('/enterprise/deployment/')} class="btn border border-white/30 text-white hover:border-white/60">看部署与硬件</a>
+  </EnterpriseHero>
 
   <div class="container-site mt-12 grid gap-4 md:grid-cols-2">
     {

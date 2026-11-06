@@ -2,8 +2,7 @@
 import '../styles/site.css';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
-import EditionSubnav from '../components/EditionSubnav.astro';
-import { editionOf } from '../data/editions';
+import MobileCta from '../components/MobileCta.astro';
 import { href } from '../lib/url';
 import { BRAND } from '../data/site';
 
@@ -14,11 +13,33 @@ interface Props {
   bare?: boolean;
 }
 
-const { title, description = `${BRAND.full}：${BRAND.tagline}个人版按本体组建专业 AI 团队，企业版覆盖整个企业的 AI 生态。` } = Astro.props;
+const { title, description = `${BRAND.full}：${BRAND.tagline}面向工业现场的智能中枢，连接现有数字化系统，用统一本体把设备、物料、工艺和人对齐。` } = Astro.props;
 const pageTitle = title ? `${title} · ${BRAND.full}` : `${BRAND.full} · ${BRAND.en}`;
 const canonical = new URL(Astro.url.pathname, Astro.site);
-const edition = editionOf(Astro.url.pathname, import.meta.env.BASE_URL.replace(/\/$/, ''));
 const ogImage = new URL(href('/og.jpg'), Astro.site);
+const home = new URL(href('/'), Astro.site);
+const logo = new URL(href('/favicon.png'), Astro.site);
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@graph': [
+    {
+      '@type': 'Organization',
+      '@id': `${home.href}#organization`,
+      name: BRAND.full,
+      alternateName: BRAND.short,
+      url: home.href,
+      logo: logo.href,
+    },
+    {
+      '@type': 'WebSite',
+      '@id': `${home.href}#website`,
+      name: BRAND.full,
+      url: home.href,
+      inLanguage: 'zh-CN',
+      publisher: { '@id': `${home.href}#organization` },
+    },
+  ],
+};
 ---
 
 <!doctype html>
@@ -42,6 +63,7 @@ const ogImage = new URL(href('/og.jpg'), Astro.site);
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="theme-color" content="#f5f6f8" media="(prefers-color-scheme: light)" />
     <meta name="theme-color" content="#0f172a" media="(prefers-color-scheme: dark)" />
+    <script type="application/ld+json" is:inline set:html={JSON.stringify(jsonLd)} />
     {/* 与 Starlight 共用主题偏好：localStorage 'starlight-theme' = 'light' | 'dark' | ''（跟随系统） */}
     <script is:inline>
       (() => {
@@ -54,17 +76,17 @@ const ogImage = new URL(href('/og.jpg'), Astro.site);
       })();
     </script>
   </head>
-  <body class="min-h-screen bg-bg font-sans text-ink antialiased">
+  <body class="min-h-screen bg-bg pb-[calc(5rem_+_env(safe-area-inset-bottom))] font-sans text-ink antialiased sm:pb-0">
     <a
       href="#main"
       class="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-50 focus:rounded-lg focus:bg-panel focus:px-4 focus:py-2"
       >跳到正文</a
     >
     <Header />
-    {edition && <EditionSubnav edition={edition} />}
     <main id="main">
       <slot />
     </main>
     <Footer />
+    <MobileCta />
   </body>
 </html>

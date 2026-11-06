@@ -1,197 +1,110 @@
 ---
 import Base from '../layouts/Base.astro';
-import EditionHero from '../components/EditionHero.astro';
+import EnterpriseHero from '../components/EnterpriseHero.astro';
 import Icon from '../components/Icon.astro';
-import PersonalBillingDetails from '../components/PersonalBillingDetails.astro';
-import { ENDPOINTS, accountHref } from '../lib/endpoints';
+import CtaBand from '../components/CtaBand.astro';
 import { href } from '../lib/url';
-const freeFeatures = [
-  '客户端软件下载、安装与离线使用',
-  '本地文档导入、文字图层解析与排版提取',
-  '本地 SQLite 存储与不可变历史版本管理',
-  '本地关键词检索与轻量向量语义索引',
-  '三大范式起步包（OPC / 配方 / 工厂）直接导入',
-  '本体类型、关系与业务属性的本地编辑',
-  '保存本体版本、范式公理校验与能力问题回归',
-  'Wiki 对象页骨架生成、页首属性条与受控摘录',
-  '本地工作区数据备份与导出为起步包',
-];
 
-const creditFeatures = [
+const tiers = [
   {
-    name: '智能助手问答',
-    desc: '基于本地命中的知识切片与本体规矩进行推理解答，生成逐句可点击的原文出处',
-    pricing: '按实际输入输出 Token 计费，调用前弹窗显示预留上限',
+    name: '车间边缘版',
+    en: 'Edge Station',
+    desc: '面向单工厂产线、单车间现场或特定关键机组的快速落地与评估。',
+    features: [
+      '单机一体化 Docker Compose 容器编排',
+      '连接本地 MES / SCADA / PLC 工业网络',
+      '车间级统一本体与不可变执行账本',
+      '支持单卡 GPU 运行内网开源模型（vLLM / Ollama）',
+      '多岗位协同工作台与本地文件图层解析',
+      '标准部署套件与现场交付指导',
+    ],
+    cta: '预约方案咨询',
   },
   {
-    name: 'AI 引导起草本体',
-    desc: '根据用户对起步包通俗引导问题的逐题回答，提炼生成完整的本体结构草案',
-    pricing: '约 3–8 积分/次（按问答字数计算，草案全部进本地草稿区由你采纳）',
+    name: '全厂中枢版',
+    en: 'Plant Hub',
+    featured: true,
+    desc: '面向整个厂区的综合智能中枢，多系统互联、多部门协同与全流程审计。',
+    features: [
+      '高可用多节点容器编排与故障转移',
+      '全厂级统一本体建模、跨系统身份对齐',
+      '接入 MES、SCADA、ERP、LIMS 与移动审批通道',
+      '工业知识切片、向量索引与确定性 Wiki 驾驶舱',
+      '高风险动作多级审批流与防篡改审计日志',
+      '专属模型推理集群与算力负载均衡',
+      '企业级数字证书与客户端签名',
+    ],
+    cta: '预约现场评估',
   },
   {
-    name: 'Wiki 专题深度整理',
-    desc: '从多篇复杂资料中归纳提炼主题 Wiki，带逐段引用出处',
-    pricing: '按整理文本 Token 计费，运行前弹窗明确预算',
+    name: '集团定制版',
+    en: 'Enterprise Custom',
+    desc: '面向多厂区、集团级跨基地统一管理与定制化工业大模型集成。',
+    features: [
+      '跨厂区分布式部署与分级管控',
+      '集团统一资源树、组织架构与 SSO 单点登录',
+      '特定工业行业专属本体与专家知识沉淀',
+      '定制化技能库开发与专有协议深度对接',
+      '高可用架构容灾演练与定制 SLA 保障',
+      '专家团队全程驻场实施与架构支持',
+    ],
+    cta: '联系专属架构师',
   },
-  {
-    name: '云端扫描页 OCR',
-    desc: '针对纯图片扫描页调用多模态视觉模型提取文字与表格结构',
-    pricing: '约 0.5 积分/页，逐份资料单独授权，绝不上传整本不需要识别的文件',
-  },
-  {
-    name: '本体演化 AI 建议与出题',
-    desc: '针对未能回答的问题给出本体扩展建议，或从资料中自动生成知识体检题目',
-    pricing: '按实际 Token 计费，草案进草稿区',
-  },
-];
-const demo = Boolean(ENDPOINTS.accountPreview);
-const plans = [
-  { name: '免费客户端', description: '从本机知识库开始', price: '¥0', unit: '客户端', label: '本机知识工作台', action: '下载个人版', url: href('/download/'), featured: false, items: ['本机资料整理与知识库', '本体、检索与本地编排', '本地浏览、编辑、备份与导出', '官方 AI 权益单独提供'] },
-  { name: '个人会员', description: '适合持续使用官方 AI', price: demo ? '¥39' : '待发布', unit: demo ? '/ 月 · 示例' : '价格以正式发布为准', label: '月度官方 AI 方案', action: demo ? '体验会员与账号中心' : '查看会员注册', url: accountHref('register'), featured: true, items: [demo ? '2,000 月度积分（示例）' : '月度积分，权益待内测校准', '问答与 OCR 按量使用', '每次调用前确认内容与预算', '不自动续费，本地功能持续可用'] },
-  { name: '积分加量包', description: '按需补充，灵活安排用量', price: demo ? '¥20' : '待发布', unit: demo ? '/ 包 · 示例' : '价格以正式发布为准', label: '按需补充积分', action: '进入账号中心', url: accountHref('account'), featured: false, items: [demo ? '800 积分（示例）' : '积分数量与有效期待发布', '与会员积分分开成批记账', '优先消耗快到期的积分', '可用、预留、消费清楚可查'] },
-];
-
-const compareRows = [
-  ['本机知识库与检索', '免费使用', '持续可用', '持续可用'],
-  ['官方 AI', '需账号与积分', '月度积分方案', '按需补充积分'],
-  ['使用预算', '本机功能免费', '每次调用前确认', '每次调用前确认'],
-  ['积分与流水', '登录后查看', '账号中心查看', '单独批次查看'],
-  ['当前开放状态', '签名包待发布', '界面演示／待开放', '界面演示／待开放'],
-];
-
-const faqs = [
-  { q: '不买会员，还能使用本机知识库吗？', a: '可以。本地浏览、编辑、检索、备份和导出不依赖云端会员。官方 AI 需要账号与积分。' },
-  { q: '会员和加量包有什么区别？', a: '会员按月度方案提供积分，加量包用于按需补充。积分分批记账，具体数量、有效期和价格以正式发布为准。' },
-  { q: '现在可以注册、购买或下载吗？', a: '本次提供界面演示，真实注册与购买尚未开放，公开签名安装包尚未发布。可从下载页查看发布状态。' },
-  { q: '哪些内容会发送到云端？', a: '按功能发送你确认的问答内容或选定 OCR 页面，以及计量元数据。知识库原件、本体与本地检索留在你的电脑。' },
 ];
 ---
 
-<Base title="会员与价格" description="IAI 个人版客户端免费，按需选择官方 AI 会员与积分加量包。">
-  <EditionHero
-    eyebrow="Pricing"
-    title="客户端免费，官方 AI 按需用"
-    lead="资料留在本机，官方 AI 按需连接。从免费客户端开始，随使用频率选择会员与加量包；每次调用前先报价。"
-    align="center"
-  />
+<Base title="方案与服务" description="IAI 企业版私有化交付方案与服务模式：车间边缘版、全厂中枢版与集团定制版。">
+  <EnterpriseHero
+    eyebrow="Solutions & Pricing"
+    title="方案与交付服务"
+    lead="IAI 智能工厂中枢按私有化项目交付。根据工厂规模、接入系统数量与部署架构提供定制方案，数据不出厂，无隐性消费。"
+    points={['私有化授权', '现场系统联调', '按需架构规划']}
+  >
+    <a href={href('/enterprise/contact/')} class="btn bg-white text-[#111c2e] hover:bg-white/90">
+      <Icon name="mail" size={18} />
+      预约演示与报价
+    </a>
+    <a href={href('/enterprise/deployment/')} class="btn border border-white/30 text-white hover:border-white/60">
+      查看部署形态
+    </a>
+  </EnterpriseHero>
 
-  <section class="container-site">
-    <div class="mx-auto max-w-4xl rounded-lg border border-line bg-panel px-5 py-3 text-center text-sm leading-7 text-ink-soft">
-      {demo ? '界面演示：金额与积分均为设计样例，真实注册、会员购买与支付尚未开放。' : '会员与加量包正在内测校准。当前不开放自助注册与购买，价格以正式发布为准。'}
-    </div>
-
-    <div class="mx-auto mt-10 flex w-fit gap-1 rounded-xl border border-line bg-panel-2 p-1" role="tablist" aria-label="交付方案">
-      <button class="pricing-tab active" id="personal-tab" role="tab" aria-selected="true" aria-controls="personal-plans">个人版</button>
-      <button class="pricing-tab" id="enterprise-tab" role="tab" aria-selected="false" aria-controls="enterprise-plans" tabindex="-1">企业私有化</button>
-    </div>
-
-    <div id="personal-plans" role="tabpanel" aria-labelledby="personal-tab" class="mt-8">
-      <div class="grid gap-5 md:grid-cols-3">
-        {
-          plans.map((plan) => (
-            <article class:list={['card flex flex-col border-t-[3px] p-7', plan.featured ? 'border-t-personal ring-1 ring-personal' : 'border-t-line']}>
-              <div class:list={['mb-5 w-fit rounded-md px-2.5 py-1 text-xs', plan.featured ? 'bg-personal-soft text-personal' : 'bg-panel-2 text-muted']}>{plan.label}</div>
-              <h2 class="text-xl font-semibold">{plan.name}</h2>
-              <p class="mt-2 text-sm text-muted">{plan.description}</p>
-              <div class="my-6">
-                <span class="font-latin text-4xl font-semibold tracking-tight">{plan.price}</span>
-                <span class="ml-2 text-xs text-muted">{plan.unit}</span>
-              </div>
-              <a class:list={['btn justify-center', plan.featured ? 'btn-primary' : 'btn-secondary']} href={plan.url}>
-                {plan.action}
-              </a>
-              <ul class="mt-6 flex-1 space-y-2.5 border-t border-line pt-5">
-                {plan.items.map((item) => (
-                  <li class="flex gap-2 text-sm leading-6 text-ink-soft">
-                    <Icon name="check" size={15} class="mt-0.5 shrink-0 text-faint" />
-                    {item}
+  <section class="container-site mt-12">
+    <div class="grid gap-6 lg:grid-cols-3">
+      {
+        tiers.map((tier) => (
+          <article class:list={['card flex flex-col p-8', tier.featured ? 'border-enterprise ring-1 ring-enterprise' : '']}>
+            {tier.featured && (
+              <span class="mb-4 w-fit rounded-md bg-enterprise-soft px-2.5 py-1 text-xs font-semibold text-enterprise">
+                推荐部署形态
+              </span>
+            )}
+            <h2 class="text-2xl font-bold tracking-tight text-ink">{tier.name}</h2>
+            <p class="font-latin text-xs font-medium text-faint">{tier.en}</p>
+            <p class="mt-4 text-[15px] leading-7 text-ink-soft">{tier.desc}</p>
+            
+            <div class="mt-6 border-t border-line-soft pt-6">
+              <h3 class="text-xs font-semibold uppercase tracking-wider text-muted">包含能力与交付物</h3>
+              <ul class="mt-4 space-y-3">
+                {tier.features.map((f) => (
+                  <li class="flex items-start gap-2.5 text-sm leading-6 text-ink-soft">
+                    <Icon name="check" size={16} class="mt-1 shrink-0 text-ok" />
+                    <span>{f}</span>
                   </li>
                 ))}
               </ul>
-            </article>
-          ))
-        }
-      </div>
-      <p class="mt-6 text-center text-xs leading-6 text-muted">签名安装包尚未发布。积分权益不锁定本机资料；会员到期或云端不可用，本地功能仍可使用。</p>
+            </div>
 
-      <section class="card mt-12 p-6 sm:p-8">
-        <h2 class="text-2xl font-semibold">哪种方式更适合你</h2>
-        <div class="mt-6 overflow-x-auto">
-          <table class="w-full text-left text-sm">
-            <caption class="sr-only">免费客户端、个人会员与加量包权益对比</caption>
-            <thead>
-              <tr><th>使用场景</th><th>免费客户端</th><th>个人会员</th><th>积分加量包</th></tr>
-            </thead>
-            <tbody>
-              {compareRows.map(([k, ...cells]) => (
-                <tr>
-                  <th>{k}</th>
-                  {cells.map((c) => <td>{c}</td>)}
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      </section>
-    </div>
-
-    <div id="enterprise-plans" role="tabpanel" aria-labelledby="enterprise-tab" class="mt-8" hidden>
-      <div class="card mx-auto max-w-3xl border-t-[3px] border-t-enterprise p-8">
-        <p class="eyebrow eyebrow-enterprise">Private Deployment</p>
-        <h2 class="mt-2 text-2xl font-semibold">企业版按项目报价</h2>
-        <p class="mt-4 leading-8 text-ink-soft">系统接入、团队权限、审批与治理通过私有化项目交付。报价随接入范围、部署形态与交付清单确定；服务器套件、企业客户端与镜像包按项目核对，不提供公开镜像直链。</p>
-        <div class="mt-6 flex flex-wrap gap-3">
-          <a href={href('/enterprise/contact/')} class="btn btn-enterprise">预约演示</a>
-          <a href={href('/enterprise/deployment/')} class="btn btn-secondary">部署与交付</a>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <section class="mt-16 border-y border-line bg-panel py-16">
-    <div class="container-site">
-      <h2 class="text-center text-2xl font-semibold">常见问题</h2>
-      <div class="mx-auto mt-8 max-w-3xl space-y-3">
-        {
-          faqs.map((f) => (
-            <details class="rounded-xl border border-line bg-bg p-5">
-              <summary class="cursor-pointer font-medium">{f.q}</summary>
-              <p class="mt-4 text-sm leading-7 text-ink-soft">{f.a}</p>
-            </details>
-          ))
-        }
-      </div>
-    </div>
-  </section>
-
-  <div class="container-site">
-    <PersonalBillingDetails freeFeatures={freeFeatures} creditFeatures={creditFeatures} demo={demo} />
-  </div>
-</Base>
-<style>
-  .pricing-tab{min-height:44px;min-width:132px;padding:10px 20px;border-radius:8px;font-size:14px;color:var(--muted);cursor:pointer}.pricing-tab.active{background:var(--panel);color:var(--ink);box-shadow:0 2px 4px #1018280a;font-weight:600}th,td{padding:16px 12px;border-bottom:1px solid var(--line);white-space:nowrap}thead th{color:var(--muted);font-weight:500;background:var(--panel-2)}tbody th{font-weight:500}td{color:var(--ink-soft)}summary{min-height:32px}button:focus-visible{outline:2px solid var(--primary);outline-offset:3px}
-</style>
-<script>
-  const personal = document.getElementById('personal-tab')!;
-  const enterprise = document.getElementById('enterprise-tab')!;
-  function selectPlan(selected: HTMLElement) {
-    [personal, enterprise].forEach(tab => {
-      const active = tab === selected;
-      tab.setAttribute('aria-selected', String(active));
-      tab.setAttribute('tabindex', active ? '0' : '-1');
-      tab.classList.toggle('active', active);
-      document.getElementById(tab.getAttribute('aria-controls')!)!.hidden = !active;
-    });
-  }
-  [personal, enterprise].forEach(tab => {
-    tab.addEventListener('click', () => selectPlan(tab));
-    tab.addEventListener('keydown', event => {
-      if (['ArrowLeft', 'ArrowRight', 'Home', 'End'].includes(event.key)) {
-        event.preventDefault();
-        const next = event.key === 'Home' ? personal : event.key === 'End' ? enterprise : tab === personal ? enterprise : personal;
-        selectPlan(next);
-        next.focus();
+            <div class="mt-8 pt-4">
+              <a href={href('/enterprise/contact/')} class:list={['btn w-full justify-center', tier.featured ? 'btn-enterprise' : 'btn-secondary']}>
+                {tier.cta}
+              </a>
+            </div>
+          </article>
+        ))
       }
-    });
-  });
-</script>
+    </div>
+  </section>
+
+  <CtaBand title="从具体的业务场景开始评估" lead="我们将根据您现有的数字化系统架构与硬件条件，为您出具详尽的软硬件配置清单与实施排期。" />
+</Base>

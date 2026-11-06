@@ -1,7 +1,7 @@
 ---
 import Base from '../../layouts/Base.astro';
 import Icon from '../../components/Icon.astro';
-import SectionHeading from '../../components/SectionHeading.astro';
+import EnterpriseHero from '../../components/EnterpriseHero.astro';
 import StatusBadge from '../../components/StatusBadge.astro';
 import CtaBand from '../../components/CtaBand.astro';
 import type { Status } from '../../data/features';
@@ -102,14 +102,18 @@ const solutions: Solution[] = [
 ---
 
 <Base title="行业场景" description="IAI 在通用制造、医药 GMP 与研发配方三个场景中的用法与所处阶段。">
-  <section class="container-site pt-14">
-    <SectionHeading
-      as="h1"
-      eyebrow="Solutions"
-      title="行业场景"
-      lead="IAI 的平台能力是通用的；不同行业的差别在于接入哪些系统、沉淀哪些知识、哪些动作需要把关。每个场景都标注了所处阶段。"
-    />
-  </section>
+  <EnterpriseHero
+    eyebrow="Solutions"
+    title="行业场景"
+    lead="IAI 的平台能力是通用的；不同行业的差别在于接入哪些系统、沉淀哪些知识、哪些动作需要把关。每个场景都标注了所处阶段。"
+    points={['通用制造', '医药 GMP', '研发配方']}
+  >
+    <a href={href('/enterprise/contact/')} class="btn bg-white text-[#111c2e] hover:bg-white/90">
+      <Icon name="mail" size={18} />
+      预约演示
+    </a>
+    <a href={href('/enterprise/deployment/')} class="btn border border-white/30 text-white hover:border-white/60">看部署与硬件</a>
+  </EnterpriseHero>
 
   <div class="container-site mt-12 space-y-6">
     {

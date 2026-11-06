@@ -1,0 +1,52 @@
+---
+// 企业版子页的统一深色首屏：与 /enterprise/ 同底色、同口径，右侧列本页的范围。
+import { EDITIONS } from '../data/editions';
+
+interface Props {
+  eyebrow: string;
+  title: string;
+  lead?: string;
+  tag?: string;
+  note?: string;
+  points?: string[];
+}
+const { eyebrow, title, lead, tag = EDITIONS.enterprise.status, note = EDITIONS.enterprise.requires, points = [] } =
+  Astro.props;
+---
+
+<section class="relative overflow-hidden bg-enterprise-hero text-white">
+  <div
+    class="pointer-events-none absolute inset-0"
+    style="background: radial-gradient(55% 70% at 85% 0%, rgba(79,112,150,.45) 0%, rgba(79,112,150,0) 70%)"
+    aria-hidden="true"
+  >
+  </div>
+  <div class="container-site relative grid gap-12 pb-16 pt-14 sm:pt-20 lg:grid-cols-[minmax(0,7fr)_minmax(0,5fr)] lg:items-end">
+    <div>
+      <p class="font-latin text-[15px] font-medium text-[#a7bed8]">IAI Enterprise · {tag}</p>
+      <p class="mt-6 font-latin text-sm font-medium text-[#a7bed8]">{eyebrow}</p>
+      <h1 class="mt-2 text-[2.25rem] font-bold leading-[1.2] tracking-tight sm:text-5xl">{title}</h1>
+      {lead && <p class="mt-6 max-w-2xl text-base leading-8 text-white/75 sm:text-lg">{lead}</p>}
+      {
+        Astro.slots.has('default') && (
+          <div class="mt-8 flex flex-wrap gap-3">
+            <slot />
+          </div>
+        )
+      }
+      <p class="mt-6 text-sm text-white/55">{note}</p>
+    </div>
+    {
+      points.length > 0 && (
+        <ul class="hidden border-t border-white/15 lg:block">
+          {points.map((p) => (
+            <li class="flex items-center gap-3 border-b border-white/15 py-3.5 text-sm text-white/70">
+              <span class="size-1.5 rounded-full bg-[#8aa6c6]" aria-hidden="true" />
+              {p}
+            </li>
+          ))}
+        </ul>
+      )
+    }
+  </div>
+</section>

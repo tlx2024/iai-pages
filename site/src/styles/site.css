@@ -4,20 +4,21 @@
    这样在官网页和文档页之间切换时主题保持一致。 */
 @custom-variant dark (&:where([data-theme=dark], [data-theme=dark] *));
 
-/* 设计 token 与产品前端 apps/web/app/globals.css 保持一致：
-   中性灰底、1px 分隔线；控件圆角 5、浮层 8；状态色只表达状态。 */
+/* 中性灰底、1px 分隔线；控件圆角 5、浮层 8；状态色只表达状态。
+   色值以产品前端 apps/web/app/globals.css 为底本，但官网为过 WCAG 2 AA
+   把 primary / muted / faint 和深色主按钮单独加深或提亮，不随产品前端回改。 */
 :root {
   --bg: #f5f6f8;
   --panel: #ffffff;
   --panel-2: #f2f4f7;
   --ink: #161b26;
   --ink-soft: #344054;
-  --muted: #667085;
-  --faint: #98a2b3;
+  --muted: #5b6577;
+  --faint: #667085;
   --line: #e4e7ec;
   --line-soft: #eef0f3;
   --line-strong: #d0d5dd;
-  --primary: #2f6bff;
+  --primary: #2457e6;
   --primary-strong: #1f4fd6;
   --primary-soft: #e8efff;
   --ok: #12b76a;
@@ -47,12 +48,12 @@
   --ink: #e2e8f0;
   --ink-soft: #cbd5e1;
   --muted: #94a3b8;
-  --faint: #64748b;
+  --faint: #8b9ab0;
   --line: #2c3a52;
   --line-soft: rgba(44, 58, 82, 0.7);
   --line-strong: #3b4b66;
-  --primary: #3b82f6;
-  --primary-strong: #60a5fa;
+  --primary: #60a5fa;
+  --primary-strong: #93c5fd;
   --primary-soft: #1d3057;
   --ok: #12b76a;
   --ok-fg: #6ee7b7;
@@ -180,8 +181,12 @@
   .btn-primary:hover {
     background: var(--primary-strong);
   }
-  :root[data-theme="dark"] .btn-primary:hover {
+  :root[data-theme="dark"] .btn-primary {
     background: #2563eb;
+    color: #fff;
+  }
+  :root[data-theme="dark"] .btn-primary:hover {
+    background: #1d4ed8;
   }
   .btn-enterprise {
     background: var(--edition-enterprise);
@@ -207,10 +212,12 @@
   }
   .link {
     color: var(--primary);
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
     text-underline-offset: 3px;
   }
   .link:hover {
-    text-decoration: underline;
+    text-decoration-thickness: 2px;
   }
   /* 长文区：功能页、部署页、安全页的正文排版 */
   .prose-site p {

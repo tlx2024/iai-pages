@@ -3,19 +3,10 @@ import { Image } from 'astro:assets';
 import logo from '../assets/logo.png';
 import Icon from './Icon.astro';
 import ThemeToggle from './ThemeToggle.astro';
-import { accountHref } from '../lib/endpoints';
 import { NAV, BRAND } from '../data/site';
-import { EDITIONS, editionOf } from '../data/editions';
 import { href, isActive } from '../lib/url';
 
-// 静态站不放登录态：账号相关一律跳到账号域，不在本页读写任何身份信息。
-const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 const path = Astro.url.pathname;
-const local = path.replace(base, '') || '/';
-const current = editionOf(path, base);
-// 主 CTA 跟随所在路径：企业路径「预约演示」，其余「申请内测」
-const cta = current === 'enterprise' ? EDITIONS.enterprise.secondary : EDITIONS.personal.secondary;
-const active = (item: (typeof NAV)[number]) => (item.edition ? current === item.edition : isActive(path, item.href));
 ---
 
 <header class="sticky top-0 z-40 border-b border-line bg-bg/85 backdrop-blur supports-[backdrop-filter]:bg-bg/75">
@@ -29,63 +20,32 @@ const active = (item: (typeof NAV)[number]) => (item.edition ? current === item.
 
     <nav class="ml-6 hidden items-center gap-1 lg:flex" aria-label="主导航">
       {
-        NAV.map((item) => {
-          const ed = item.edition ? EDITIONS[item.edition] : null;
-          return (
-            <div class="group relative">
-              <a
-                href={href(item.href)}
-                class:list={[
-                  'relative inline-flex items-center gap-1 rounded-lg px-3 py-2 text-sm transition-colors hover:text-primary',
-                  active(item) ? 'font-medium text-ink' : 'text-ink-soft',
-                ]}
-                aria-current={active(item) ? 'page' : undefined}
-              >
-                {item.label}
-                {ed && <Icon name="chevronDown" size={14} class="text-faint transition-transform group-hover:rotate-180" />}
-                {active(item) && (
-                  <span
-                    class:list={[
-                      'absolute inset-x-3 -bottom-[13px] h-0.5 rounded-full',
-                      item.edition === 'enterprise' ? 'bg-enterprise' : 'bg-primary',
-                    ]}
-                    aria-hidden="true"
-                  />
-                )}
-              </a>
-              {ed && (
-                <div class="invisible absolute left-0 top-full z-50 pt-2 opacity-0 transition-opacity duration-150 group-focus-within:visible group-focus-within:opacity-100 group-hover:visible group-hover:opacity-100">
-                  <div class="w-[22rem] rounded-xl border border-line bg-panel p-2 shadow-[var(--shadow-float)]">
-                    <p class:list={['px-3 pb-1 pt-2 text-xs font-medium', ed.key === 'enterprise' ? 'text-enterprise' : 'text-primary']}>
-                      {ed.promise}
-                    </p>
-                    <ul>
-                      {ed.pages.map((pg) => (
-                        <li>
-                          <a href={href(pg.href)} class="flex items-baseline justify-between gap-4 rounded-lg px-3 py-2 hover:bg-panel-2">
-                            <span class="text-sm font-medium text-ink">{pg.label}</span>
-                            <span class="text-xs text-muted">{pg.desc}</span>
-                          </a>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                </div>
-              )}
-            </div>
-          );
-        })
+        NAV.map((item) => (
+          <a
+            href={href(item.href)}
+            class:list={[
+              'relative inline-flex items-center gap-1 rounded-lg px-3 py-2 text-sm transition-colors hover:text-primary',
+              isActive(path, item.href) ? 'font-medium text-ink' : 'text-ink-soft',
+            ]}
+            aria-current={isActive(path, item.href) ? 'page' : undefined}
+          >
+            {item.label}
+            {isActive(path, item.href) && (
+              <span class="absolute inset-x-3 -bottom-[13px] h-0.5 rounded-full bg-enterprise" aria-hidden="true" />
+            )}
+          </a>
+        ))
       }
     </nav>
 
     <div class="ml-auto flex items-center gap-2">
       <ThemeToggle />
-      <a class="hidden px-2.5 py-2 text-sm text-ink-soft hover:text-primary sm:inline-flex" href={accountHref('account')}>账号中心</a>
       <a
-        href={href(cta.href)}
-        class:list={['btn hidden h-9 px-3.5 text-sm sm:inline-flex', current === 'enterprise' ? 'btn-enterprise' : 'btn-primary']}
+        href={href('/enterprise/contact/')}
+        class="btn btn-enterprise hidden h-9 px-3.5 text-sm sm:inline-flex"
       >
-        {cta.label}
+        <Icon name="mail" size={16} />
+        预约演示
       </a>
 
       <button
@@ -103,38 +63,17 @@ const active = (item: (typeof NAV)[number]) => (item.edition ? current === item.
   </div>
 
   <nav id="mobile-nav" class="hidden max-h-[calc(100vh-4rem)] overflow-y-auto border-t border-line bg-bg lg:hidden" aria-label="主导航（窄屏）">
-    <div class="container-site grid gap-5 py-4">
-      {
-        (['personal', 'enterprise'] as const).map((k) => {
-          const ed = EDITIONS[k];
-          return (
-            <section>
-              <p class:list={['px-3 text-xs font-medium', k === 'enterprise' ? 'text-enterprise' : 'text-primary']}>
-                {ed.name} · {ed.promise}
-              </p>
-              <ul class="mt-1 grid grid-cols-2 gap-1">
-                {ed.pages.map((pg) => (
-                  <li>
-                    <a
-                      href={href(pg.href)}
-                      class:list={['block rounded-lg px-3 py-2.5 text-[15px]', local === pg.href ? 'bg-panel-2 text-ink' : 'text-ink-soft']}
-                    >
-                      {pg.label}
-                    </a>
-                  </li>
-                ))}
-              </ul>
-            </section>
-          );
-        })
-      }
-      <ul class="grid grid-cols-2 gap-1 border-t border-line pt-3">
+    <div class="container-site grid gap-4 py-4">
+      <ul class="grid grid-cols-2 gap-1">
         {
-          NAV.filter((i) => !i.edition).map((item) => (
+          NAV.map((item) => (
             <li>
               <a
                 href={href(item.href)}
-                class:list={['block rounded-lg px-3 py-2.5 text-[15px]', isActive(path, item.href) ? 'bg-panel-2 text-ink' : 'text-ink-soft']}
+                class:list={[
+                  'block rounded-lg px-3 py-2.5 text-[15px]',
+                  isActive(path, item.href) ? 'bg-panel-2 font-medium text-ink' : 'text-ink-soft',
+                ]}
               >
                 {item.label}
               </a>
@@ -142,9 +81,11 @@ const active = (item: (typeof NAV)[number]) => (item.edition ? current === item.
           ))
         }
       </ul>
-      <div class="grid grid-cols-2 gap-2">
-        <a href={accountHref('account')} class="btn btn-secondary justify-center">账号中心</a>
-        <a href={href(cta.href)} class:list={['btn justify-center', current === 'enterprise' ? 'btn-enterprise' : 'btn-primary']}>{cta.label}</a>
+      <div class="pt-2">
+        <a href={href('/enterprise/contact/')} class="btn btn-enterprise w-full justify-center">
+          <Icon name="mail" size={16} />
+          预约演示
+        </a>
       </div>
     </div>
   </nav>
@@ -154,11 +95,13 @@ const active = (item: (typeof NAV)[number]) => (item.edition ? current === item.
   // 窄屏抽屉菜单切换
   const btn = document.querySelector<HTMLButtonElement>('[data-nav-toggle]');
   const menu = document.getElementById('mobile-nav');
+  const mobileCta = document.querySelector<HTMLElement>('[data-mobile-cta]');
   btn?.addEventListener('click', () => {
     const open = btn.getAttribute('aria-expanded') !== 'true';
     btn.setAttribute('aria-expanded', String(open));
     btn.setAttribute('aria-label', open ? '关闭导航' : '打开导航');
     menu?.classList.toggle('hidden', !open);
+    mobileCta?.classList.toggle('hidden', open);
     btn.querySelector('.nav-open')?.classList.toggle('hidden', open);
     btn.querySelector('.nav-close')?.classList.toggle('hidden', !open);
   });

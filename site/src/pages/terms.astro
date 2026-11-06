@@ -1,14 +1,30 @@
 ---
 import Base from '../layouts/Base.astro';
-import SectionHeading from '../components/SectionHeading.astro';
+import PageHero from '../components/PageHero.astro';
 ---
-<Base title="条款与隐私" description="个人版数据流说明与正式条款发布状态。">
-  <section class="container-site pt-14">
-    <SectionHeading as="h1" eyebrow="Terms & privacy" title="条款与隐私" lead="正式服务条款、隐私政策、提供方清单和计费规则将在公开服务前完成审核并发布。当前内容用于设计评审。" />
-    <div class="card mt-10 max-w-3xl space-y-4 p-8 leading-8 text-ink-soft">
-      <p>个人版知识库、本体与检索在本机处理。使用官方 AI 时，只发送本次确认的必要上下文；OCR 只发送选定页图。不会扫描并上传整个本机知识库。</p>
-      <p>模型请求输入在云网关处理内存中使用；输出恢复缓存限时加密。上游提供方的数据保留与地区规则将在正式隐私政策中逐项说明。</p>
-      <p>客户端免费下载。官方 AI 使用账号与积分，价格以正式发布为准。当前不开放自助注册、付费购买或公开安装包下载。</p>
+<Base title="交付与安全条款" description="IAI 企业版私有化交付、数据留厂与安全说明。">
+  <PageHero
+    eyebrow="Terms & security"
+    title="交付与安全条款"
+    lead="IAI 智能工厂中枢以私有化形式部署于客户指定的内网基础设施，受技术服务合同与保密协议严格保护。"
+    badge="企业条款"
+    note="私有化交付保障"
+  />
+
+  <section class="container-site pb-16">
+    <div class="card max-w-3xl p-6 sm:p-8">
+      <div class="prose-site space-y-4 text-[15px] leading-8 text-ink-soft">
+        <h2 class="text-xl font-bold tracking-tight text-ink">数据留厂与所有权</h2>
+        <p>所有工厂数字化系统的业务数据、生产参数、工艺配方、知识文档、本体模型与不可变执行账本均存储在客户内网中，所有权完全归客户所有。</p>
+        <p>系统不设任何形式的数据回传通道。当采用企业自建或本地离线模型（vLLM / Ollama）时，全部推理流程在内网完成，网络流量完全不离开车间与厂区边界。</p>
+        
+        <h2 class="mt-8 text-xl font-bold tracking-tight text-ink">权限控制与审计溯源</h2>
+        <p>系统按岗位角色、组织架构与资源范围实施细粒度访问控制。涉及修改设备参数、启停产线、重试工单等写入操作，必须由责任工程师审批确认后才可放行。</p>
+        <p>中枢完整记录每一次对话意图、技能调用、审批签字、外部接口请求与执行回执，形成防篡改的审计日志链，支持全生命周期合规审计。</p>
+
+        <h2 class="mt-8 text-xl font-bold tracking-tight text-ink">交付与售后服务</h2>
+        <p>IAI 企业版交付包含部署套件、受控容器镜像包、现场网络调优及标准操作规程。所有交付物均附带数字哈希校验码，确保环境纯净与交付质量。</p>
+      </div>
     </div>
   </section>
 </Base>

@@ -1,21 +1,20 @@
 ---
-title: 文档
-description: 个人版使用流程与企业私有化交付指南。
+title: 文档首页
+description: IAI 智能工厂中枢企业私有化交付与使用指南。
 ---
 
 import { CardGrid, LinkCard } from '@astrojs/starlight/components';
 import { href } from '../../../lib/url';
 
-个人版聚焦本机知识库与按需官方 AI，企业版面向内网系统接入、权限和执行治理。
+IAI 智能工厂中枢面向工厂数字化系统接入、统一本体建模、企业知识库、多 Agent 流程、权限与执行治理。
 
 <CardGrid>
-  <LinkCard title="快速开始" description="本机资料、账号授权、出网同意与预算。" href={href('/docs/quickstart/')} />
-  <LinkCard title="个人版指南" description="资料在本机，官方 AI 使用账号与积分。" href={href('/docs/trial/')} />
-  <LinkCard title="私有部署" description="企业部署、硬件与受控制品交付。" href={href('/docs/deployment/')} />
-  <LinkCard title="模型准备" description="个人版官方 AI 与企业模型边界。" href={href('/docs/models/')} />
-  <LinkCard title="常见问题" description="费用、联网、数据与发布状态。" href={href('/docs/faq/')} />
+  <LinkCard title="快速开始" description="通过演示数据体验从现场提问到执行账本的完整链路。" href={href('/docs/quickstart/')} />
+  <LinkCard title="私有部署" description="服务器组成、Docker Compose 编排、硬件配置与交付物。" href={href('/docs/deployment/')} />
+  <LinkCard title="模型准备" description="为企业内网准备 vLLM / Ollama 或第三方模型接入。" href={href('/docs/models/')} />
+  <LinkCard title="常见问题" description="网络隔离、数据安全、系统对接与交付支持常见疑问。" href={href('/docs/faq/')} />
 </CardGrid>
 
-:::note[发布状态]
-个人版仍在规划与开发中，当前不开放自助注册。公开签名安装包即将通过官方域名提供，价格以正式发布为准。
+:::note[交付说明]
+IAI 智能工厂中枢按私有化项目交付。部署套件包含 Docker Compose 编排文件、安装脚本与示例配置；服务端容器镜像包随项目向客户受控交付。
 :::

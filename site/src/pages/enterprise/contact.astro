@@ -1,7 +1,7 @@
 ---
 import Base from '../../layouts/Base.astro';
 import Icon from '../../components/Icon.astro';
-import SectionHeading from '../../components/SectionHeading.astro';
+import EnterpriseHero from '../../components/EnterpriseHero.astro';
 import { CONTACT_EMAIL } from '../../data/site';
 import { href } from '../../lib/url';
 
@@ -13,9 +13,13 @@ const topics = [
 ---
 
 <Base title="联系我们" description="咨询 IAI 私有部署、反馈试用问题或报告安全问题。">
-  <section class="container-site pt-14">
-    <SectionHeading as="h1" eyebrow="Contact" title="联系我们" lead="咨询私有部署、反馈试用问题、报告安全问题，都可以通过下面的方式找到我们。" />
-  </section>
+  <EnterpriseHero
+    eyebrow="Contact"
+    title="联系我们"
+    lead="咨询私有部署、反馈试用问题、报告安全问题，都可以通过下面的方式找到我们。"
+    points={['私有部署', '试用反馈', '安全问题']}
+    note="首版官网不提供在线表单，也不收集访问数据。"
+  />
 
   <section class="container-site mt-10 grid gap-6 lg:grid-cols-[minmax(0,1fr)_380px]">
     <div class="card p-6 sm:p-8">

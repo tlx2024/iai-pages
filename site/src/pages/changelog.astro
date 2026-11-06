@@ -1,7 +1,8 @@
 ---
 import { getCollection, render } from 'astro:content';
 import Base from '../layouts/Base.astro';
-import SectionHeading from '../components/SectionHeading.astro';
+import PageHero from '../components/PageHero.astro';
+import Icon from '../components/Icon.astro';
 import { href } from '../lib/url';
 
 const notes = (await getCollection('releaseNotes')).sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
@@ -10,45 +11,49 @@ const fmt = (d: Date) => d.toISOString().slice(0, 10);
 ---
 
 <Base title="更新日志" description="IAI 每个公开版本的对外发行说明。">
-  <section class="container-site pt-14">
-    <SectionHeading
-      as="h1"
-      eyebrow="Changelog"
-      title="更新日志"
-      lead="每个公开版本的发行说明，由人工撰写：只写用户能感知到的变化，以及升级时需要注意的事项。"
-    />
-  </section>
+  <PageHero
+    eyebrow="Changelog"
+    title="更新日志"
+    lead="每个公开版本的发行说明，由人工撰写：只写用户能感知到的变化，以及升级时需要注意的事项。"
+    badge="版本记录"
+    note="只写用户能感知的变化"
+  />
 
-  <section class="container-site mt-12">
-  <div class="max-w-4xl">
-    {
-      rendered.length === 0 ? (
-        <div class="card p-8 text-center">
-          <p class="font-medium">还没有公开版本</p>
-          <p class="mt-2 text-sm text-muted">
-            首个公开版本发布后，这里会列出它的发行说明。版本文件见
-            <a class="link" href={href('/download/')}>下载页</a>。
-          </p>
-        </div>
-      ) : (
-        <ol class="space-y-10">
-          {rendered.map(({ entry, Content }) => (
-            <li id={`v${entry.data.version}`} class="scroll-mt-24 grid gap-4 md:grid-cols-[160px_minmax(0,1fr)]">
-              <div>
-                <p class="text-lg font-semibold">v{entry.data.version}</p>
-                <p class="text-sm text-muted">{fmt(entry.data.date)}</p>
-                {entry.data.channel === 'rc' && <p class="mt-1 text-xs text-warn-fg">预发布</p>}
-              </div>
-              <article class="card prose-notes p-6">
-                {entry.data.title && <h2 class="text-xl font-semibold">{entry.data.title}</h2>}
-                <Content />
-              </article>
-            </li>
-          ))}
-        </ol>
-      )
-    }
-  </div>
+  <section class="container-site pb-16">
+    <div class="max-w-4xl">
+      {
+        rendered.length === 0 ? (
+          <div class="card flex items-start gap-4 p-6 sm:p-8">
+            <span class="grid size-9 shrink-0 place-items-center rounded-lg bg-neutral-soft text-muted">
+              <Icon name="info" size={18} />
+            </span>
+            <div class="min-w-0">
+              <p class="font-semibold text-ink">还没有公开版本</p>
+              <p class="mt-1 text-sm leading-7 text-ink-soft">
+                首个公开版本发布后，这里会列出它的发行说明。版本文件见
+                <a class="link" href={href('/download/')}>下载页</a>。
+              </p>
+            </div>
+          </div>
+        ) : (
+          <ol class="space-y-10">
+            {rendered.map(({ entry, Content }) => (
+              <li id={`v${entry.data.version}`} class="scroll-mt-24 grid gap-4 md:grid-cols-[160px_minmax(0,1fr)]">
+                <div>
+                  <p class="font-latin text-lg font-semibold">v{entry.data.version}</p>
+                  <p class="text-sm text-muted">{fmt(entry.data.date)}</p>
+                  {entry.data.channel === 'rc' && <p class="mt-1 text-xs text-warn-fg">预发布</p>}
+                </div>
+                <article class="card prose-notes p-6">
+                  {entry.data.title && <h2 class="text-xl font-semibold">{entry.data.title}</h2>}
+                  <Content />
+                </article>
+              </li>
+            ))}
+          </ol>
+        )
+      }
+    </div>
   </section>
 </Base>
 

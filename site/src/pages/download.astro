@@ -1,36 +1,82 @@
 ---
 import Base from '../layouts/Base.astro';
-import SectionHeading from '../components/SectionHeading.astro';
-import StatusBadge from '../components/StatusBadge.astro';
+import EnterpriseHero from '../components/EnterpriseHero.astro';
+import Icon from '../components/Icon.astro';
 import { href } from '../lib/url';
-import { accountHref } from '../lib/endpoints';
 ---
-<Base title="下载" description="个人版签名安装包即将通过官方域名提供，企业制品通过私有化交付。">
-  <section class="container-site pt-14">
-    <SectionHeading as="h1" eyebrow="Downloads" title="个人版客户端下载" lead="客户端免费下载，资料与知识库在本机。官方 AI 需要账号和积分，价格以正式发布为准。" />
-    <div class="card mt-10 grid gap-8 p-8 md:grid-cols-[1fr_240px]">
-      <div>
-        <StatusBadge status="planned" />
-        <h2 class="mt-4 text-2xl font-semibold">IAI 个人版 · Windows</h2>
-        <p class="mt-4 leading-8 text-ink-soft">个人版仍在规划与开发中，邀请内测不开放自助注册。公开签名安装包尚未发布；发布后会展示版本、SHA256、发行签名状态和国内主下载链接。</p>
+<Base title="制品与下载" description="IAI 智能工厂中枢企业客户端、部署套件与镜像包交付说明。">
+  <EnterpriseHero
+    eyebrow="Downloads & Artifacts"
+    title="制品与交付介质"
+    lead="公开提供不含核心服务代码的部署套件与环境配置模板；企业服务端镜像包与企业客户端随私有化项目受控交付，均附带数字哈希校验码。"
+    points={['企业客户端', '部署套件', '受控镜像包']}
+  >
+    <a href={href('/enterprise/contact/')} class="btn bg-white text-[#111c2e] hover:bg-white/90">
+      <Icon name="mail" size={18} />
+      获取交付介质
+    </a>
+    <a href={href('/docs/deployment/')} class="btn border border-white/30 text-white hover:border-white/60">
+      阅读私有部署指南
+    </a>
+  </EnterpriseHero>
+
+  <section class="container-site pb-16 pt-12">
+    <div class="grid gap-6 lg:grid-cols-2">
+      <div class="card p-6 sm:p-8">
+        <div class="flex items-center gap-3">
+          <span class="grid size-10 place-items-center rounded-lg bg-enterprise-soft text-enterprise">
+            <Icon name="monitor" size={20} />
+          </span>
+          <div>
+            <h2 class="text-xl font-bold tracking-tight text-ink">企业桌面客户端</h2>
+            <p class="font-latin text-xs text-muted">IAI Enterprise Workstation Client</p>
+          </div>
+        </div>
+        <p class="mt-4 leading-7 text-ink-soft">
+          面向工厂岗位电脑、中控室与工程师工作站的统一交互客户端。连接内网 IAI 服务器，支持本地模型调用与多岗位工作台。
+        </p>
+        <ul class="mt-4 space-y-2 border-t border-line-soft pt-4 text-sm text-ink-soft">
+          <li class="flex items-center gap-2"><Icon name="check" size={16} class="text-ok" />支持 Windows 10 / 11 64 位操作系统</li>
+          <li class="flex items-center gap-2"><Icon name="check" size={16} class="text-ok" />企业专属代码签名，防止未经授权的改动</li>
+          <li class="flex items-center gap-2"><Icon name="check" size={16} class="text-ok" />仅随私有化实施项目受控分发</li>
+        </ul>
         <div class="mt-6 flex flex-wrap gap-3">
-          <button class="btn btn-primary cursor-not-allowed opacity-60" disabled>Windows 下载 · 尚未发布</button>
-          <a class="btn btn-secondary" href={href('/docs/trial/')}>个人版指南</a>
-          <a class="btn btn-secondary" href={href('/price/')}>价格说明</a>
+          <a href={href('/enterprise/contact/')} class="btn btn-enterprise">联系架构师申请</a>
+          <a href={href('/enterprise/deployment/')} class="btn btn-secondary">环境要求</a>
         </div>
       </div>
-      <dl class="space-y-4 text-sm">
-        <div><dt class="text-muted">公开版本</dt><dd class="mt-1">尚未发布</dd></div>
-        <div><dt class="text-muted">SHA256</dt><dd class="mt-1">发布时提供</dd></div>
-        <div><dt class="text-muted">发行签名</dt><dd class="mt-1">待发行验证</dd></div>
-        <div><dt class="text-muted">主下载</dt><dd class="mt-1">官方分发域名，待上线</dd></div>
-      </dl>
+
+      <div class="card p-6 sm:p-8">
+        <div class="flex items-center gap-3">
+          <span class="grid size-10 place-items-center rounded-lg bg-enterprise-soft text-enterprise">
+            <Icon name="server" size={20} />
+          </span>
+          <div>
+            <h2 class="text-xl font-bold tracking-tight text-ink">服务器部署套件与镜像包</h2>
+            <p class="font-latin text-xs text-muted">IAI Server Deployment Kit & Container Images</p>
+          </div>
+        </div>
+        <p class="mt-4 leading-7 text-ink-soft">
+          包含 Docker Compose 编排模板、依赖存储与数据库配置文件、网络探针及环境自检脚本；镜像包支持离线介质安全导入。
+        </p>
+        <ul class="mt-4 space-y-2 border-t border-line-soft pt-4 text-sm text-ink-soft">
+          <li class="flex items-center gap-2"><Icon name="check" size={16} class="text-ok" />支持主流 Linux 发行版（Ubuntu 22.04 LTS+ / RHEL 9+）</li>
+          <li class="flex items-center gap-2"><Icon name="check" size={16} class="text-ok" />支持完全无外网的物理隔离局域网部署</li>
+          <li class="flex items-center gap-2"><Icon name="check" size={16} class="text-ok" />交付物附带 SHA256 与版本完整性清单</li>
+        </ul>
+        <div class="mt-6 flex flex-wrap gap-3">
+          <a href={href('/docs/deployment/')} class="btn btn-enterprise">查看部署文档</a>
+          <a href={href('/enterprise/contact/')} class="btn btn-secondary">预约现场交付</a>
+        </div>
+      </div>
     </div>
-    <div class="card mt-6 flex flex-wrap items-center justify-between gap-6 p-6 sm:p-8"><div><h2 class="text-xl font-semibold">下载之后，连接你的 IAI 账号</h2><p class="mt-2 text-sm leading-7 text-ink-soft">本机知识库免费使用；官方 AI 通过账号与积分提供。可先查看会员方案与账号中心。</p></div><div class="flex flex-wrap gap-3"><a class="btn btn-primary" href={accountHref('register')}>会员注册</a><a class="btn btn-secondary" href={accountHref('account')}>进入账号中心</a></div></div>
-    <div class="card mt-8 max-w-3xl p-8">
-      <h2 class="text-xl font-semibold">企业私有化交付</h2>
-      <p class="mt-4 leading-8 text-ink-soft">服务器套件、企业客户端与镜像包通过私有化项目交付。交付清单、校验和与授权随项目核对。</p>
-      <a class="link mt-4 inline-block" href={href('/docs/deployment/')}>查看私有部署说明</a>
-    </div>
+
+    <aside class="card mt-8 p-6 sm:p-7">
+      <h3 class="text-lg font-semibold text-ink">交付物校验与安全性保障</h3>
+      <p class="mt-2 text-sm leading-7 text-ink-soft">
+        所有受控镜像包与客户端安装介质均在客户指定交付通道提供，并在出厂时完成数字签名与哈希固化。
+        部署前请使用 <code>sha256sum</code> 严格校验文件哈希值，确保介质未被网络篡改。
+      </p>
+    </aside>
   </section>
 </Base>
